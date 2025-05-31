@@ -36,6 +36,24 @@
       "keywords": ["http", "api", "rest", "curl", "web"],
       "mlldVersion": ">=0.5.0",
       "publishedAt": "2025-05-30T00:00:00Z"
+    },
+    "@mlld/fs": {
+      "name": "@mlld/fs",
+      "description": "Filesystem utilities for directory traversal and content output",
+      "author": {
+        "name": "mlld Core Team",
+        "github": "mlld"
+      },
+      "source": {
+        "type": "github",
+        "repo": "mlld-lang/modules",
+        "hash": "ed50964c950ec332141e3c8f9b3ee0296230a42a",
+        "url": "https://raw.githubusercontent.com/mlld-lang/modules/ed50964c950ec332141e3c8f9b3ee0296230a42a/fs/fs.mld"
+      },
+      "dependencies": {},
+      "keywords": ["filesystem", "directory", "traversal", "xml", "markdown"],
+      "mlldVersion": ">=0.5.0",
+      "publishedAt": "2025-05-31T07:30:00Z"
     }
   }
 }
