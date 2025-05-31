@@ -6,6 +6,11 @@ on:
     paths:
       - 'modules/**/*.json'
 
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
 jobs:
   llm-review:
     runs-on: ubuntu-latest
