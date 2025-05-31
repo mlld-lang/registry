@@ -27,7 +27,6 @@ jobs:
         
     - name: Build combined registry
       run: |
-        cd registry
         node tools/build-registry.js
         
     - name: Generate PR review using mlld
@@ -38,7 +37,6 @@ jobs:
         REPO_OWNER: ${{ github.repository_owner }}
         REPO_NAME: ${{ github.event.repository.name }}
       run: |
-        cd registry
         mlld tools/llm-review.mld
         
     - name: Auto-approve if recommended

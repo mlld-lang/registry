@@ -21,12 +21,10 @@ jobs:
         
     - name: Build combined registry
       run: |
-        cd registry
         node tools/build-registry.js
         
     - name: Validate modules
       run: |
-        cd registry
         node tools/validate.js --save-report
         
     - name: Upload validation report
@@ -34,7 +32,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: validation-report
-        path: registry/validation-report.json
+        path: validation-report.json
         
     - name: Comment on PR
       if: failure() && github.event_name == 'pull_request'
@@ -42,7 +40,7 @@ jobs:
       with:
         script: |
           const fs = require('fs');
-          const report = JSON.parse(fs.readFileSync('registry/validation-report.json', 'utf8'));
+          const report = JSON.parse(fs.readFileSync('validation-report.json', 'utf8'));
           
           let comment = '## ❌ Registry Validation Failed\n\n';
           comment += `- Total modules: ${report.modules}\n`;

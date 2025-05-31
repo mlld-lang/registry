@@ -25,12 +25,10 @@ jobs:
         
     - name: Build combined registry
       run: |
-        cd registry
         node tools/build-registry.js
         
     - name: Validate modules
       run: |
-        cd registry
         node tools/validate.js --skip-content
         
     - name: Sync DNS records
@@ -38,12 +36,10 @@ jobs:
         DNSIMPLE_TOKEN: ${{ secrets.DNSIMPLE_TOKEN }}
         DNSIMPLE_ACCOUNT_ID: ${{ secrets.DNSIMPLE_ACCOUNT_ID }}
       run: |
-        cd registry
         node tools/dns-sync.js
         
     - name: Commit build and sync results
       run: |
-        cd registry
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
         
@@ -76,10 +72,10 @@ jobs:
       run: |
         echo "## DNS Sync Summary" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
-        if [ -f registry/dns/records.json ]; then
+        if [ -f dns/records.json ]; then
           echo "### Updated Records" >> $GITHUB_STEP_SUMMARY
           echo "\`\`\`json" >> $GITHUB_STEP_SUMMARY
-          cat registry/dns/records.json | jq '.records[] | select(.action != "unchanged")' >> $GITHUB_STEP_SUMMARY || echo "No changes"
+          cat dns/records.json | jq '.records[] | select(.action != "unchanged")' >> $GITHUB_STEP_SUMMARY || echo "No changes"
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
         else
           echo "DNS sync did not complete successfully" >> $GITHUB_STEP_SUMMARY
