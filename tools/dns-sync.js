@@ -120,11 +120,12 @@ async function syncDnsRecords() {
     const existingRecord = existingMlldRecords.get(dnsName);
     
     if (existingRecord) {
-      // Check if record needs updating
-      if (existingRecord.content !== recordContent) {
+      // Check if record needs updating (content or TTL)
+      if (existingRecord.content !== recordContent || existingRecord.ttl !== 60) {
         console.log(`Updating record for ${moduleId} (${fullDnsName})...`);
         await dnsimpleRequest('PATCH', `/zones/${DOMAIN}/records/${existingRecord.id}`, {
-          content: recordContent
+          content: recordContent,
+          ttl: 60 // Ensure TTL is always 1 minute
         });
         updatedRecords.push({
           module: moduleId,
@@ -148,7 +149,7 @@ async function syncDnsRecords() {
         type: 'TXT',
         name: fullDnsName,
         content: recordContent,
-        ttl: 300 // 5 minutes for quick updates
+        ttl: 60 // 1 minute for very quick updates
       });
       updatedRecords.push({
         module: moduleId,

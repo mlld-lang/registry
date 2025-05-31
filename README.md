@@ -234,6 +234,16 @@ We welcome contributions! Please:
 4. Be responsive to feedback
 5. Help review other submissions
 
+### Automated Processes
+
+When your PR is merged:
+- GitHub Actions automatically validates all modules
+- DNS records are created/updated via DNSimple API
+- Changes are reflected at `public.mlld.ai` within 5-10 minutes
+- No manual intervention needed!
+
+For maintainers: See [docs/SETUP.md](docs/SETUP.md) for configuration details.
+
 ## 📊 Registry Statistics
 
 - Total Modules: See `modules.json`

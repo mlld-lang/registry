@@ -5,12 +5,6 @@ on:
     paths:
       - 'modules.json'
       - 'modules/**/*.json'
-  push:
-    branches:
-      - main
-    paths:
-      - 'modules.json'
-      - 'modules/**/*.json'
 
 jobs:
   validate:
