@@ -1,0 +1,89 @@
+---
+description: Complete LLM-powered PR review using destructured stdin data  
+author: mlld-registry
+version: 4.0.0
+---
+
+# 🤖 Self-Governing Registry LLM Review
+# Uses mlld to review mlld registry submissions!
+
+# Destructure environment data from stdin
+@import { pr_number, repo_owner, repo_name, pr_title, pr_author } from @input
+
+# Fetch PR details using GitHub CLI
+@run pr_diff = [gh api repos/{{repo_owner}}/{{repo_name}}/pulls/{{pr_number}} --jq '.diff_url' | xargs curl -s]
+@run pr_files = [gh api repos/{{repo_owner}}/{{repo_name}}/pulls/{{pr_number}}/files --jq '.[] | {filename: .filename, status: .status, additions: .additions, deletions: .deletions}']
+
+# Create comprehensive review prompt
+@text review_prompt = [[
+You are an expert reviewer for the mlld PUBLIC module registry. Review this PR for:
+
+1. **Security**: No secrets, malicious code, or unsafe commands
+2. **Value**: Provides genuine utility to mlld ecosystem  
+3. **Quality**: Proper structure, metadata, documentation
+4. **Standards**: Follows naming conventions (@author/module format)
+5. **Uniqueness**: Doesn't unnecessarily duplicate existing modules
+
+## PR Details:
+- **#{{pr_number}}**: {{pr_title}}
+- **Author**: @{{pr_author}}
+- **Repository**: {{repo_owner}}/{{repo_name}}
+
+## Changed Files:
+{{pr_files}}
+
+## Code Diff:
+{{pr_diff}}
+
+## Response Format:
+Start your response with exactly one of: APPROVE, REQUEST_CHANGES, or COMMENT
+
+Then provide detailed reasoning explaining your decision and any concerns.
+
+Be thorough but concise. This is a PUBLIC registry - quality and security are paramount.
+]]
+
+# Get LLM review via Claude API
+@run llm_response = [
+  curl -s https://api.anthropic.com/v1/messages \
+    -H "Content-Type: application/json" \
+    -H "x-api-key: $ANTHROPIC_API_KEY" \
+    -H "anthropic-version: 2023-06-01" \
+    -d '{
+      "model": "claude-3-5-sonnet-20241022",
+      "max_tokens": 1500,
+      "system": "You are a thorough but fair code reviewer for an open source module registry.",
+      "messages": [{"role": "user", "content": "{{review_prompt}}"}]
+    }' | jq -r '.content[0].text'
+]
+
+# Extract recommendation (first line)
+@run recommendation = [echo "{{llm_response}}" | head -1 | grep -oE "(APPROVE|REQUEST_CHANGES|COMMENT)"]
+
+# Extract reasoning (rest of response)  
+@run reasoning = [echo "{{llm_response}}" | tail -n +2]
+
+# Set GitHub Actions environment variables
+@run export_vars = [
+  echo "LLM_RECOMMENDATION={{recommendation}}" >> $GITHUB_ENV
+  echo "LLM_REVIEW_REASONING<<EOF" >> $GITHUB_ENV
+  echo "{{reasoning}}" >> $GITHUB_ENV
+  echo "EOF" >> $GITHUB_ENV
+]
+
+# Output summary
+@text review_summary = [[
+🤖 **LLM Review Complete**
+
+**PR**: #{{pr_number}} - {{pr_title}}
+**Author**: @{{pr_author}}
+**Recommendation**: {{recommendation}}
+
+**LLM Analysis**:
+{{llm_response}}
+
+---
+*Self-governing review by mlld using Claude API*
+]]
+
+@add @review_summary
