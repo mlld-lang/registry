@@ -33,12 +33,10 @@ version: 6.0.0
 ]]
 
 # Set GitHub Actions environment variables
-@run export_recommendation = [echo "LLM_RECOMMENDATION=COMMENT" >> $GITHUB_ENV]
+@run [echo "LLM_RECOMMENDATION=COMMENT" >> $GITHUB_ENV]
 
-@run export_reasoning = [
-  echo "LLM_REVIEW_REASONING<<EOF" >> $GITHUB_ENV
-  echo "{{review_response}}" >> $GITHUB_ENV  
-  echo "EOF" >> $GITHUB_ENV
-]
+@run [echo "LLM_REVIEW_REASONING<<EOF" >> $GITHUB_ENV]
+@run [echo "{{review_response}}" >> $GITHUB_ENV]
+@run [echo "EOF" >> $GITHUB_ENV]
 
 @add @review_response
