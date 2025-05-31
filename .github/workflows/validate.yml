@@ -19,6 +19,11 @@ jobs:
       with:
         node-version: '20'
         
+    - name: Build combined registry
+      run: |
+        cd registry
+        node tools/build-registry.js
+        
     - name: Validate modules
       run: |
         cd registry

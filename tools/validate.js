@@ -17,7 +17,7 @@ const GIST_URL_REGEX = /^https:\/\/gist\.githubusercontent\.com\/([^\/]+)\/([a-f
 // Required metadata fields
 const REQUIRED_FIELDS = ['name', 'description', 'author', 'source', 'publishedAt', 'mlldVersion'];
 const REQUIRED_AUTHOR_FIELDS = ['name', 'github'];
-const REQUIRED_SOURCE_FIELDS = ['type', 'id', 'hash', 'url'];
+const REQUIRED_SOURCE_FIELDS = ['type', 'hash', 'url'];
 
 // Fetch URL content
 async function fetchUrl(url) {
@@ -203,18 +203,22 @@ function validateMetadata(moduleId, metadata) {
   return errors;
 }
 
-// Validate gist content
-async function validateGistContent(metadata) {
+// Validate source content
+async function validateSourceContent(metadata) {
   const errors = [];
   
   try {
-    console.log(`Fetching gist content from ${metadata.source.url}...`);
+    console.log(`Fetching content from ${metadata.source.url}...`);
     const content = await fetchUrl(metadata.source.url);
     
-    // Verify content hash
-    const actualHash = crypto.createHash('sha1').update(content).digest('hex');
-    if (actualHash !== metadata.source.hash) {
-      errors.push(`Content hash mismatch: expected ${metadata.source.hash}, got ${actualHash}`);
+    // For GitHub sources, we don't validate the commit hash against content
+    // (commit hash is repository-level, not content-level)
+    if (metadata.source.type === 'gist') {
+      // For gists, verify content hash
+      const actualHash = crypto.createHash('sha1').update(content).digest('hex');
+      if (actualHash !== metadata.source.hash) {
+        errors.push(`Content hash mismatch: expected ${metadata.source.hash}, got ${actualHash}`);
+      }
     }
     
     // Parse frontmatter
@@ -253,9 +257,9 @@ async function validateModule(moduleId, metadata, options = {}) {
   const metadataErrors = validateMetadata(moduleId, metadata);
   allErrors.push(...metadataErrors);
   
-  // Validate gist content if not skipped
+  // Validate source content if not skipped
   if (!options.skipContent && metadata.source?.url) {
-    const contentErrors = await validateGistContent(metadata);
+    const contentErrors = await validateSourceContent(metadata);
     allErrors.push(...contentErrors);
   }
   

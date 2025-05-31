@@ -1,0 +1,141 @@
+---
+description: LLM-powered PR review for mlld registry modules
+author: mlld-registry
+version: 1.0.0
+---
+
+# 🤖 Autonomous Module Registry Review System
+# Using mlld to review mlld modules
+
+@import { github_api } from @system/github
+@import { anthropic } from @system/anthropic
+
+# Get PR information from environment
+@data pr_number = $PR_NUMBER
+@data repo_owner = $REPO_OWNER  
+@data repo_name = $REPO_NAME
+
+# Fetch PR details
+@run pr_data = [gh api repos/$repo_owner/$repo_name/pulls/$pr_number]
+
+# Get the diff for this PR
+@run pr_diff = [gh api repos/$repo_owner/$repo_name/pulls/$pr_number --jq '.diff_url' | xargs curl -s]
+
+# Get PR files
+@run pr_files = [gh api repos/$repo_owner/$repo_name/pulls/$pr_number/files]
+
+# Parse the PR data
+@data pr_title = @pr_data.title
+@data pr_body = @pr_data.body
+@data pr_author = @pr_data.user.login
+
+# Extract module information from changed files
+@text changed_modules = [[
+Changed files in this PR:
+{{pr_files}}
+
+PR Diff:
+{{pr_diff}}
+]]
+
+# Create comprehensive review prompt
+@text review_prompt = [[
+You are an expert code reviewer for the mlld PUBLIC module registry. Your job is to review pull requests that add new modules to ensure they:
+
+1. **Add genuine value** to the mlld ecosystem
+2. **Follow security best practices** (no secrets, safe commands)  
+3. **Have proper module structure** and metadata
+4. **Use appropriate naming** and descriptions
+5. **Don't duplicate existing functionality** without good reason
+6. **Are actually useful** vs just demo/test modules
+
+## PR Information:
+- **Title**: {{pr_title}}
+- **Author**: @{{pr_author}}
+- **Description**: {{pr_body}}
+
+## Changes:
+{{changed_modules}}
+
+## Review Criteria:
+
+### ✅ APPROVE if:
+- Module solves a real problem or provides useful functionality
+- Code is well-structured with clear frontmatter
+- Module name is descriptive and follows @username/module-name format
+- No obvious security issues (no hardcoded secrets, safe command execution)
+- Good documentation/description of what it does
+- Doesn't conflict with existing modules
+
+### 🔄 REQUEST_CHANGES if:
+- Security issues (secrets, unsafe commands, suspicious URLs)
+- Missing required metadata (author, module name, description)
+- Malformed module structure or invalid source URLs
+- Module name conflicts or doesn't follow naming conventions
+- Description is unclear or missing
+
+### 💭 COMMENT if:
+- Unsure about usefulness but no obvious issues
+- Quality concerns but not security issues
+- Needs human judgment on value/appropriateness
+- Edge cases that need discussion
+
+## Response Format:
+Provide your recommendation as one of: APPROVE, REQUEST_CHANGES, or COMMENT
+
+Then provide detailed reasoning explaining:
+- What the module does
+- Why you made this decision
+- Any specific concerns or highlights
+- Suggestions for improvement (if any)
+
+Be thorough but concise. Remember: this is a PUBLIC registry, so quality and security matter.
+]]
+
+# Get LLM review
+@run llm_response = [
+  curl -s https://api.anthropic.com/v1/messages \
+    -H "Content-Type: application/json" \
+    -H "x-api-key: $ANTHROPIC_API_KEY" \
+    -H "anthropic-version: 2023-06-01" \
+    -d '{
+      "model": "claude-3-5-sonnet-20241022",
+      "max_tokens": 1500,
+      "system": "You are a helpful code reviewer for an open source module registry. Be thorough but fair in your reviews.",
+      "messages": [
+        {
+          "role": "user", 
+          "content": "{{review_prompt}}"
+        }
+      ]
+    }' | jq -r '.content[0].text'
+]
+
+# Parse LLM response to extract recommendation
+@run recommendation = [echo "{{llm_response}}" | head -1 | grep -oE "(APPROVE|REQUEST_CHANGES|COMMENT)"]
+
+# Extract reasoning (everything after first line)
+@run reasoning = [echo "{{llm_response}}" | tail -n +2]
+
+# Set environment variables for GitHub Actions
+@run export_vars = [
+  echo "LLM_RECOMMENDATION={{recommendation}}" >> $GITHUB_ENV
+  echo "LLM_REVIEW_REASONING<<EOF" >> $GITHUB_ENV
+  echo "{{reasoning}}" >> $GITHUB_ENV  
+  echo "EOF" >> $GITHUB_ENV
+]
+
+# Log the decision for debugging
+@text review_summary = [[
+🤖 **LLM Review Complete**
+
+**Recommendation**: {{recommendation}}
+
+**Reasoning**: 
+{{reasoning}}
+
+**PR**: #{{pr_number}} by @{{pr_author}}
+**Title**: {{pr_title}}
+]]
+
+@add [[{{review_summary}}]]

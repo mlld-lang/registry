@@ -1,8 +1,6 @@
 # mlld registry
 
-> **⚠️ PUBLIC REGISTRY**: All modules in this registry are PUBLIC and accessible to anyone. For private modules, use custom resolvers instead.
-
-The module system uses GitHub DNS. 
+> **⚠️ PUBLIC REGISTRY**: All modules in this registry are PUBLIC and accessible to anyone. For private modules, use custom resolvers instead. 
 
 ## 🚀 Quick Start
 
@@ -68,27 +66,29 @@ description: Awesome utilities for mlld scripts
 - `module` - Full module name (@username/module)
 - `description` - What your module does
 
-### Step 2: Get the Raw URL
+### Step 2: Generate Module Metadata
 
-1. Click the "Raw" button on your gist
-2. Copy the FULL URL including the commit hash
-
-Example:
-```
-https://gist.githubusercontent.com/alice/8bb1c645c1cf0dd515bd8f834fb82fcf/raw/59d76372d3c4a93e7aae34cb98b13a8e99dfb95f/utils.mld
-```
-
-### Step 3: Generate Module Metadata
-
-Use our helper tool:
+Use our helper tool with your source URL:
 
 ```bash
-./tools/publish.js @yourgithub/awesome-utils <raw-gist-url>
+./tools/publish.js @yourgithub/awesome-utils <source-url>
 ```
 
-This will generate the metadata JSON and provide step-by-step instructions.
+**Supported URL formats:**
+- **Gist URL**: `https://gist.github.com/username/gist-id`
+- **GitHub file**: `https://github.com/owner/repo/blob/main/path/file.mld`
+- **Raw URL**: `https://gist.githubusercontent.com/username/gist-id/raw/hash/file.mld`
+- **External**: Any other HTTP(S) URL
 
-### Step 4: Submit Your Module
+The tool will automatically:
+- Fetch the latest commit hash
+- Find your `.mld` file
+- Generate the precise raw URL
+- Create module metadata
+
+This generates the metadata JSON and provides step-by-step instructions.
+
+### Step 3: Submit Your Module
 
 1. Fork this repository
 2. Add your module entry to `modules.json`
@@ -114,16 +114,28 @@ This will generate the metadata JSON and provide step-by-step instructions.
       "hash": "59d76372d3c4a93e7aae34cb98b13a8e99dfb95f",
       "url": "https://gist.githubusercontent.com/alicej/8bb1c645c1cf0dd515bd8f834fb82fcf/raw/59d76372d3c4a93e7aae34cb98b13a8e99dfb95f/utils.mld"
     },
-    "dependencies": {
-      "@bob/helpers": "a8c3f2d4e5b6c7d8e9f0a1b2c3d4e5f6"
-    },
+    "dependencies": {},
     "keywords": ["utils", "helpers", "strings"],
     "mlldVersion": ">=0.5.0",
-    "publishedAt": "2024-01-15T10:30:00Z",
-    "stats": {
-      "installs": 0,
-      "stars": 0
-    }
+    "publishedAt": "2024-01-15T10:30:00Z"
+  },
+  "@bob/templates": {
+    "name": "@bob/templates",
+    "description": "Project templates and scaffolding",
+    "author": {
+      "name": "Bob Smith",
+      "github": "bobsmith"
+    },
+    "source": {
+      "type": "github",
+      "repo": "bobsmith/mlld-templates",
+      "hash": "a1b2c3d4e5f6789abcdef0123456789abcdef012",
+      "url": "https://raw.githubusercontent.com/bobsmith/mlld-templates/a1b2c3d4e5f6789abcdef0123456789abcdef012/templates.mld"
+    },
+    "dependencies": {},
+    "keywords": ["templates", "scaffolding"],
+    "mlldVersion": ">=0.5.0",
+    "publishedAt": "2024-01-16T14:30:00Z"
   }
 }
 ```
@@ -133,9 +145,10 @@ This will generate the metadata JSON and provide step-by-step instructions.
 - **name** (required): Module identifier in format `@username/module-name`
 - **description** (required): Clear description of what the module does
 - **author** (required): Object with `name` and `github` fields
-- **source** (required): Object with gist information
-  - `type`: Always "gist" for now
-  - `id`: The 32-character gist ID
+- **source** (required): Object with source information
+  - `type`: Source type - "gist", "github", or "external"
+  - `id`: The 32-character gist ID (for gists)
+  - `repo`: Repository name "owner/repo" (for GitHub repos)
   - `hash`: The 40-character commit hash
   - `url`: Full raw content URL
 - **dependencies**: Map of module names to their commit hashes

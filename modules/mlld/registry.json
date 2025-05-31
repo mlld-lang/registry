@@ -1,6 +1,5 @@
 {
-  "version": "1.0.0",
-  "updated": "2025-05-31T06:30:47.959Z",
+  "author": "mlld",
   "modules": {
     "@mlld/ai": {
       "name": "@mlld/ai",
@@ -16,13 +15,7 @@
         "url": "https://raw.githubusercontent.com/mlld-lang/modules/ed50964c950ec332141e3c8f9b3ee0296230a42a/ai/ai.mld"
       },
       "dependencies": {},
-      "keywords": [
-        "ai",
-        "llm",
-        "claude",
-        "codex",
-        "cli"
-      ],
+      "keywords": ["ai", "llm", "claude", "codex", "cli"],
       "mlldVersion": ">=0.5.0",
       "publishedAt": "2025-05-30T00:00:00Z"
     },
@@ -40,13 +33,7 @@
         "url": "https://raw.githubusercontent.com/mlld-lang/modules/ed50964c950ec332141e3c8f9b3ee0296230a42a/http/http.mld"
       },
       "dependencies": {},
-      "keywords": [
-        "http",
-        "api",
-        "rest",
-        "curl",
-        "web"
-      ],
+      "keywords": ["http", "api", "rest", "curl", "web"],
       "mlldVersion": ">=0.5.0",
       "publishedAt": "2025-05-30T00:00:00Z"
     }

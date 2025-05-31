@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'modules.json'
+      - 'modules/**/*.json'
 
 jobs:
   validate-and-sync:
@@ -23,6 +23,11 @@ jobs:
       with:
         node-version: '20'
         
+    - name: Build combined registry
+      run: |
+        cd registry
+        node tools/build-registry.js
+        
     - name: Validate modules
       run: |
         cd registry
@@ -36,18 +41,34 @@ jobs:
         cd registry
         node tools/dns-sync.js
         
-    - name: Commit DNS sync results
+    - name: Commit build and sync results
       run: |
         cd registry
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
         
+        # Check for changes to commit
+        changes=""
+        if [[ -n $(git status -s modules.json) ]]; then
+          git add modules.json
+          changes="modules.json"
+        fi
+        
         if [[ -n $(git status -s dns/records.json) ]]; then
           git add dns/records.json
-          git commit -m "chore: update DNS sync manifest [skip ci]"
+          if [[ -n "$changes" ]]; then
+            changes="$changes, dns/records.json"
+          else
+            changes="dns/records.json"
+          fi
+        fi
+        
+        if [[ -n "$changes" ]]; then
+          git commit -m "chore: update $changes [skip ci]"
           git push
+          echo "✅ Committed updates to: $changes"
         else
-          echo "No changes to DNS records manifest"
+          echo "No changes to commit"
         fi
         
     - name: Create sync summary

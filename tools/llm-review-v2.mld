@@ -1,0 +1,93 @@
+---
+description: LLM-powered PR review using Claude CLI and @mlld/ai
+author: mlld-registry
+version: 2.0.0
+---
+
+# 🤖 Autonomous Module Registry Review System v2
+# Now using the @mlld/ai module - peak recursion!
+
+@import { llm, claude } from @mlld/ai
+
+# Get PR information from environment
+@data pr_number = $PR_NUMBER
+@data repo_owner = $REPO_OWNER  
+@data repo_name = $REPO_NAME
+
+# Fetch PR details using GitHub CLI
+@run pr_data = [gh api repos/$repo_owner/$repo_name/pulls/$pr_number]
+@run pr_diff = [gh api repos/$repo_owner/$repo_name/pulls/$pr_number --jq '.diff_url' | xargs curl -s]
+@run pr_files = [gh api repos/$repo_owner/$repo_name/pulls/$pr_number/files]
+
+# Parse the PR data
+@data pr_title = @pr_data.title
+@data pr_body = @pr_data.body
+@data pr_author = @pr_data.user.login
+
+# Create comprehensive review context
+@text review_context = [[
+## mlld Registry PR Review
+
+**PR #{{pr_number}}**: {{pr_title}}
+**Author**: @{{pr_author}}
+**Description**: {{pr_body}}
+
+## Changed Files:
+{{pr_files}}
+
+## Code Diff:
+{{pr_diff}}
+]]
+
+# System prompt for the review
+@text system_prompt = [[
+You are an expert code reviewer for the mlld PUBLIC module registry. 
+
+Evaluate this PR for:
+1. **Value**: Does it solve real problems or provide useful functionality?
+2. **Security**: No secrets, safe commands, trusted sources?
+3. **Quality**: Proper structure, metadata, documentation?
+4. **Standards**: Follows naming conventions and registry guidelines?
+5. **Uniqueness**: Doesn't unnecessarily duplicate existing modules?
+
+Respond with ONE of:
+- APPROVE: Quality module that adds value
+- REQUEST_CHANGES: Has issues that must be fixed
+- COMMENT: Needs human judgment
+
+Then explain your reasoning in detail.
+]]
+
+# Get LLM review using the @mlld/ai module
+@run llm_review = @claude("{{system_prompt}}\n\n{{review_context}}")
+
+# Parse the recommendation from the first line
+@run recommendation = [echo "{{llm_review}}" | head -1 | grep -oE "(APPROVE|REQUEST_CHANGES|COMMENT)"]
+
+# Extract reasoning (rest of the response)
+@run reasoning = [echo "{{llm_review}}" | tail -n +2]
+
+# Set GitHub Actions environment variables
+@run export_vars = [
+  echo "LLM_RECOMMENDATION={{recommendation}}" >> $GITHUB_ENV
+  echo "LLM_REVIEW_REASONING<<EOF" >> $GITHUB_ENV
+  echo "{{reasoning}}" >> $GITHUB_ENV
+  echo "EOF" >> $GITHUB_ENV
+]
+
+# Log the complete review
+@text review_summary = [[
+🤖 **LLM Review Complete** (using @mlld/ai)
+
+**PR**: #{{pr_number}} - {{pr_title}}
+**Author**: @{{pr_author}}
+**Recommendation**: {{recommendation}}
+
+**Full Review**:
+{{llm_review}}
+
+---
+*Reviewed by Claude via @mlld/ai module*
+]]
+
+@add [[{{review_summary}}]]
