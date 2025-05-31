@@ -101,34 +101,58 @@ function validateMetadata(moduleId, metadata) {
       }
       
       // Validate source type
-      if (metadata.source.type !== 'gist') {
-        errors.push(`Invalid source type: ${metadata.source.type}. Only 'gist' is supported`);
+      const validTypes = ['gist', 'github', 'external'];
+      if (!validTypes.includes(metadata.source.type)) {
+        errors.push(`Invalid source type: ${metadata.source.type}. Must be one of: ${validTypes.join(', ')}`);
       }
       
-      // Validate gist ID
-      if (metadata.source.id && !GIST_ID_REGEX.test(metadata.source.id)) {
-        errors.push(`Invalid gist ID format: ${metadata.source.id}`);
-      }
-      
-      // Validate commit hash
-      if (metadata.source.hash && !COMMIT_HASH_REGEX.test(metadata.source.hash)) {
-        errors.push(`Invalid commit hash format: ${metadata.source.hash}`);
-      }
-      
-      // Validate URL format
-      if (metadata.source.url) {
-        const urlMatch = metadata.source.url.match(GIST_URL_REGEX);
-        if (!urlMatch) {
-          errors.push(`Invalid gist URL format: ${metadata.source.url}`);
-        } else {
-          // Check URL components match
-          const [, username, gistId, hash, filename] = urlMatch;
-          if (gistId !== metadata.source.id) {
-            errors.push(`Gist ID mismatch in URL: ${gistId} !== ${metadata.source.id}`);
+      // Type-specific validation
+      if (metadata.source.type === 'gist') {
+        // Validate gist ID
+        if (metadata.source.id && !GIST_ID_REGEX.test(metadata.source.id)) {
+          errors.push(`Invalid gist ID format: ${metadata.source.id}`);
+        }
+        
+        // Validate commit hash
+        if (metadata.source.hash && !COMMIT_HASH_REGEX.test(metadata.source.hash)) {
+          errors.push(`Invalid commit hash format: ${metadata.source.hash}`);
+        }
+        
+        // Validate gist URL format
+        if (metadata.source.url) {
+          const urlMatch = metadata.source.url.match(GIST_URL_REGEX);
+          if (!urlMatch) {
+            errors.push(`Invalid gist URL format: ${metadata.source.url}`);
+          } else {
+            // Check URL components match
+            const [, username, gistId, hash, filename] = urlMatch;
+            if (metadata.source.id && gistId !== metadata.source.id) {
+              errors.push(`Gist ID mismatch in URL: ${gistId} !== ${metadata.source.id}`);
+            }
+            if (metadata.source.hash && hash !== metadata.source.hash) {
+              errors.push(`Commit hash mismatch in URL: ${hash} !== ${metadata.source.hash}`);
+            }
           }
-          if (hash !== metadata.source.hash) {
-            errors.push(`Commit hash mismatch in URL: ${hash} !== ${metadata.source.hash}`);
-          }
+        }
+      } else if (metadata.source.type === 'github') {
+        // Validate repo format
+        if (metadata.source.repo && !metadata.source.repo.match(/^[^\/]+\/[^\/]+$/)) {
+          errors.push(`Invalid repo format: ${metadata.source.repo}. Must be owner/repo`);
+        }
+        
+        // Validate commit hash
+        if (metadata.source.hash && !COMMIT_HASH_REGEX.test(metadata.source.hash)) {
+          errors.push(`Invalid commit hash format: ${metadata.source.hash}`);
+        }
+        
+        // Validate GitHub raw URL format
+        if (metadata.source.url && !metadata.source.url.match(/^https:\/\/raw\.githubusercontent\.com\/[^\/]+\/[^\/]+\/[a-f0-9]{40}\/.+\.mld$/)) {
+          errors.push(`Invalid GitHub raw URL format: ${metadata.source.url}`);
+        }
+      } else if (metadata.source.type === 'external') {
+        // Just validate URL format for external sources
+        if (metadata.source.url && !metadata.source.url.match(/^https?:\/\/.+/)) {
+          errors.push(`Invalid external URL format: ${metadata.source.url}`);
         }
       }
     }

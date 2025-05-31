@@ -1,8 +1,8 @@
-# mlld PUBLIC Module Registry
+# mlld registry
 
 > **⚠️ PUBLIC REGISTRY**: All modules in this registry are PUBLIC and accessible to anyone. For private modules, use custom resolvers instead.
 
-The official PUBLIC registry for mlld modules, powered by GitHub Gists and DNS.
+The module system uses GitHub DNS. 
 
 ## 🚀 Quick Start
 
