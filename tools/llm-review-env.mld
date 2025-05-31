@@ -11,12 +11,12 @@ version: 5.0.0
 @import { PR_NUMBER, REPO_OWNER, REPO_NAME, PR_TITLE, PR_AUTHOR } from @input
 
 # Define GitHub API commands
-@exec get_pr_diff(repo_owner, repo_name, pr_number) = [gh api repos/@repo_owner/@repo_name/pulls/@pr_number --jq '.diff_url' | xargs curl -s]
-@exec get_pr_files(repo_owner, repo_name, pr_number) = [gh api repos/@repo_owner/@repo_name/pulls/@pr_number/files --jq '.[] | {filename: .filename, status: .status, additions: .additions, deletions: .deletions}']
+@exec get_pr_diff(repo_owner, repo_name, pr_number) = @run [gh api repos/@repo_owner/@repo_name/pulls/@pr_number --jq '.diff_url' | xargs curl -s]
+@exec get_pr_files(repo_owner, repo_name, pr_number) = @run [gh api repos/@repo_owner/@repo_name/pulls/@pr_number/files --jq '.[] | {filename: .filename, status: .status, additions: .additions, deletions: .deletions}']
 
 # Fetch PR details using GitHub CLI  
-@run @get_pr_diff(@REPO_OWNER, @REPO_NAME, @PR_NUMBER)
-@run @get_pr_files(@REPO_OWNER, @REPO_NAME, @PR_NUMBER)
+@exec pr_diff = @get_pr_diff(@REPO_OWNER, @REPO_NAME, @PR_NUMBER)
+@exec pr_files = @get_pr_files(@REPO_OWNER, @REPO_NAME, @PR_NUMBER)
 
 # Create comprehensive review prompt
 @text review_prompt = [[
