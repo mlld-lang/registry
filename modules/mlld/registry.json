@@ -11,8 +11,8 @@
       "source": {
         "type": "github",
         "repo": "mlld-lang/modules",
-        "hash": "ed50964c950ec332141e3c8f9b3ee0296230a42a",
-        "url": "https://raw.githubusercontent.com/mlld-lang/modules/ed50964c950ec332141e3c8f9b3ee0296230a42a/ai/ai.mld"
+        "hash": "4b10ee4e792adba7e5bf43ffff0808a0824b1a75",
+        "url": "https://raw.githubusercontent.com/mlld-lang/modules/4b10ee4e792adba7e5bf43ffff0808a0824b1a75/ai/ai.mld"
       },
       "dependencies": {},
       "keywords": ["ai", "llm", "claude", "codex", "cli"],
@@ -29,8 +29,8 @@
       "source": {
         "type": "github",
         "repo": "mlld-lang/modules",
-        "hash": "ed50964c950ec332141e3c8f9b3ee0296230a42a",
-        "url": "https://raw.githubusercontent.com/mlld-lang/modules/ed50964c950ec332141e3c8f9b3ee0296230a42a/http/http.mld"
+        "hash": "4b10ee4e792adba7e5bf43ffff0808a0824b1a75",
+        "url": "https://raw.githubusercontent.com/mlld-lang/modules/4b10ee4e792adba7e5bf43ffff0808a0824b1a75/http/http.mld"
       },
       "dependencies": {},
       "keywords": ["http", "api", "rest", "curl", "web"],
@@ -47,8 +47,8 @@
       "source": {
         "type": "github",
         "repo": "mlld-lang/modules",
-        "hash": "ed50964c950ec332141e3c8f9b3ee0296230a42a",
-        "url": "https://raw.githubusercontent.com/mlld-lang/modules/ed50964c950ec332141e3c8f9b3ee0296230a42a/fs/fs.mld"
+        "hash": "4b10ee4e792adba7e5bf43ffff0808a0824b1a75",
+        "url": "https://raw.githubusercontent.com/mlld-lang/modules/4b10ee4e792adba7e5bf43ffff0808a0824b1a75/fs/fs.mld"
       },
       "dependencies": {},
       "keywords": ["filesystem", "directory", "traversal", "xml", "markdown"],

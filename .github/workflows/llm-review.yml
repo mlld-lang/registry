@@ -23,7 +23,7 @@ jobs:
         
     - name: Install mlld
       run: |
-        npm install -g @mlld-lang/mlld
+        npm install -g mlld
         
     - name: Build combined registry
       run: |
