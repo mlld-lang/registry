@@ -1,41 +1,45 @@
 ---
-description: Simplified LLM review that works with current mlld syntax
-author: mlld-registry  
-version: 6.0.0
+description: Simplified LLM review using proper module patterns
+author: mlld-registry
+version: 1.0.0
 ---
 
-# 🤖 Simplified LLM Review (Working Version)
+# Import environment variables
+@import { PR_NUMBER, REPO_OWNER, REPO_NAME, PR_TITLE, PR_AUTHOR, ANTHROPIC_API_KEY } from @input
 
-# Destructure JSON from stdin
-@import { PR_NUMBER, REPO_OWNER, REPO_NAME, PR_TITLE, PR_AUTHOR } from @input
+# Import HTTP module (when available)
+# @import { http_post } from @mlld/http
 
-# Simple review logic without complex GitHub API calls for now
-@text review_response = [[
-🤖 **LLM Review Result: COMMENT**
+# For now, define our own simple HTTP POST
+@exec http_post_json(url, api_key, json_file) = @run [
+  curl -s @url \
+    -H "Content-Type: application/json" \
+    -H "x-api-key: @api_key" \
+    -H "anthropic-version: 2023-06-01" \
+    -d "@@@json_file" | jq -r '.content[0].text // .error.message // "No response"'
+]
 
-**PR Analysis:**
-- **PR #{{PR_NUMBER}}**: {{PR_TITLE}}
-- **Author**: @{{PR_AUTHOR}}  
-- **Repository**: {{REPO_OWNER}}/{{REPO_NAME}}
+# Create the review prompt
+@text review_prompt = [[
+You are reviewing PR #{{PR_NUMBER}} "{{PR_TITLE}}" by @{{PR_AUTHOR}}.
 
-**Assessment**: This PR appears to modify the mlld registry. Based on the workflow trigger and visible changes, this looks like a legitimate module addition.
+This adds a module to the mlld PUBLIC registry. Please review and respond with:
+APPROVE, REQUEST_CHANGES, or COMMENT
 
-**Recommendation**: COMMENT - Human review recommended to verify:
-- Module provides genuine value to the mlld ecosystem
-- No security concerns (secrets, unsafe commands, malicious URLs)
-- Proper module structure and metadata quality
-- Follows registry naming and documentation standards
-
-**Next Steps**: A human reviewer should examine the specific module content and validate its appropriateness for the public registry.
-
----
-*Automated review by mlld self-governing registry system*
+Then explain your reasoning.
 ]]
 
-# Set GitHub Actions environment variables  
-@run [echo "LLM_RECOMMENDATION=COMMENT" >> $GITHUB_ENV]
-@run [echo "LLM_REVIEW_REASONING<<EOF" >> $GITHUB_ENV]
-@run [echo "🤖 LLM Review: This PR adds the @mlld/fs module to the registry. Basic validation shows proper structure. Manual review recommended for security and value assessment." >> $GITHUB_ENV]
-@run [echo "EOF" >> $GITHUB_ENV]
+# Write the API request to a file (avoiding all escaping issues)
+@path request_file = "/tmp/claude_request.json"
+@run [jq -n --arg prompt "@review_prompt" '{
+  model: "claude-3-5-sonnet-20241022",
+  max_tokens: 1500,
+  system: "You are a helpful code reviewer for an open source module registry.",
+  messages: [{role: "user", content: $prompt}]
+}' > @request_file]
 
-@add @review_response
+# Make the API call
+@run @http_post_json("https://api.anthropic.com/v1/messages", @ANTHROPIC_API_KEY, @request_file)
+
+# Clean up
+@run [rm -f @request_file]

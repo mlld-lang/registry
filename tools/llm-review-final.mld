@@ -78,28 +78,29 @@ Be thorough but concise. Remember: this is a PUBLIC registry, so quality and sec
 ]]
 
 # Get LLM review via Claude API
-# Write prompt to file to avoid shell escaping issues
-@exec call_claude(api_key, prompt) = @run [
-  cat > /tmp/claude_prompt.txt << 'PROMPT_EOF'
-@prompt
-PROMPT_EOF
-  && jq -n --rawfile prompt /tmp/claude_prompt.txt '{
-    model: "claude-3-5-sonnet-20241022",
-    max_tokens: 1500,
-    system: "You are a helpful code reviewer for an open source module registry. Be thorough but fair in your reviews.",
-    messages: [{
-      role: "user",
-      content: $prompt
-    }]
-  }' | curl -s https://api.anthropic.com/v1/messages \
+# First escape the prompt for JSON
+@exec escape_json(text) = @run [printf '%s' "@text" | jq -Rs .]
+
+# Get escaped prompt
+@run @escape_json(@review_prompt)
+@text escaped_prompt = [[ESCAPED_PROMPT_PLACEHOLDER]]
+
+# Create the API call
+@exec call_claude_api(api_key, escaped_prompt) = @run [
+  curl -s https://api.anthropic.com/v1/messages \
     -H "Content-Type: application/json" \
     -H "x-api-key: @api_key" \
     -H "anthropic-version: 2023-06-01" \
-    -d @- | jq -r '.content[0].text'
+    -d '{
+      "model": "claude-3-5-sonnet-20241022",
+      "max_tokens": 1500,
+      "system": "You are a helpful code reviewer for an open source module registry. Be thorough but fair in your reviews.",
+      "messages": [{"role": "user", "content": @escaped_prompt}]
+    }' | jq -r '.content[0].text // .error.message // "Error calling API"'
 ]
 
 # Call Claude with our review prompt
-@run @call_claude(@ANTHROPIC_API_KEY, @review_prompt)
+@run @call_claude_api(@ANTHROPIC_API_KEY, @escaped_prompt)
 
 # Store the response (TODO: capture exec output when available)
 @text llm_response = [[COMMENT
