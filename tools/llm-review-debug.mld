@@ -15,7 +15,7 @@ version: 1.0.0
 - REPO_NAME: {{REPO_NAME}}
 - PR_TITLE: {{PR_TITLE}}
 - PR_AUTHOR: {{PR_AUTHOR}}
-- ANTHROPIC_API_KEY length: {{ANTHROPIC_API_KEY}}
+- ANTHROPIC_API_KEY present: {{ANTHROPIC_API_KEY}}
 ]]
 
 @add @debug_info
@@ -25,11 +25,7 @@ version: 1.0.0
 @run [echo "Direct echo of ANTHROPIC_API_KEY exists: ${ANTHROPIC_API_KEY:+yes}"]
 
 # Test if the API key is truly empty or has content
-@exec test_key = @run [
-  if [ -z "@ANTHROPIC_API_KEY" ]; then 
-    echo "API KEY IS EMPTY"
-  else 
-    echo "API KEY HAS CONTENT"
-  fi
-]
-@run @test_key()
+@run [test -z "@ANTHROPIC_API_KEY" && echo "API KEY IS EMPTY" || echo "API KEY HAS CONTENT"]
+
+# Test a simple API call
+@run [curl -s -o /dev/null -w "HTTP Status: %{http_code}\n" https://api.anthropic.com/v1/messages -H "x-api-key: @ANTHROPIC_API_KEY" -H "anthropic-version: 2023-06-01"]
