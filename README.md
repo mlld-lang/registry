@@ -183,13 +183,47 @@ Updates DNS records (maintainers only):
 node tools/dns-sync.js
 ```
 
-### Publish Helper
+### Publishing Tools
 
-Guides you through the publishing process:
+#### Manual Publish Helper
+
+Guides you through the publishing process step-by-step:
 
 ```bash
-node tools/publish.js @username/module-name <gist-raw-url>
+node tools/publish.js @username/module-name <source-url>
 ```
+
+This tool:
+- Fetches metadata from your source (gist/repo)
+- Generates the module JSON structure
+- Provides detailed instructions for manual PR submission
+
+#### Auto-Publish Tool
+
+Automatically creates a pull request for your module:
+
+```bash
+# Set your GitHub token first
+export GITHUB_TOKEN=your_github_token
+
+# Auto-publish your module
+node tools/auto-publish.js @username/module-name <source-url> --description "Your module description"
+
+# Or use npm script
+npm run publish:auto -- @username/module-name <source-url>
+```
+
+This tool:
+- Automatically forks the registry (if needed)
+- Creates a branch with your module
+- Submits a pull request
+- Triggers automated LLM review
+
+Options:
+- `--token` - GitHub personal access token (or set GITHUB_TOKEN)
+- `--description` - Module description
+- `--keywords` - Comma-separated keywords
+- `--dry-run` - Preview without making changes
 
 ## 📋 Guidelines
 
@@ -249,13 +283,21 @@ We welcome contributions! Please:
 
 ### Automated Processes
 
-When your PR is merged:
-- GitHub Actions automatically validates all modules
-- DNS records are created/updated via DNSimple API
-- Changes are reflected at `public.mlld.ai` within 5-10 minutes
-- No manual intervention needed!
+The registry uses **autonomous LLM-powered governance**:
 
-For maintainers: See [docs/SETUP.md](docs/SETUP.md) for configuration details.
+1. **Automated Review**: Claude AI reviews all module submissions
+2. **Quality Checks**: Validates structure, security, and usefulness
+3. **Auto-merge**: Approved modules are merged automatically
+4. **DNS Sync**: Records updated at `public.mlld.ai` post-merge
+
+See [docs/LLM-REVIEW-SYSTEM.md](docs/LLM-REVIEW-SYSTEM.md) for details.
+
+### Additional Documentation
+
+- [Setup Guide](docs/SETUP.md) - Configuration for maintainers
+- [Self-Governance](docs/SELF-GOVERNANCE.md) - How the registry governs itself
+- [LLM Review System](docs/LLM-REVIEW-SYSTEM.md) - Automated review details
+- [Known Issues](docs/KNOWN-ISSUES.md) - Current limitations and workarounds
 
 ## 📊 Registry Statistics
 

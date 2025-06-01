@@ -1,7 +1,0 @@
-@text test = "hello"
-
-@text result = [[
-Simple test: {{test}}
-]]
-
-@add @result

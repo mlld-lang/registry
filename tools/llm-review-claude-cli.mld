@@ -1,0 +1,76 @@
+---
+description: LLM review using Claude CLI
+author: mlld-registry
+version: 1.0.0
+---
+
+# Import environment variables
+@import { PR_NUMBER, REPO_OWNER, REPO_NAME, PR_TITLE, PR_AUTHOR, ANTHROPIC_API_KEY, GITHUB_TOKEN } from @input
+
+# Get the list of files changed in the PR
+@text pr_files = @run [GITHUB_TOKEN=@GITHUB_TOKEN gh pr view @PR_NUMBER --repo @REPO_OWNER/@REPO_NAME --json files --jq '.files[].path' | tr '\n' ' ']
+
+# Get the PR diff for module files only
+@text pr_diff = @run [GITHUB_TOKEN=@GITHUB_TOKEN gh pr diff @PR_NUMBER --repo @REPO_OWNER/@REPO_NAME -- 'modules/**/*.json' | head -500]
+
+# Parse the module data from the diff
+@text module_content = @run [echo "@pr_diff" | grep -A 100 "^+" | grep -v "^+++" | sed 's/^+//' | head -200]
+
+# Create review prompt with registry rules
+@text review_prompt = [[Please review this module registry PR. Start your response with exactly one of: APPROVE, REQUEST_CHANGES, or COMMENT
+
+PR Title: {{PR_TITLE}}
+Author: {{PR_AUTHOR}}
+Files Changed: {{pr_files}}
+
+Module Content from Diff:
+{{module_content}}
+
+Registry Requirements:
+- Source can be either GitHub repository OR GitHub gist
+- For gists: Must have valid gist ID and commit hash for immutability
+- For repos: Must specify exact version/tag/commit
+- Must provide real functionality (no test/demo/example modules)
+- Must have clear description explaining what the module does
+- Required fields: author, description, mlldVersion, source
+- Module names should follow @namespace/module-name format
+
+Please review:
+1. Does this module provide real value to users?
+2. Are all required fields present and valid?
+3. Is the source properly specified for immutability?
+4. Any security concerns?
+5. Is this appropriate for a PUBLIC module registry?]]
+
+# Debug: Show that we have the API key
+@run [echo "API Key present: ${ANTHROPIC_API_KEY:+yes}"]
+
+# Use Claude CLI and capture the response!
+@text llm_response = @run [ANTHROPIC_API_KEY=@ANTHROPIC_API_KEY claude --print "@review_prompt"]
+
+# Debug: Show what we got
+@run [echo "Files changed: @pr_files"]
+@run [echo "Module content extracted: ${#module_content} chars"]
+@run [echo "Claude response length: ${#llm_response} chars"]
+
+# Extract the recommendation from Claude's response (first line should be APPROVE/REQUEST_CHANGES/COMMENT)
+@text recommendation = @run [echo "@llm_response" | head -1 | grep -oE "(APPROVE|REQUEST_CHANGES|COMMENT)" || echo "COMMENT"]
+
+# Extract the reasoning (everything after the first line)
+@text reasoning = @run [echo "@llm_response" | tail -n +2]
+
+# Fallback if response is empty
+@run [test -z "@llm_response" && echo "WARNING: Claude response was empty!" || true]
+
+# Set GitHub Actions environment variables
+@run [echo "LLM_RECOMMENDATION=@recommendation" >> $GITHUB_ENV]
+@run [echo "LLM_REVIEW_REASONING<<EOF" >> $GITHUB_ENV]
+@run [echo "@reasoning" >> $GITHUB_ENV]
+@run [echo "EOF" >> $GITHUB_ENV]
+
+# Log the review
+@add [[🤖 **LLM Review Complete**
+
+**Recommendation**: {{recommendation}}
+
+{{reasoning}}]]
