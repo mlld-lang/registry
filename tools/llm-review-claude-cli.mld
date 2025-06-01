@@ -9,8 +9,8 @@ version: 1.0.0
 
 # Get PR data using GitHub CLI
 @text pr_data = @run [gh api repos/@REPO_OWNER/@REPO_NAME/pulls/@PR_NUMBER]
-@text pr_files = @run [gh api repos/@REPO_OWNER/@REPO_NAME/pulls/@PR_NUMBER/files --jq '.[].filename' | head -20]
-@text pr_diff = @run [gh api repos/@REPO_OWNER/@REPO_NAME/pulls/@PR_NUMBER/files --jq '.[0].patch // "No diff available"' | head -100]
+@text pr_files = @run [gh api repos/@REPO_OWNER/@REPO_NAME/pulls/@PR_NUMBER/files --jq '.[] | .filename' | head -20]
+@text pr_diff = @run [curl -s https://github.com/@REPO_OWNER/@REPO_NAME/pull/@PR_NUMBER.diff | head -50]
 
 # Create review prompt with all the context
 @text review_prompt = [[
