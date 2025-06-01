@@ -30,8 +30,7 @@ Be thorough but concise. Remember: this is a PUBLIC registry, so quality and sec
 @run [echo "API Key present: ${ANTHROPIC_API_KEY:+yes}"]
 
 # Use Claude CLI and capture the response!
-# Note: Using 2>&1 to capture both stdout and stderr
-@text llm_response = @run [ANTHROPIC_API_KEY=@ANTHROPIC_API_KEY claude -m claude-3-5-sonnet-20241022 -M 1500 "@review_prompt" 2>&1]
+@text llm_response = @run [ANTHROPIC_API_KEY=@ANTHROPIC_API_KEY claude --print "@review_prompt"]
 
 # Debug: Show what we got
 @run [echo "Claude response length: ${#llm_response}" | head -20]
