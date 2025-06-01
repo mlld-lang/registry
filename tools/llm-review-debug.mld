@@ -25,5 +25,11 @@ version: 1.0.0
 @run [echo "Direct echo of ANTHROPIC_API_KEY exists: ${ANTHROPIC_API_KEY:+yes}"]
 
 # Test if the API key is truly empty or has content
-@exec test_key = @run [if [ -z "@ANTHROPIC_API_KEY" ]; then echo "API KEY IS EMPTY"; else echo "API KEY HAS CONTENT (length: ${#ANTHROPIC_API_KEY})"; fi]
+@exec test_key = @run [
+  if [ -z "@ANTHROPIC_API_KEY" ]; then 
+    echo "API KEY IS EMPTY"
+  else 
+    echo "API KEY HAS CONTENT"
+  fi
+]
 @run @test_key()
