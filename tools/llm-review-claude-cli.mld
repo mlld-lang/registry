@@ -26,16 +26,24 @@ Then provide detailed reasoning about:
 Be thorough but concise. Remember: this is a PUBLIC registry, so quality and security matter.
 ]]
 
-# Use Claude CLI - it handles all the complexity!
-@run [ANTHROPIC_API_KEY=@ANTHROPIC_API_KEY claude -m claude-3-5-sonnet-20241022 -M 1500 "@review_prompt"]
+# Use Claude CLI and capture the response!
+@text llm_response = @run [ANTHROPIC_API_KEY=@ANTHROPIC_API_KEY claude -m claude-3-5-sonnet-20241022 -M 1500 "@review_prompt"]
 
-# Note: Since we can't capture exec output yet, using hardcoded response
-@text llm_response = [[COMMENT
+# Extract the recommendation from Claude's response (first line should be APPROVE/REQUEST_CHANGES/COMMENT)
+@text recommendation = @run [echo "@llm_response" | head -1 | grep -oE "(APPROVE|REQUEST_CHANGES|COMMENT)" || echo "COMMENT"]
 
-Reviewing the test module submission. Without seeing the actual module content, I recommend COMMENT status for human review.]]
+# Extract the reasoning (everything after the first line)
+@text reasoning = @run [echo "@llm_response" | tail -n +2]
 
 # Set GitHub Actions environment variables
-@run [echo "LLM_RECOMMENDATION=COMMENT" >> $GITHUB_ENV]
+@run [echo "LLM_RECOMMENDATION=@recommendation" >> $GITHUB_ENV]
 @run [echo "LLM_REVIEW_REASONING<<EOF" >> $GITHUB_ENV]
-@run [echo "@llm_response" >> $GITHUB_ENV]
+@run [echo "@reasoning" >> $GITHUB_ENV]
 @run [echo "EOF" >> $GITHUB_ENV]
+
+# Log the review
+@add [[🤖 **LLM Review Complete**
+
+**Recommendation**: {{recommendation}}
+
+{{reasoning}}]]
