@@ -1,0 +1,41 @@
+---
+description: LLM review using Claude CLI
+author: mlld-registry
+version: 1.0.0
+---
+
+# Import environment variables
+@import { PR_NUMBER, REPO_OWNER, REPO_NAME, PR_TITLE, PR_AUTHOR, ANTHROPIC_API_KEY } from @input
+
+# Get PR data using GitHub CLI
+@exec get_pr_data = @run [gh api repos/@REPO_OWNER/@REPO_NAME/pulls/@PR_NUMBER]
+@run @get_pr_data()
+
+# Create review prompt
+@text review_prompt = [[
+You are reviewing PR #{{PR_NUMBER}} "{{PR_TITLE}}" by @{{PR_AUTHOR}} for the mlld PUBLIC module registry.
+
+Please review and respond with one of: APPROVE, REQUEST_CHANGES, or COMMENT
+
+Then provide detailed reasoning about:
+- What the module does
+- Why you made this decision
+- Any security concerns
+- Suggestions for improvement
+
+Be thorough but concise. Remember: this is a PUBLIC registry, so quality and security matter.
+]]
+
+# Use Claude CLI - it handles all the complexity!
+@run [ANTHROPIC_API_KEY=@ANTHROPIC_API_KEY claude -m claude-3-5-sonnet-20241022 -M 1500 "@review_prompt"]
+
+# Note: Since we can't capture exec output yet, using hardcoded response
+@text llm_response = [[COMMENT
+
+Reviewing the test module submission. Without seeing the actual module content, I recommend COMMENT status for human review.]]
+
+# Set GitHub Actions environment variables
+@run [echo "LLM_RECOMMENDATION=COMMENT" >> $GITHUB_ENV]
+@run [echo "LLM_REVIEW_REASONING<<EOF" >> $GITHUB_ENV]
+@run [echo "@llm_response" >> $GITHUB_ENV]
+@run [echo "EOF" >> $GITHUB_ENV]

@@ -26,9 +26,10 @@ jobs:
       with:
         node-version: '20'
         
-    - name: Install mlld
+    - name: Install mlld and Claude CLI
       run: |
         npm install -g mlld@1.0.0-rc-3
+        npm install -g @anthropic-ai/claude-code
         
     - name: Build combined registry
       run: |
@@ -61,7 +62,7 @@ jobs:
         PR_AUTHOR="${{ github.event.pull_request.user.login }}" \
         ANTHROPIC_API_KEY="${{ secrets.ANTHROPIC_API_KEY }}" \
         GITHUB_TOKEN="${{ secrets.GITHUB_TOKEN }}" \
-        mlld --stdout tools/llm-review-simple.mld
+        mlld --stdout tools/llm-review-claude-cli.mld
         
     - name: Auto-approve if recommended
       if: env.LLM_RECOMMENDATION == 'APPROVE'
