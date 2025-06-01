@@ -32,14 +32,21 @@ index 0000000..1234567
 +  }
 +}]]
 
-# Create review prompt - simpler format
+# Create review prompt with registry rules
 @text review_prompt = [[Please review this module addition. Start your response with exactly one of: APPROVE, REQUEST_CHANGES, or COMMENT
 
 Module: @test/hello
 Description: A simple test module to verify LLM review
 Source: gist 12345 by test-user
 
-Is this appropriate for a PUBLIC module registry?]]
+Registry requirements:
+- Source can be either GitHub repository OR GitHub gist
+- Must have valid gist ID/commit hash for immutability
+- Must provide real functionality (no test/demo modules)
+- Must have clear description of what the module does
+- Required fields: author, description, mlldVersion, source
+
+Is this module appropriate for a PUBLIC module registry?]]
 
 # Debug: Show that we have the API key
 @run [echo "API Key present: ${ANTHROPIC_API_KEY:+yes}"]
