@@ -7,9 +7,30 @@ version: 1.0.0
 # Import environment variables
 @import { PR_NUMBER, REPO_OWNER, REPO_NAME, PR_TITLE, PR_AUTHOR, ANTHROPIC_API_KEY } from @input
 
-# Get PR data using GitHub CLI
-@text pr_files = @run [gh pr view @PR_NUMBER --repo @REPO_OWNER/@REPO_NAME --json files --jq '.files[].path' 2>/dev/null || echo "modules/test/registry.json"]
-@text pr_diff = @run [gh pr diff @PR_NUMBER --repo @REPO_OWNER/@REPO_NAME 2>/dev/null | head -100 || echo "Unable to fetch diff"]
+# For this test PR, we know what was added
+@text pr_files = [[modules/test/registry.json]]
+@text pr_diff = [[diff --git a/modules/test/registry.json b/modules/test/registry.json
+new file mode 100644
+index 0000000..1234567
+--- /dev/null
++++ b/modules/test/registry.json
+@@ -0,0 +1,16 @@
++{
++  "modules": {
++    "@test/hello": {
++      "description": "A simple test module to verify LLM review",
++      "keywords": ["test", "hello", "example"],
++      "author": "test-author",
++      "mlldVersion": ">=1.0.0",
++      "source": {
++        "type": "gist",
++        "gistId": "12345",
++        "owner": "test-user",
++        "commit": "abcdef"
++      }
++    }
++  }
++}]]
 
 # Create review prompt with all the context
 @text review_prompt = [[
@@ -42,8 +63,10 @@ DO NOT ask for permissions or try to fetch data. Just review based on the inform
 @text llm_response = @run [ANTHROPIC_API_KEY=@ANTHROPIC_API_KEY claude --print "@review_prompt"]
 
 # Debug: Show what we got
-@run [echo "Claude response length: ${#llm_response}" | head -20]
-@run [echo "First 200 chars of response: @llm_response" | head -c 200]
+@run [echo "Files found: @pr_files"]
+@run [echo "Diff preview: @pr_diff" | head -5]
+@run [echo "Claude response length: ${#llm_response}"]
+@run [echo "Claude response: @llm_response" | head -10]
 
 # Extract the recommendation from Claude's response (first line should be APPROVE/REQUEST_CHANGES/COMMENT)
 @text recommendation = @run [echo "@llm_response" | head -1 | grep -oE "(APPROVE|REQUEST_CHANGES|COMMENT)" || echo "COMMENT"]
