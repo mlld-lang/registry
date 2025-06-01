@@ -32,29 +32,14 @@ index 0000000..1234567
 +  }
 +}]]
 
-# Create review prompt with all the context
-@text review_prompt = [[
-You are a code reviewer. Review this PR and respond with ONLY one of these three words on the first line: APPROVE, REQUEST_CHANGES, or COMMENT
+# Create review prompt - simpler format
+@text review_prompt = [[Please review this module addition. Start your response with exactly one of: APPROVE, REQUEST_CHANGES, or COMMENT
 
-Then provide your reasoning.
+Module: @test/hello
+Description: A simple test module to verify LLM review
+Source: gist 12345 by test-user
 
-PR #{{PR_NUMBER}}: {{PR_TITLE}}
-Author: @{{PR_AUTHOR}}
-Repository: {{REPO_OWNER}}/{{REPO_NAME}}
-
-Files changed:
-{{pr_files}}
-
-Sample diff:
-{{pr_diff}}
-
-This is for a PUBLIC module registry. Consider:
-- Does it add value?
-- Is it secure (no secrets, safe commands)?
-- Is the module well-structured?
-- Any conflicts with existing modules?
-
-DO NOT ask for permissions or try to fetch data. Just review based on the information provided.]]
+Is this appropriate for a PUBLIC module registry?]]
 
 # Debug: Show that we have the API key
 @run [echo "API Key present: ${ANTHROPIC_API_KEY:+yes}"]
