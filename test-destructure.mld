@@ -1,0 +1,15 @@
+---
+description: Test destructuring from stdin
+---
+
+# Test destructuring JSON from stdin
+@import { pr_number, repo_owner, repo_name } from @input
+
+@text result = [[
+Destructured values:
+- PR Number: {{pr_number}}
+- Repo Owner: {{repo_owner}} 
+- Repo Name: {{repo_name}}
+]]
+
+@add @result

@@ -1,0 +1,12 @@
+@import { TEST } from @input
+
+@text prompt = [[
+This is a test prompt
+With multiple lines
+]]
+
+@text response = "Simple response"
+
+@run [echo "Test: @response"]
+
+@add "Done"

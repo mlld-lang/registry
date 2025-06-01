@@ -1,0 +1,93 @@
+---
+description: LLM-powered PR review using environment variables
+author: mlld-registry
+version: 5.0.0
+---
+
+# 🤖 Self-Governing Registry LLM Review
+# Uses environment variables via @interpreter/
+
+# Import environment variables
+@import { PR_NUMBER, REPO_OWNER, REPO_NAME, PR_TITLE, PR_AUTHOR } from @input
+
+# Define GitHub API commands
+@exec get_pr_diff(repo_owner, repo_name, pr_number) = @run [gh api repos/@repo_owner/@repo_name/pulls/@pr_number --jq '.diff_url' | xargs curl -s]
+@exec get_pr_files(repo_owner, repo_name, pr_number) = @run [gh api repos/@repo_owner/@repo_name/pulls/@pr_number/files --jq '.[] | {filename: .filename, status: .status, additions: .additions, deletions: .deletions}']
+
+# Fetch PR details using GitHub CLI  
+@exec pr_diff = @get_pr_diff(@REPO_OWNER, @REPO_NAME, @PR_NUMBER)
+@exec pr_files = @get_pr_files(@REPO_OWNER, @REPO_NAME, @PR_NUMBER)
+
+# Create comprehensive review prompt
+@text review_prompt = [[
+You are an expert reviewer for the mlld PUBLIC module registry. Review this PR for:
+
+1. **Security**: No secrets, malicious code, or unsafe commands
+2. **Value**: Provides genuine utility to mlld ecosystem  
+3. **Quality**: Proper structure, metadata, documentation
+4. **Standards**: Follows naming conventions (@author/module format)
+5. **Uniqueness**: Doesn't unnecessarily duplicate existing modules
+
+## PR Details:
+- **#{{PR_NUMBER}}**: {{PR_TITLE}}
+- **Author**: @{{PR_AUTHOR}}
+- **Repository**: {{REPO_OWNER}}/{{REPO_NAME}}
+
+## Changed Files:
+{{pr_files}}
+
+## Code Diff:
+{{pr_diff}}
+
+## Response Format:
+Start your response with exactly one of: APPROVE, REQUEST_CHANGES, or COMMENT
+
+Then provide detailed reasoning explaining your decision and any concerns.
+
+Be thorough but concise. This is a PUBLIC registry - quality and security are paramount.
+]]
+
+# Get LLM review via Claude API
+@run llm_response = [
+  curl -s https://api.anthropic.com/v1/messages \
+    -H "Content-Type: application/json" \
+    -H "x-api-key: $ANTHROPIC_API_KEY" \
+    -H "anthropic-version: 2023-06-01" \
+    -d '{
+      "model": "claude-3-5-sonnet-20241022",
+      "max_tokens": 1500,
+      "system": "You are a thorough but fair code reviewer for an open source module registry.",
+      "messages": [{"role": "user", "content": "{{review_prompt}}"}]
+    }' | jq -r '.content[0].text'
+]
+
+# Extract recommendation (first line)
+@run recommendation = [echo "{{llm_response}}" | head -1 | grep -oE "(APPROVE|REQUEST_CHANGES|COMMENT)"]
+
+# Extract reasoning (rest of response)  
+@run reasoning = [echo "{{llm_response}}" | tail -n +2]
+
+# Set GitHub Actions environment variables
+@run export_vars = [
+  echo "LLM_RECOMMENDATION={{recommendation}}" >> $GITHUB_ENV
+  echo "LLM_REVIEW_REASONING<<EOF" >> $GITHUB_ENV
+  echo "{{reasoning}}" >> $GITHUB_ENV
+  echo "EOF" >> $GITHUB_ENV
+]
+
+# Output summary
+@text review_summary = [[
+🤖 **LLM Review Complete**
+
+**PR**: #{{PR_NUMBER}} - {{PR_TITLE}}
+**Author**: @{{PR_AUTHOR}}
+**Recommendation**: {{recommendation}}
+
+**LLM Analysis**:
+{{llm_response}}
+
+---
+*Self-governing review by mlld using Claude API*
+]]
+
+@add @review_summary

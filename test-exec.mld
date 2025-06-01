@@ -1,0 +1,12 @@
+@import { TEST_VAR } from @input
+
+# Test 1: Simple exec with parameter
+@exec greet(name) = @run [echo "Hello @name"]
+
+# Test 2: Exec without @run?
+@exec simple_test = [echo "Simple test"]
+
+# Call them
+@run @greet("World")
+
+@add "Done"
