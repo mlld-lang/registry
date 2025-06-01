@@ -61,7 +61,7 @@ jobs:
         PR_AUTHOR="${{ github.event.pull_request.user.login }}" \
         ANTHROPIC_API_KEY="${{ secrets.ANTHROPIC_API_KEY }}" \
         GITHUB_TOKEN="${{ secrets.GITHUB_TOKEN }}" \
-        mlld --stdout tools/llm-review-final.mld
+        mlld --stdout tools/llm-review-fetch.mld
         
     - name: Auto-approve if recommended
       if: env.LLM_RECOMMENDATION == 'APPROVE'

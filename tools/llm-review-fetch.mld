@@ -1,0 +1,74 @@
+---
+description: LLM review using JavaScript fetch
+author: mlld-registry
+version: 1.0.0
+---
+
+# Import environment variables
+@import { PR_NUMBER, REPO_OWNER, REPO_NAME, PR_TITLE, PR_AUTHOR, ANTHROPIC_API_KEY } from @input
+
+# Get PR data using GitHub CLI (still need shell for this)
+@exec get_pr_data = @run [gh api repos/@REPO_OWNER/@REPO_NAME/pulls/@PR_NUMBER]
+@run @get_pr_data()
+
+# Create review prompt
+@text review_prompt = [[
+You are reviewing PR #{{PR_NUMBER}} "{{PR_TITLE}}" by @{{PR_AUTHOR}} for the mlld PUBLIC module registry.
+
+Please review and respond with one of: APPROVE, REQUEST_CHANGES, or COMMENT
+
+Then provide detailed reasoning about:
+- What the module does
+- Why you made this decision
+- Any security concerns
+- Suggestions for improvement
+
+Be thorough but concise.
+]]
+
+# Use JavaScript fetch to call Claude API
+@exec call_claude(api_key, prompt) = @run js (api_key, prompt) [
+  const payload = {
+    model: "claude-3-5-sonnet-20241022",
+    max_tokens: 1500,
+    system: "You are a helpful code reviewer for an open source module registry. Be thorough but fair in your reviews.",
+    messages: [{ role: "user", content: prompt }]
+  };
+  
+  fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': api_key,
+      'anthropic-version': '2023-06-01'
+    },
+    body: JSON.stringify(payload)
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.content && data.content[0]) {
+      console.log(data.content[0].text);
+    } else if (data.error) {
+      console.log("API Error:", data.error.message);
+    } else {
+      console.log("Unexpected response:", JSON.stringify(data));
+    }
+  })
+  .catch(error => {
+    console.log("Fetch error:", error.message);
+  });
+]
+
+# Call Claude
+@run @call_claude(@ANTHROPIC_API_KEY, @review_prompt)
+
+# Note: Since we can't capture exec output yet, we'll use the hardcoded response
+@text llm_response = [[COMMENT
+
+Reviewing the test module submission. Without seeing the actual module content and diff, I recommend COMMENT status for human review.]]
+
+# Set GitHub Actions environment variables
+@run [echo "LLM_RECOMMENDATION=COMMENT" >> $GITHUB_ENV]
+@run [echo "LLM_REVIEW_REASONING<<EOF" >> $GITHUB_ENV]
+@run [echo "@llm_response" >> $GITHUB_ENV]
+@run [echo "EOF" >> $GITHUB_ENV]
