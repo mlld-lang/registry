@@ -8,23 +8,33 @@ version: 1.0.0
 @import { PR_NUMBER, REPO_OWNER, REPO_NAME, PR_TITLE, PR_AUTHOR, ANTHROPIC_API_KEY } from @input
 
 # Get PR data using GitHub CLI
-@exec get_pr_data = @run [gh api repos/@REPO_OWNER/@REPO_NAME/pulls/@PR_NUMBER]
-@run @get_pr_data()
+@text pr_data = @run [gh api repos/@REPO_OWNER/@REPO_NAME/pulls/@PR_NUMBER]
+@text pr_files = @run [gh api repos/@REPO_OWNER/@REPO_NAME/pulls/@PR_NUMBER/files --jq '.[].filename' | head -20]
+@text pr_diff = @run [gh api repos/@REPO_OWNER/@REPO_NAME/pulls/@PR_NUMBER/files --jq '.[0].patch // "No diff available"' | head -100]
 
-# Create review prompt
+# Create review prompt with all the context
 @text review_prompt = [[
-You are reviewing PR #{{PR_NUMBER}} "{{PR_TITLE}}" by @{{PR_AUTHOR}} for the mlld PUBLIC module registry.
+You are a code reviewer. Review this PR and respond with ONLY one of these three words on the first line: APPROVE, REQUEST_CHANGES, or COMMENT
 
-Please review and respond with one of: APPROVE, REQUEST_CHANGES, or COMMENT
+Then provide your reasoning.
 
-Then provide detailed reasoning about:
-- What the module does
-- Why you made this decision
-- Any security concerns
-- Suggestions for improvement
+PR #{{PR_NUMBER}}: {{PR_TITLE}}
+Author: @{{PR_AUTHOR}}
+Repository: {{REPO_OWNER}}/{{REPO_NAME}}
 
-Be thorough but concise. Remember: this is a PUBLIC registry, so quality and security matter.
-]]
+Files changed:
+{{pr_files}}
+
+Sample diff:
+{{pr_diff}}
+
+This is for a PUBLIC module registry. Consider:
+- Does it add value?
+- Is it secure (no secrets, safe commands)?
+- Is the module well-structured?
+- Any conflicts with existing modules?
+
+DO NOT ask for permissions or try to fetch data. Just review based on the information provided.]]
 
 # Debug: Show that we have the API key
 @run [echo "API Key present: ${ANTHROPIC_API_KEY:+yes}"]
