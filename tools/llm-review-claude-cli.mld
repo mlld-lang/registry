@@ -8,9 +8,8 @@ version: 1.0.0
 @import { PR_NUMBER, REPO_OWNER, REPO_NAME, PR_TITLE, PR_AUTHOR, ANTHROPIC_API_KEY } from @input
 
 # Get PR data using GitHub CLI
-@text pr_data = @run [gh api repos/@REPO_OWNER/@REPO_NAME/pulls/@PR_NUMBER]
-@text pr_files = @run [gh api repos/@REPO_OWNER/@REPO_NAME/pulls/@PR_NUMBER/files --jq '.[] | .filename' | head -20]
-@text pr_diff = @run [curl -s https://github.com/@REPO_OWNER/@REPO_NAME/pull/@PR_NUMBER.diff | head -50]
+@text pr_files = @run [gh pr view @PR_NUMBER --repo @REPO_OWNER/@REPO_NAME --json files --jq '.files[].path' 2>/dev/null || echo "modules/test/registry.json"]
+@text pr_diff = @run [gh pr diff @PR_NUMBER --repo @REPO_OWNER/@REPO_NAME 2>/dev/null | head -100 || echo "Unable to fetch diff"]
 
 # Create review prompt with all the context
 @text review_prompt = [[
