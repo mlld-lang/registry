@@ -1,0 +1,16 @@
+{
+  "modules": {
+    "@test/hello": {
+      "description": "A simple test module to verify LLM review",
+      "keywords": ["test", "hello", "example"],
+      "author": "test-author",
+      "mlldVersion": ">=1.0.0",
+      "source": {
+        "type": "gist",
+        "gistId": "12345",
+        "owner": "test-user",
+        "commit": "abcdef"
+      }
+    }
+  }
+}
