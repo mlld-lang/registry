@@ -26,14 +26,25 @@ Then provide detailed reasoning about:
 Be thorough but concise. Remember: this is a PUBLIC registry, so quality and security matter.
 ]]
 
+# Debug: Show that we have the API key
+@run [echo "API Key present: ${ANTHROPIC_API_KEY:+yes}"]
+
 # Use Claude CLI and capture the response!
-@text llm_response = @run [ANTHROPIC_API_KEY=@ANTHROPIC_API_KEY claude -m claude-3-5-sonnet-20241022 -M 1500 "@review_prompt"]
+# Note: Using 2>&1 to capture both stdout and stderr
+@text llm_response = @run [ANTHROPIC_API_KEY=@ANTHROPIC_API_KEY claude -m claude-3-5-sonnet-20241022 -M 1500 "@review_prompt" 2>&1]
+
+# Debug: Show what we got
+@run [echo "Claude response length: ${#llm_response}" | head -20]
+@run [echo "First 200 chars of response: @llm_response" | head -c 200]
 
 # Extract the recommendation from Claude's response (first line should be APPROVE/REQUEST_CHANGES/COMMENT)
 @text recommendation = @run [echo "@llm_response" | head -1 | grep -oE "(APPROVE|REQUEST_CHANGES|COMMENT)" || echo "COMMENT"]
 
 # Extract the reasoning (everything after the first line)
 @text reasoning = @run [echo "@llm_response" | tail -n +2]
+
+# Fallback if response is empty
+@run [test -z "@llm_response" && echo "WARNING: Claude response was empty!" || true]
 
 # Set GitHub Actions environment variables
 @run [echo "LLM_RECOMMENDATION=@recommendation" >> $GITHUB_ENV]
