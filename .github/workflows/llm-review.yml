@@ -74,7 +74,7 @@ jobs:
             repo: context.repo.repo,
             pull_number: context.issue.number,
             event: 'APPROVE',
-            body: '🤖 **Auto-approved by LLM Reviewer**\n\n' + process.env.LLM_REVIEW_REASONING
+            body: '🤖 **mlld Registry Bot**\n\n✅ **Decision: APPROVED**\n\n' + process.env.LLM_REVIEW_REASONING + '\n\n---\n*I am an automated reviewer powered by Claude AI. I help maintain quality standards for the mlld module registry.*'
           });
           
     - name: Request changes if issues found
@@ -87,17 +87,18 @@ jobs:
             repo: context.repo.repo,
             pull_number: context.issue.number,
             event: 'REQUEST_CHANGES',
-            body: '🤖 **Issues found by LLM Reviewer**\n\n' + process.env.LLM_REVIEW_REASONING
+            body: '🤖 **mlld Registry Bot**\n\n❌ **Decision: CHANGES REQUESTED**\n\n' + process.env.LLM_REVIEW_REASONING + '\n\n---\n*I am an automated reviewer powered by Claude AI. I help maintain quality standards for the mlld module registry.*'
           });
           
     - name: Comment with review
       if: env.LLM_RECOMMENDATION == 'COMMENT'
       uses: actions/github-script@v7
       with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
           await github.rest.issues.createComment({
             owner: context.repo.owner,
             repo: context.repo.repo,
             issue_number: context.issue.number,
-            body: '🤖 **LLM Reviewer Notes**\n\n' + process.env.LLM_REVIEW_REASONING + '\n\n*Requires human review.*'
+            body: '🤖 **mlld Registry Bot**\n\n💬 **Decision: COMMENT**\n\n' + process.env.LLM_REVIEW_REASONING + '\n\n---\n*I am an automated reviewer powered by Claude AI. I help maintain quality standards for the mlld module registry.*'
           });

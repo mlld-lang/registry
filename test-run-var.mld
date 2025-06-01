@@ -1,5 +1,0 @@
-@import { PR_NUMBER } from @input
-
-@run test = [echo "PR number is @PR_NUMBER"]
-
-@add "Done"

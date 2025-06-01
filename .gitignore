@@ -9,6 +9,10 @@ npm-debug.log*
 # Generated files
 validation-report.json
 
+# Logs
+logs/
+*.log
+
 # OS
 .DS_Store
 Thumbs.db
@@ -18,3 +22,6 @@ Thumbs.db
 .idea/
 *.swp
 *.swo
+
+# Test outputs
+*.o.md
