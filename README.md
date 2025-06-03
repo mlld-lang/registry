@@ -24,7 +24,7 @@
 The mlld registry uses a decentralized approach:
 
 1. **Modules are stored as GitHub Gists** - providing versioning and accessibility
-2. **DNS TXT records at `public.mlld.ai`** - enable fast module resolution
+2. **Registry on GitHub** - simple JSON files map module names to URLs
 3. **Content addressing via commit hashes** - ensures integrity and immutability
 4. **Local caching** - for offline access and performance
 
@@ -33,11 +33,11 @@ The mlld registry uses a decentralized approach:
 ```
 @import @alice/utils
     ↓
-Query: alice-utils.public.mlld.ai TXT record
+Query: registry/modules.json on GitHub
     ↓
-Returns: v=mlld1;url=https://gist.githubusercontent.com/...
+Returns: Module metadata with source URL
     ↓
-Fetch content & cache by hash
+Fetch content from GitHub & cache by hash
     ↓
 Module ready to use!
 ```
@@ -174,15 +174,6 @@ node tools/validate.js --skip-content
 node tools/validate.js --save-report
 ```
 
-### DNS Sync Script
-
-Updates DNS records (maintainers only):
-
-```bash
-# Requires DNSIMPLE_TOKEN and DNSIMPLE_ACCOUNT_ID env vars
-node tools/dns-sync.js
-```
-
 ### Publishing Tools
 
 #### Manual Publish Helper
@@ -255,7 +246,7 @@ Options:
 
 ### Content Integrity
 - All modules are addressed by content hash
-- DNS records are signed with DNSSEC
+- Registry is versioned on GitHub
 - Gist URLs include specific commit hashes
 - Local verification of content hashes
 
@@ -288,7 +279,7 @@ The registry uses **autonomous LLM-powered governance**:
 1. **Automated Review**: Claude AI reviews all module submissions
 2. **Quality Checks**: Validates structure, security, and usefulness
 3. **Auto-merge**: Approved modules are merged automatically
-4. **DNS Sync**: Records updated at `public.mlld.ai` post-merge
+4. **Registry Update**: `modules.json` updated immediately on merge
 
 See [docs/LLM-REVIEW-SYSTEM.md](docs/LLM-REVIEW-SYSTEM.md) for details.
 

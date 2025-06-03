@@ -19,12 +19,12 @@ For approved PRs:
 - 🚦 **Waits for all checks** (validation, tests, etc.)
 - 🤖 **Confirms LLM approval** exists
 - 🚀 **Auto-merges** when conditions are met
-- 📝 **Updates DNS** via existing automation
+- 📝 **Registry updated** immediately on merge
 
 ### 3. **Complete Autonomy**
 The end-to-end flow:
 ```
-Author publishes → Auto-PR created → LLM reviews → Auto-approval → Auto-merge → DNS updated
+Author publishes → Auto-PR created → LLM reviews → Auto-approval → Auto-merge → Registry updated
 ```
 
 **Zero human intervention needed** for quality modules!
@@ -74,8 +74,6 @@ This system embodies mlld's core principles:
 Set these GitHub secrets for full autonomy:
 - `ANTHROPIC_API_KEY`: For LLM reviews
 - `GITHUB_TOKEN`: For PR management (auto-provided)
-- `DNSIMPLE_TOKEN`: For DNS updates
-- `DNSIMPLE_ACCOUNT_ID`: For DNS updates
 
 ## The Future
 

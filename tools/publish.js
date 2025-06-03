@@ -355,7 +355,7 @@ ${generatePRTemplate(moduleId, metadata, resolvedSource)}
 After Merge
 -----------
 Once your PR is merged:
-1. DNS records will be automatically created
+1. The registry will be updated immediately
 2. Your module will be available at: ${moduleId}
 3. Users can import with: @import { your_export } from "${moduleId}"
 

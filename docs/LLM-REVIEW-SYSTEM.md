@@ -34,8 +34,6 @@ Based on Claude's decision:
 The system requires these GitHub secrets:
 ```
 ANTHROPIC_API_KEY     # Claude API key for reviews
-DNSIMPLE_TOKEN       # For DNS updates after merge
-DNSIMPLE_ACCOUNT_ID  # DNSimple account ID
 ```
 
 ### Key Components
@@ -51,7 +49,7 @@ DNSIMPLE_ACCOUNT_ID  # DNSimple account ID
 - Monitors approved PRs
 - Waits for all checks to pass
 - Auto-merges when conditions are met
-- Triggers DNS sync post-merge
+- Registry updated immediately on merge
 
 ### Review Criteria
 
