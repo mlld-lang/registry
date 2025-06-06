@@ -26,16 +26,59 @@ jobs:
       with:
         node-version: '20'
         
+    - name: Check allowlist
+      id: check-allowlist
+      run: |
+        PR_AUTHOR="${{ github.event.pull_request.user.login }}"
+        echo "Checking if $PR_AUTHOR is in allowlist..."
+        
+        if [ -f "allowlist.json" ]; then
+          IS_TRUSTED=$(node -e "
+            const allowlist = require('./allowlist.json');
+            const isTrusted = allowlist.trustedAuthors.includes('$PR_AUTHOR');
+            console.log(isTrusted);
+          ")
+          
+          if [ "$IS_TRUSTED" = "true" ]; then
+            echo "✅ $PR_AUTHOR is a trusted author"
+            echo "trusted=true" >> $GITHUB_OUTPUT
+          else
+            echo "ℹ️ $PR_AUTHOR is not in allowlist, will proceed with LLM review"
+            echo "trusted=false" >> $GITHUB_OUTPUT
+          fi
+        else
+          echo "ℹ️ No allowlist found, will proceed with LLM review"
+          echo "trusted=false" >> $GITHUB_OUTPUT
+        fi
+        
+    - name: Auto-approve trusted authors
+      if: steps.check-allowlist.outputs.trusted == 'true'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          await github.rest.pulls.createReview({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: context.issue.number,
+            event: 'APPROVE',
+            body: '🤖 **mlld Registry Bot**\n\n✅ **Decision: AUTO-APPROVED**\n\n**Reason**: Author is on the trusted authors allowlist.\n\n---\n*Trusted authors can publish modules without LLM review to save on API costs.*'
+          });
+          
+          console.log('✅ Auto-approved PR from trusted author');
+          
     - name: Install mlld and Claude CLI
+      if: steps.check-allowlist.outputs.trusted == 'false'
       run: |
         npm install -g mlld@1.0.0-rc-3
         npm install -g @anthropic-ai/claude-code
         
     - name: Build combined registry
+      if: steps.check-allowlist.outputs.trusted == 'false'
       run: |
         node tools/build-registry.js
         
     - name: Generate PR review using mlld
+      if: steps.check-allowlist.outputs.trusted == 'false'
       run: |
         # Debug: Check if variables are set
         echo "PR_NUMBER=${{ github.event.number }}"
@@ -65,7 +108,7 @@ jobs:
         mlld --stdout tools/llm-review-claude-cli.mld
         
     - name: Auto-approve if recommended
-      if: env.LLM_RECOMMENDATION == 'APPROVE'
+      if: steps.check-allowlist.outputs.trusted == 'false' && env.LLM_RECOMMENDATION == 'APPROVE'
       uses: actions/github-script@v7
       with:
         script: |
@@ -78,7 +121,7 @@ jobs:
           });
           
     - name: Request changes if issues found
-      if: env.LLM_RECOMMENDATION == 'REQUEST_CHANGES'
+      if: steps.check-allowlist.outputs.trusted == 'false' && env.LLM_RECOMMENDATION == 'REQUEST_CHANGES'
       uses: actions/github-script@v7
       with:
         script: |
@@ -91,7 +134,7 @@ jobs:
           });
           
     - name: Comment with review
-      if: env.LLM_RECOMMENDATION == 'COMMENT'
+      if: steps.check-allowlist.outputs.trusted == 'false' && env.LLM_RECOMMENDATION == 'COMMENT'
       uses: actions/github-script@v7
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}

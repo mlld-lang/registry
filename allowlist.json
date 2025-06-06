@@ -1,0 +1,14 @@
+{
+  "description": "Trusted authors who can publish modules without LLM review",
+  "criteria": "Authors who have published at least one useful/productive module",
+  "trustedAuthors": [
+    "mlld",
+    "mlld-lang",
+    "adamavenir"
+  ],
+  "metadata": {
+    "created": "2024-01-15",
+    "lastUpdated": "2024-01-15",
+    "note": "Add authors here after they've published a useful module"
+  }
+}

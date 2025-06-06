@@ -113,7 +113,12 @@ function validateMetadata(moduleId, metadata) {
           errors.push(`Invalid gist ID format: ${metadata.source.id}`);
         }
         
-        // Validate commit hash
+        // Validate content hash (SHA256)
+        if (metadata.source.contentHash && !metadata.source.contentHash.match(/^[a-f0-9]{64}$/)) {
+          errors.push(`Invalid content hash format: ${metadata.source.contentHash}`);
+        }
+        
+        // Legacy: Validate commit hash (SHA1) if present
         if (metadata.source.hash && !COMMIT_HASH_REGEX.test(metadata.source.hash)) {
           errors.push(`Invalid commit hash format: ${metadata.source.hash}`);
         }
@@ -135,12 +140,32 @@ function validateMetadata(moduleId, metadata) {
           }
         }
       } else if (metadata.source.type === 'github') {
-        // Validate repo format
+        // Validate repo format (legacy)
         if (metadata.source.repo && !metadata.source.repo.match(/^[^\/]+\/[^\/]+$/)) {
           errors.push(`Invalid repo format: ${metadata.source.repo}. Must be owner/repo`);
         }
         
-        // Validate commit hash
+        // Validate content hash (SHA256)
+        if (metadata.source.contentHash && !metadata.source.contentHash.match(/^[a-f0-9]{64}$/)) {
+          errors.push(`Invalid content hash format: ${metadata.source.contentHash}`);
+        }
+        
+        // Validate repository object (new format)
+        if (metadata.source.repository) {
+          if (!metadata.source.repository.url) {
+            errors.push('Missing repository.url');
+          }
+          if (!metadata.source.repository.commit) {
+            errors.push('Missing repository.commit');
+          } else if (!COMMIT_HASH_REGEX.test(metadata.source.repository.commit)) {
+            errors.push(`Invalid repository commit hash: ${metadata.source.repository.commit}`);
+          }
+          if (!metadata.source.repository.path) {
+            errors.push('Missing repository.path');
+          }
+        }
+        
+        // Legacy: Validate commit hash (SHA1)
         if (metadata.source.hash && !COMMIT_HASH_REGEX.test(metadata.source.hash)) {
           errors.push(`Invalid commit hash format: ${metadata.source.hash}`);
         }
@@ -211,13 +236,19 @@ async function validateSourceContent(metadata) {
     console.log(`Fetching content from ${metadata.source.url}...`);
     const content = await fetchUrl(metadata.source.url);
     
-    // For GitHub sources, we don't validate the commit hash against content
-    // (commit hash is repository-level, not content-level)
-    if (metadata.source.type === 'gist') {
-      // For gists, verify content hash
+    // Validate content hash if present (SHA256)
+    if (metadata.source.contentHash) {
+      const actualHash = crypto.createHash('sha256').update(content).digest('hex');
+      if (actualHash !== metadata.source.contentHash) {
+        errors.push(`Content hash mismatch: expected ${metadata.source.contentHash}, got ${actualHash}`);
+      }
+    }
+    
+    // Legacy: For old gists, verify SHA1 hash
+    if (metadata.source.type === 'gist' && metadata.source.hash && !metadata.source.contentHash) {
       const actualHash = crypto.createHash('sha1').update(content).digest('hex');
       if (actualHash !== metadata.source.hash) {
-        errors.push(`Content hash mismatch: expected ${metadata.source.hash}, got ${actualHash}`);
+        errors.push(`Legacy hash mismatch: expected ${metadata.source.hash}, got ${actualHash}`);
       }
     }
     
