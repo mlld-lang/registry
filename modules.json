@@ -50,5 +50,28 @@
       "mlldVersion": ">=0.5.0",
       "publishedAt": "2025-05-30T00:00:00Z"
     }
+  },
+  "@mlld-dev/date-formatter": {
+    "name": "date-formatter",
+    "description": "Format dates in various styles for mlld",
+    "author": {
+      "name": "mlld-dev",
+      "github": "mlld-dev"
+    },
+    "source": {
+      "type": "gist",
+      "url": "https://gist.githubusercontent.com/mlld-dev/ba00b42f16fb12f75c867ca01496e4db/raw/dd792d426814922a3aba6059838fff2abbdcb667/date-formatter.mld",
+      "gistId": "ba00b42f16fb12f75c867ca01496e4db",
+      "contentHash": "372b5d8d23f24049ec0adf12c45432a3a7108abc35b4ae3fa45bbe70a93120f9"
+    },
+    "publishedAt": "2025-06-08T22:48:38.783Z",
+    "mlldVersion": ">=0.5.0",
+    "keywords": [
+      "date",
+      "time",
+      "formatting"
+    ],
+    "version": "1.0.0",
+    "license": "MIT"
   }
 }
