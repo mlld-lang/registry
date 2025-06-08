@@ -50,5 +50,32 @@
       "mlldVersion": ">=0.5.0",
       "publishedAt": "2025-05-30T00:00:00Z"
     }
+  },
+  "@mlld-dev/color-utils": {
+    "name": "color-utils",
+    "description": "Terminal color utilities for mlld output",
+    "author": {
+      "name": "mlld-dev",
+      "github": "mlld-dev"
+    },
+    "source": {
+      "type": "github",
+      "url": "https://raw.githubusercontent.com/mlld-dev/test-mlld-modules/2aa852016669c0a411a95966692cca923039879f/color-utils.mld",
+      "contentHash": "656b6c0610fd17d8956a64025fd305a75347813f2bf8dbc9d0cce1b61eda12e1",
+      "repository": {
+        "type": "git",
+        "url": "https://github.com/mlld-dev/test-mlld-modules",
+        "commit": "2aa852016669c0a411a95966692cca923039879f",
+        "path": "color-utils.mld"
+      }
+    },
+    "publishedAt": "2025-06-08T23:38:16.411Z",
+    "mlldVersion": ">=0.5.0",
+    "keywords": [
+      "color",
+      "terminal",
+      "ansi"
+    ],
+    "version": "1.0.0"
   }
 }
