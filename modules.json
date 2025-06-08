@@ -50,5 +50,28 @@
       "mlldVersion": ">=0.5.0",
       "publishedAt": "2025-05-30T00:00:00Z"
     }
+  },
+  "@mlld-dev/array-utils": {
+    "name": "array-utils",
+    "description": "Array manipulation utilities for mlld",
+    "author": {
+      "name": "mlld-dev",
+      "github": "mlld-dev"
+    },
+    "source": {
+      "type": "gist",
+      "url": "https://gist.githubusercontent.com/mlld-dev/0c3f7c52e6fccb6a061d919bf4f0f9e6/raw/36e5d6294c4761b58112e9709c185d64d959f31f/array-utils.mld",
+      "gistId": "0c3f7c52e6fccb6a061d919bf4f0f9e6",
+      "contentHash": "66aff6581dcf0c990f1386b32bca37d9544e01a5cd2b819dbff713ab29ee0721"
+    },
+    "publishedAt": "2025-06-08T23:38:59.431Z",
+    "mlldVersion": ">=0.5.0",
+    "keywords": [
+      "array",
+      "list",
+      "utilities"
+    ],
+    "version": "1.0.0",
+    "license": "MIT"
   }
 }
