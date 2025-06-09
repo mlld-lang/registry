@@ -1,0 +1,58 @@
+---
+module: comparison-utils
+author: mlld-dev
+description: Comparison utilities for conditional logic
+mlld-version: ">=1.0.0-rc"
+---
+
+# Comparison Utilities
+
+>> Check if a value is greater than another
+@exec greaterThan(a, b) = @run js [(Number(a) > Number(b) ? "true" : "")]
+
+>> Check if a value is less than another
+@exec lessThan(a, b) = @run js [(Number(a) < Number(b) ? "true" : "")]
+
+>> Check if values are equal (with type coercion)
+@exec equals(a, b) = @run js [(a == b ? "true" : "")]
+
+>> Check if values are strictly equal
+@exec strictEquals(a, b) = @run js [(a === b ? "true" : "")]
+
+>> Check if a string contains a substring
+@exec contains(str, substr) = @run js [(
+  String(str).includes(String(substr)) ? "true" : ""
+)]
+
+>> Check if a string matches a regex pattern
+@exec matches(str, pattern) = @run js [(
+  new RegExp(pattern).test(String(str)) ? "true" : ""
+)]
+
+>> Check if array includes a value
+@exec includes(arr, value) = @run js [(
+  (Array.isArray(arr) ? arr : [arr]).includes(value) ? "true" : ""
+)]
+
+>> Check if value is truthy (mlld-style)
+@exec isTruthy(value) = @run js [(
+  // mlld truthiness rules
+  if (value === null || value === undefined) return "";
+  if (value === false || value === 0) return "";
+  if (value === "") return "";
+  if (String(value).toLowerCase() === "false") return "";
+  if (Array.isArray(value) && value.length === 0) return "";
+  if (typeof value === "object" && Object.keys(value).length === 0) return "";
+  return "true";
+)]
+
+@data module = {
+  "greaterThan": @greaterThan,
+  "lessThan": @lessThan,
+  "equals": @equals,
+  "strictEquals": @strictEquals,
+  "contains": @contains,
+  "matches": @matches,
+  "includes": @includes,
+  "isTruthy": @isTruthy
+}

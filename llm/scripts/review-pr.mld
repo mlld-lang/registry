@@ -1,0 +1,114 @@
+---
+description: Automated PR review workflow for mlld registry
+mlld-version: ">=1.0.0-rc"
+---
+
+# 🤖 Automated Module Review
+
+This workflow reviews module submissions to ensure quality and security.
+
+@import { PR_NUMBER, REPO_OWNER, REPO_NAME } from @INPUT
+
+>> Import local modules using project-relative paths
+@import { validateEnvironment } from [@./llm/modules/env-utils.mld]
+@import { getPRData, getPRDiff } from [@./llm/modules/github-utils.mld]
+@import { extractModuleContent, validateModule } from [@./llm/modules/registry-utils.mld]
+@import { queryClaudeAPI, parseReviewResponse, createFallbackReview } from [@./llm/modules/claude-utils.mld]
+
+## 📋 Workflow Configuration
+
+@data config = {
+  "requiredEnv": ["ANTHROPIC_API_KEY", "GITHUB_TOKEN"],
+  "repo": "@REPO_OWNER/@REPO_NAME",
+  "modulePattern": "modules/**/*.json",
+  "maxRetries": 3
+}
+
+## ✅ Step 1: Validate Environment
+
+@data envCheck = @validateEnvironment(@config.requiredEnv)
+@add @envCheck.summary
+
+>> Only proceed if environment is valid
+@when @envCheck.valid: [
+  true  => @data shouldContinue = true
+  false => @data shouldContinue = false
+]
+
+## 📥 Step 2: Fetch Pull Request Data
+
+@when @shouldContinue: [
+  true => @add [[Fetching PR #{{PR_NUMBER}} from {{config.repo}}...]]
+  true => @data prData = @getPRData(@PR_NUMBER, @config.repo)
+  true => @data prDiff = @getPRDiff(@PR_NUMBER, @config.repo, @config.modulePattern)
+]
+
+## 🔍 Step 3: Extract Module Information
+
+@when @prData: [
+  true => @add [[Analyzing module changes...]]
+  true => @data moduleContent = @extractModuleContent(@prDiff)
+  true => @data validation = @validateModule(@moduleContent)
+]
+
+## 📝 Step 4: Prepare Review Context
+
+@when @moduleContent: [
+  true => @import { createReviewContext } from [@./llm/templates/review-context.mld]
+  true => @data reviewContext = @createReviewContext(@prData, @moduleContent, @validation)
+]
+
+## 🤖 Step 5: Get AI Review
+
+@when @validation: [
+  true => @import { reviewPrompt } from [@./llm/templates/review-prompt.mld]
+  true => @text prompt = @reviewPrompt(@reviewContext)
+]
+
+>> Only query Claude if module passed basic validation
+@when @validation.valid: [
+  true  => @add [[🤖 Requesting Claude review...]]
+  true  => @data aiResponse = @queryClaudeAPI(@prompt, @config.maxRetries)
+  true  => @data review = @parseReviewResponse(@aiResponse)
+  false => @data review = @createFallbackReview(@validation)
+]
+
+## 📤 Step 6: Prepare GitHub Output
+
+@when @review: [
+  true => @import { formatGitHubReview } from [@./llm/templates/github-review.mld]
+  true => @text githubReview = @formatGitHubReview(@review, @reviewContext)
+]
+
+>> Write review data to GitHub environment
+@when @githubReview: [
+  true => @run [(
+    {
+      echo "LLM_RECOMMENDATION=@review.recommendation"
+      echo "LLM_REVIEW_BODY<<EOF"
+      echo "@githubReview"
+      echo "EOF"
+    } >> $GITHUB_ENV
+  )]
+]
+
+## 📊 Step 7: Summary Report
+
+@when all: [
+  @prData
+  @validation
+  @review
+] => @import { createSummaryReport } from [@./llm/templates/summary-report.mld]
+
+@when @createSummaryReport: [
+  true => @text summary = @createSummaryReport(@prData, @validation, @review)
+  true => @add @summary
+]
+
+## 🎯 Workflow Complete
+
+@when @review.recommendation: [
+  "APPROVE"         => @add [[✅ Module approved for registry]]
+  "REQUEST_CHANGES" => @add [[❌ Changes requested]]
+  "COMMENT"         => @add [[💬 Review posted as comment]]
+]

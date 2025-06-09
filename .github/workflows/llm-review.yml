@@ -28,28 +28,11 @@ jobs:
         
     - name: Check allowlist
       id: check-allowlist
+      env:
+        PR_AUTHOR: ${{ github.event.pull_request.user.login }}
       run: |
-        PR_AUTHOR="${{ github.event.pull_request.user.login }}"
         echo "Checking if $PR_AUTHOR is in allowlist..."
-        
-        if [ -f "allowlist.json" ]; then
-          IS_TRUSTED=$(node -e "
-            const allowlist = require('./allowlist.json');
-            const isTrusted = allowlist.trustedAuthors.includes('$PR_AUTHOR');
-            console.log(isTrusted);
-          ")
-          
-          if [ "$IS_TRUSTED" = "true" ]; then
-            echo "✅ $PR_AUTHOR is a trusted author"
-            echo "trusted=true" >> $GITHUB_OUTPUT
-          else
-            echo "ℹ️ $PR_AUTHOR is not in allowlist, will proceed with LLM review"
-            echo "trusted=false" >> $GITHUB_OUTPUT
-          fi
-        else
-          echo "ℹ️ No allowlist found, will proceed with LLM review"
-          echo "trusted=false" >> $GITHUB_OUTPUT
-        fi
+        mlld llm/scripts/check-allowlist.mld || true
         
     - name: Auto-approve trusted authors
       if: steps.check-allowlist.outputs.trusted == 'true'
@@ -79,33 +62,16 @@ jobs:
         
     - name: Generate PR review using mlld
       if: steps.check-allowlist.outputs.trusted == 'false'
+      env:
+        PR_NUMBER: ${{ github.event.number }}
+        REPO_OWNER: ${{ github.repository_owner }}
+        REPO_NAME: ${{ github.event.repository.name }}
+        PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+        ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        # Debug: Check if variables are set
-        echo "PR_NUMBER=${{ github.event.number }}"
-        echo "ANTHROPIC_API_KEY exists: ${{ secrets.ANTHROPIC_API_KEY != '' }}"
-        echo "ANTHROPIC_API_KEY length: ${#ANTHROPIC_API_KEY}"
-        
-        # First run debug script
-        echo "=== Running debug script ==="
-        PR_NUMBER="${{ github.event.number }}" \
-        REPO_OWNER="${{ github.repository_owner }}" \
-        REPO_NAME="${{ github.event.repository.name }}" \
-        PR_TITLE="${{ github.event.pull_request.title }}" \
-        PR_AUTHOR="${{ github.event.pull_request.user.login }}" \
-        ANTHROPIC_API_KEY="${{ secrets.ANTHROPIC_API_KEY }}" \
-        GITHUB_TOKEN="${{ secrets.GITHUB_TOKEN }}" \
-        mlld --stdout tools/llm-review-debug.mld
-        
-        echo "=== Running actual review ==="
-        # Pass environment variables directly to mlld
-        PR_NUMBER="${{ github.event.number }}" \
-        REPO_OWNER="${{ github.repository_owner }}" \
-        REPO_NAME="${{ github.event.repository.name }}" \
-        PR_TITLE="${{ github.event.pull_request.title }}" \
-        PR_AUTHOR="${{ github.event.pull_request.user.login }}" \
-        ANTHROPIC_API_KEY="${{ secrets.ANTHROPIC_API_KEY }}" \
-        GITHUB_TOKEN="${{ secrets.GITHUB_TOKEN }}" \
-        mlld --stdout tools/llm-review-claude-cli.mld
+        echo "Running automated review for PR #$PR_NUMBER"
+        mlld --stdout llm/scripts/review-pr.mld
         
     - name: Auto-approve if recommended
       if: steps.check-allowlist.outputs.trusted == 'false' && env.LLM_RECOMMENDATION == 'APPROVE'

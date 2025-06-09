@@ -1,0 +1,140 @@
+---
+module: registry-utils
+author: mlld-dev
+description: Registry validation and parsing utilities
+mlld-version: ">=1.0.0-rc"
+---
+
+# Registry Module Utilities
+
+>> Extract module JSON from a git diff
+@exec extractModuleContent(diff) = @run js [(
+  const lines = diff.split('\n');
+  const addedLines = [];
+  let inAddedSection = false;
+  
+  for (const line of lines) {
+    // Skip diff headers
+    if (line.startsWith('diff --git') || line.startsWith('index ')) continue;
+    if (line.startsWith('---') || line.startsWith('+++')) continue;
+    
+    // Track if we're in an added section
+    if (line.startsWith('@@')) {
+      inAddedSection = true;
+      continue;
+    }
+    
+    // Collect added lines (lines starting with +)
+    if (inAddedSection && line.startsWith('+')) {
+      addedLines.push(line.substring(1));
+    }
+  }
+  
+  // Try to parse as JSON
+  const jsonStr = addedLines.join('\n').trim();
+  if (!jsonStr) {
+    return { error: "No content found in diff" };
+  }
+  
+  try {
+    const parsed = JSON.parse(jsonStr);
+    return parsed;
+  } catch (e) {
+    // If not valid JSON, return what we found
+    return { 
+      error: "Invalid JSON", 
+      raw: jsonStr,
+      parseError: e.message 
+    };
+  }
+)]
+
+>> Validate a module's metadata and structure
+@exec validateModule(moduleData) = @run js [(
+  const issues = [];
+  
+  // Handle error case from extraction
+  if (moduleData.error) {
+    issues.push(`Failed to parse module: ${moduleData.error}`);
+    return {
+      valid: false,
+      issues: issues,
+      moduleData: moduleData
+    };
+  }
+  
+  // Check required fields
+  const required = ['name', 'author', 'description', 'mlldVersion', 'source'];
+  const missing = required.filter(field => !moduleData[field]);
+  
+  if (missing.length > 0) {
+    issues.push(`Missing required fields: ${missing.join(', ')}`);
+  }
+  
+  // Validate module name format
+  if (moduleData.name && !moduleData.name.match(/^[a-z0-9-]+$/)) {
+    issues.push('Module name must contain only lowercase letters, numbers, and hyphens');
+  }
+  
+  // Validate source
+  if (moduleData.source) {
+    if (!moduleData.source.url && !moduleData.source.gist) {
+      issues.push('Source must specify either "url" or "gist"');
+    }
+    
+    if (moduleData.source.gist) {
+      if (!moduleData.source.gist.id) {
+        issues.push('Gist source must include "id"');
+      }
+      if (!moduleData.source.gist.commit) {
+        issues.push('Gist source must include "commit" hash for immutability');
+      }
+    }
+    
+    if (moduleData.source.url) {
+      // Check for version pinning
+      const url = moduleData.source.url;
+      const hasVersion = url.includes('@') || 
+                        url.includes('/releases/') || 
+                        url.includes('/tag/') ||
+                        url.includes('/commit/');
+      
+      if (!hasVersion) {
+        issues.push('GitHub URLs should be pinned to a specific version, tag, or commit');
+      }
+    }
+  }
+  
+  // Check for suspicious patterns
+  if (JSON.stringify(moduleData).includes('eval(') || 
+      JSON.stringify(moduleData).includes('Function(')) {
+    issues.push('Module contains potentially dangerous code patterns');
+  }
+  
+  return {
+    valid: issues.length === 0,
+    issues: issues,
+    checkedFields: required.length,
+    moduleData: moduleData
+  };
+)]
+
+>> Extract author and module name from path
+@exec parseModulePath(path) = @run js [(
+  // Expected format: modules/author/module-name/module.json
+  const parts = path.split('/');
+  if (parts.length >= 4 && parts[0] === 'modules') {
+    return {
+      author: parts[1],
+      moduleName: parts[2],
+      filename: parts[3]
+    };
+  }
+  return null;
+)]
+
+@data module = {
+  "extractModuleContent": @extractModuleContent,
+  "validateModule": @validateModule,
+  "parseModulePath": @parseModulePath
+}

@@ -1,0 +1,36 @@
+---
+description: Creates structured context for module reviews
+mlld-version: ">=1.0.0-rc"
+---
+
+# Review Context Builder
+
+>> Create a structured review context from PR and module data
+@exec createReviewContext(prData, moduleContent, validation) = @run js [(
+  const pr = JSON.parse(prData);
+  
+  // Extract relevant PR info
+  const context = {
+    pr: {
+      number: pr.number,
+      title: pr.title,
+      author: pr.author.login,
+      files: pr.files.map(f => ({
+        path: f.path,
+        changes: f.additions + f.deletions
+      }))
+    },
+    module: moduleContent,
+    validation: validation,
+    metadata: {
+      timestamp: new Date().toISOString(),
+      workflowVersion: "1.0.0"
+    }
+  };
+  
+  return context;
+)]
+
+@data module = {
+  "createReviewContext": @createReviewContext
+}

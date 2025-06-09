@@ -1,0 +1,89 @@
+---
+module: claude-utils
+author: mlld-dev
+description: Claude API utilities with retry and error handling
+mlld-version: ">=1.0.0-rc"
+---
+
+# Claude API Utilities
+
+>> Query Claude CLI with automatic retry
+@exec queryClaudeAPI(prompt, maxRetries) = @run [(
+  # Use claude CLI with proper error handling
+  attempts=0
+  while [ $attempts -lt @maxRetries ]; do
+    response=$(claude --print "@prompt" 2>&1)
+    exit_code=$?
+    
+    if [ $exit_code -eq 0 ]; then
+      echo "$response"
+      exit 0
+    fi
+    
+    attempts=$((attempts + 1))
+    if [ $attempts -lt @maxRetries ]; then
+      sleep $((attempts * 2))  # Exponential backoff
+    fi
+  done
+  
+  echo "ERROR: Claude request failed after @maxRetries attempts"
+  exit 1
+)]
+
+>> Parse Claude's review response
+@exec parseReviewResponse(response) = @run js [(
+  // Handle error cases
+  if (!response || response.startsWith("ERROR:")) {
+    return {
+      recommendation: "COMMENT",
+      reasoning: "Failed to get AI review. Please have a human review this submission.",
+      error: response
+    };
+  }
+  
+  // Parse the response
+  const lines = response.split('\n');
+  const firstLine = lines[0].trim().toUpperCase();
+  
+  // Extract recommendation from first line
+  const validResponses = ['APPROVE', 'REQUEST_CHANGES', 'COMMENT'];
+  let recommendation = 'COMMENT'; // default
+  
+  for (const valid of validResponses) {
+    if (firstLine.includes(valid)) {
+      recommendation = valid;
+      break;
+    }
+  }
+  
+  // Everything after first line is reasoning
+  const reasoning = lines.slice(1).join('\n').trim() || 
+                   'No detailed reasoning provided.';
+  
+  return {
+    recommendation: recommendation,
+    reasoning: reasoning,
+    raw: response
+  };
+)]
+
+>> Create a fallback review for when Claude is unavailable
+@exec createFallbackReview(validation) = @run js [(
+  if (validation.valid) {
+    return {
+      recommendation: "COMMENT",
+      reasoning: "Automated validation passed, but AI review is unavailable. A human should review this module submission."
+    };
+  } else {
+    return {
+      recommendation: "REQUEST_CHANGES", 
+      reasoning: `Automated validation failed:\n\n${validation.issues.map(i => `- ${i}`).join('\n')}\n\nPlease fix these issues before resubmitting.`
+    };
+  }
+)]
+
+@data module = {
+  "queryClaudeAPI": @queryClaudeAPI,
+  "parseReviewResponse": @parseReviewResponse,
+  "createFallbackReview": @createFallbackReview
+}

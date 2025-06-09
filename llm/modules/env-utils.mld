@@ -1,0 +1,61 @@
+---
+module: env-utils
+author: mlld-dev
+description: Environment variable validation and utilities
+mlld-version: ">=1.0.0-rc"
+---
+
+# Environment Variable Utilities
+
+>> Check if environment variables exist and have content
+>> Accepts a single variable name or an array of names
+@exec validateEnvironment(required) = @run js [(
+  // Handle both single string and array inputs
+  const vars = Array.isArray(required) ? required : [required];
+  
+  const results = vars.map(varName => {
+    const value = process.env[varName];
+    const exists = value && value.trim().length > 0;
+    
+    return {
+      name: varName,
+      exists: exists,
+      value: exists ? '***' : undefined, // Mask for security
+      length: exists ? value.length : 0
+    };
+  });
+  
+  const missing = results.filter(r => !r.exists).map(r => r.name);
+  const allValid = missing.length === 0;
+  
+  // Return comprehensive validation result
+  return {
+    valid: allValid,
+    checked: vars.length,
+    found: vars.length - missing.length,
+    missing: missing,
+    results: results,
+    summary: allValid 
+      ? `✅ All ${vars.length} environment variables are present`
+      : `❌ Missing ${missing.length} of ${vars.length} required variables: ${missing.join(', ')}`
+  };
+)]
+
+>> Get environment variable with fallback
+@exec getEnv(name, fallback) = @run js [(
+  process.env[name] || fallback || ''
+)]
+
+>> Check if running in CI environment
+@exec isCI() = @run js [(
+  // Check common CI environment variables
+  const ciVars = ['CI', 'GITHUB_ACTIONS', 'GITLAB_CI', 'CIRCLE', 'TRAVIS'];
+  const isCI = ciVars.some(v => process.env[v] === 'true' || process.env[v] === '1');
+  return isCI ? "true" : "";
+)]
+
+@data module = {
+  "validateEnvironment": @validateEnvironment,
+  "getEnv": @getEnv,
+  "isCI": @isCI
+}

@@ -1,0 +1,32 @@
+---
+description: Format reviews for GitHub PR comments
+mlld-version: ">=1.0.0-rc"
+---
+
+# GitHub Review Formatter
+
+>> Format the review for GitHub
+@text formatGitHubReview(review, context) = [[
+🤖 **mlld Registry Bot**
+
+{{review.recommendation === "APPROVE" ? "✅ **Decision: APPROVED**" :
+  review.recommendation === "REQUEST_CHANGES" ? "❌ **Decision: CHANGES REQUESTED**" :
+  "💬 **Decision: COMMENT**"}}
+
+{{review.reasoning}}
+
+---
+
+### Review Details
+- **Module**: `{{context.module.name || "Unknown"}}`
+- **Author**: @{{context.pr.author}}
+- **Validation**: {{context.validation.valid ? "✅ Passed" : "❌ Failed"}}
+- **Review Version**: 1.0.0
+
+---
+*I am an automated reviewer powered by Claude AI. I help maintain quality standards for the mlld module registry.*
+]]
+
+@data module = {
+  "formatGitHubReview": @formatGitHubReview
+}

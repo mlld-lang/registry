@@ -1,0 +1,67 @@
+---
+module: github-utils
+author: mlld-dev  
+description: GitHub API utilities for mlld workflows
+mlld-version: ">=1.0.0-rc"
+---
+
+# GitHub API Utilities
+
+>> Get comprehensive PR data as JSON
+@exec getPRData(pr, repo) = @run [(
+  gh pr view @pr \
+    --repo @repo \
+    --json number,title,author,files,state,body,labels,createdAt
+)]
+
+>> Get PR diff with optional path filter
+@exec getPRDiff(pr, repo, paths) = @run [(
+  gh pr diff @pr \
+    --repo @repo \
+    -- @paths
+)]
+
+>> Parse changed files into structured data
+@exec parseChangedFiles(prData) = @run js [(
+  const data = JSON.parse(prData);
+  return data.files.map(f => ({
+    path: f.path,
+    additions: f.additions,
+    deletions: f.deletions,
+    isModule: f.path.includes('modules/') && f.path.endsWith('.json'),
+    changeType: f.additions > 0 && f.deletions === 0 ? 'added' :
+                f.deletions > 0 && f.additions === 0 ? 'deleted' : 
+                'modified'
+  }));
+)]
+
+>> Create a GitHub PR review
+@exec createReview(pr, repo, event, body) = @run [(
+  gh pr review @pr \
+    --repo @repo \
+    --@event \
+    --body "@body"
+)]
+
+>> Add a comment to a PR
+@exec addComment(pr, repo, body) = @run [(
+  gh pr comment @pr \
+    --repo @repo \
+    --body "@body"
+)]
+
+>> Check if user is a collaborator
+@exec isCollaborator(user, repo) = @run [(
+  gh api \
+    repos/@repo/collaborators/@user \
+    --silent && echo "true" || echo ""
+)]
+
+@data module = {
+  "getPRData": @getPRData,
+  "getPRDiff": @getPRDiff,
+  "parseChangedFiles": @parseChangedFiles,
+  "createReview": @createReview,
+  "addComment": @addComment,
+  "isCollaborator": @isCollaborator
+}

@@ -1,0 +1,58 @@
+---
+description: Check if PR author is on the trusted allowlist
+mlld-version: ">=1.0.0-rc"
+---
+
+# Check Trusted Author Status
+
+@import { PR_AUTHOR } from @INPUT
+@import { includes } from [@./llm/modules/comparison-utils.mld]
+
+## Read Allowlist
+
+>> Read the allowlist file from project root
+@text allowlistContent = [@./allowlist.json]
+
+>> Parse the JSON
+@exec parseAllowlist(content) = @run js [(
+  try {
+    const data = JSON.parse(content);
+    return {
+      authors: data.trustedAuthors || [],
+      count: (data.trustedAuthors || []).length,
+      valid: true
+    };
+  } catch (e) {
+    return {
+      authors: [],
+      count: 0,
+      valid: false,
+      error: e.message
+    };
+  }
+)]
+
+@data allowlist = @parseAllowlist(@allowlistContent)
+
+## Check Trust Status
+
+@when @allowlist.valid: [
+  true  => @data isTrusted = @includes(@allowlist.authors, @PR_AUTHOR)
+  false => @add [[⚠️ Failed to parse allowlist: {{allowlist.error}}]]
+]
+
+## Report Status
+
+@when @isTrusted: [
+  true  => @add [[✅ {{PR_AUTHOR}} is a trusted author ({{allowlist.count}} total trusted authors)]]
+  false => @add [[ℹ️ {{PR_AUTHOR}} is not on allowlist, will proceed with LLM review]]
+]
+
+## Exit Code for GitHub Actions
+
+>> GitHub Actions uses exit code to determine trusted status
+>> Exit 0 = trusted (skip review), Exit 1 = not trusted (needs review)
+@when @isTrusted: [
+  true  => @run [(echo "trusted=true" >> $GITHUB_OUTPUT)]
+  false => @run [(echo "trusted=false" >> $GITHUB_OUTPUT)]
+]

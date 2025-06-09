@@ -1,0 +1,37 @@
+---
+description: Generate summary reports for reviews
+mlld-version: ">=1.0.0-rc"
+---
+
+# Summary Report Template
+
+>> Create a summary report of the review process
+@text createSummaryReport(prData, validation, review) = [[
+## 📊 Review Summary
+
+### Pull Request
+- **PR**: #{{prData.number}} - {{prData.title}}
+- **Author**: @{{prData.author.login}}
+- **Files**: {{prData.files.length}} changed
+
+### Validation
+- **Status**: {{validation.valid ? "✅ Passed" : "❌ Failed"}}
+- **Checks**: {{validation.checkedFields}} fields validated
+{{validation.issues.length > 0 ? "- **Issues**: " + validation.issues.length + " found" : ""}}
+
+### Review Decision
+- **Recommendation**: {{review.recommendation}}
+- **Type**: {{review.error ? "Fallback (AI unavailable)" : "AI Review"}}
+
+### Module Info
+{{validation.moduleData.name ? "- **Name**: `" + validation.moduleData.name + "`" : ""}}
+{{validation.moduleData.author ? "- **Author**: " + validation.moduleData.author : ""}}
+{{validation.moduleData.description ? "- **Description**: " + validation.moduleData.description : ""}}
+
+---
+*Review completed at {{new Date().toISOString()}}*
+]]
+
+@data module = {
+  "createSummaryReport": @createSummaryReport
+}
