@@ -1,5 +1,5 @@
 ---
-module: claude-utils
+name: claude-utils
 author: mlld-dev
 description: Claude API utilities with retry and error handling
 mlld-version: ">=1.0.0-rc"
@@ -36,6 +36,7 @@ mlld-version: ">=1.0.0-rc"
   if (!response || response.startsWith("ERROR:")) {
     return {
       recommendation: "COMMENT",
+      category: "utilities", // default fallback
       reasoning: "Failed to get AI review. Please have a human review this submission.",
       error: response
     };
@@ -56,12 +57,32 @@ mlld-version: ">=1.0.0-rc"
     }
   }
   
-  // Everything after first line is reasoning
-  const reasoning = lines.slice(1).join('\n').trim() || 
+  // Extract category from second line
+  const validCategories = [
+    'prompts', 'utilities', 'when', 'filters', 'formatters', 
+    'commands', 'apis', 'clis', 'templates', 'integrations', 'generators',
+    'validators', 'transformers', 'workflows', 'dev', 'tests', 
+    'context'
+  ];
+  
+  let category = 'utilities'; // default fallback
+  const secondLine = lines[1]?.trim() || '';
+  const categoryMatch = secondLine.match(/CATEGORY:\s*([a-z]+)/i);
+  
+  if (categoryMatch) {
+    const extractedCategory = categoryMatch[1].toLowerCase();
+    if (validCategories.includes(extractedCategory)) {
+      category = extractedCategory;
+    }
+  }
+  
+  // Everything after first two lines is reasoning
+  const reasoning = lines.slice(2).join('\n').trim() || 
                    'No detailed reasoning provided.';
   
   return {
     recommendation: recommendation,
+    category: category,
     reasoning: reasoning,
     raw: response
   };
@@ -72,11 +93,13 @@ mlld-version: ">=1.0.0-rc"
   if (validation.valid) {
     return {
       recommendation: "COMMENT",
+      category: "utilities", // default fallback
       reasoning: "Automated validation passed, but AI review is unavailable. A human should review this module submission."
     };
   } else {
     return {
       recommendation: "REQUEST_CHANGES", 
+      category: "utilities", // default fallback
       reasoning: `Automated validation failed:\n\n${validation.issues.map(i => `- ${i}`).join('\n')}\n\nPlease fix these issues before resubmitting.`
     };
   }

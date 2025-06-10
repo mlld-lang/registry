@@ -1,5 +1,5 @@
 ---
-module: env-utils
+name: env-utils
 author: mlld-dev
 description: Environment variable validation and utilities
 mlld-version: ">=1.0.0-rc"

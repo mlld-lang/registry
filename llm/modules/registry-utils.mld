@@ -1,5 +1,5 @@
 ---
-module: registry-utils
+name: registry-utils
 author: mlld-dev
 description: Registry validation and parsing utilities
 mlld-version: ">=1.0.0-rc"
@@ -64,7 +64,7 @@ mlld-version: ">=1.0.0-rc"
   }
   
   // Check required fields
-  const required = ['name', 'author', 'description', 'mlldVersion', 'source'];
+  const required = ['name', 'author', 'description', 'mlldVersion', 'source', 'needs'];
   const missing = required.filter(field => !moduleData[field]);
   
   if (missing.length > 0) {
@@ -74,6 +74,31 @@ mlld-version: ">=1.0.0-rc"
   // Validate module name format
   if (moduleData.name && !moduleData.name.match(/^[a-z0-9-]+$/)) {
     issues.push('Module name must contain only lowercase letters, numbers, and hyphens');
+  }
+  
+  // Validate needs field
+  if (moduleData.needs) {
+    if (!Array.isArray(moduleData.needs)) {
+      issues.push('Field "needs" must be an array');
+    } else {
+      // Validate needs values
+      const validNeeds = ['js', 'py', 'sh'];
+      const invalid = moduleData.needs.filter(n => !validNeeds.includes(n));
+      if (invalid.length > 0) {
+        issues.push(`Invalid needs values: ${invalid.join(', ')} (valid: js, py, sh)`);
+      }
+      
+      // Check consistency with detailed dependencies
+      if (moduleData.needs.includes('js') && moduleData.dependencies && !moduleData.dependencies.js) {
+        issues.push('Module declares "js" in needs but missing dependencies.js details');
+      }
+      if (moduleData.needs.includes('py') && moduleData.dependencies && !moduleData.dependencies.py) {
+        issues.push('Module declares "py" in needs but missing dependencies.py details');
+      }
+      if (moduleData.needs.includes('sh') && moduleData.dependencies && !moduleData.dependencies.sh) {
+        issues.push('Module declares "sh" in needs but missing dependencies.sh details');
+      }
+    }
   }
   
   // Validate source

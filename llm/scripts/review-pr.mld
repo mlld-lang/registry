@@ -85,6 +85,7 @@ This workflow reviews module submissions to ensure quality and security.
   true => @run [(
     {
       echo "LLM_RECOMMENDATION=@review.recommendation"
+      echo "LLM_CATEGORY=@review.category"
       echo "LLM_REVIEW_BODY<<EOF"
       echo "@githubReview"
       echo "EOF"

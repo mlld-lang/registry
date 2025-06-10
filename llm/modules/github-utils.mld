@@ -1,6 +1,6 @@
 ---
-module: github-utils
-author: mlld-dev  
+name: github-utils
+author: mlld-dev
 description: GitHub API utilities for mlld workflows
 mlld-version: ">=1.0.0-rc"
 ---

@@ -1,5 +1,5 @@
 ---
-module: comparison-utils
+name: comparison-utils
 author: mlld-dev
 description: Comparison utilities for conditional logic
 mlld-version: ">=1.0.0-rc"

@@ -4,18 +4,11 @@
   "modules": {
     "@mlld/ai": {
       "name": "@mlld/ai",
-      "description": "Simple wrappers for AI CLI tools (llm, claude, codex)",
-      "author": {
-        "name": "mlld Core Team",
-        "github": "mlld"
-      },
-      "source": {
-        "type": "github",
-        "repo": "mlld-lang/modules",
-        "hash": "ed50964c950ec332141e3c8f9b3ee0296230a42a",
-        "url": "https://raw.githubusercontent.com/mlld-lang/modules/ed50964c950ec332141e3c8f9b3ee0296230a42a/ai/ai.mld"
-      },
-      "dependencies": {},
+      "author": "mlld",
+      "version": "1.0.0",
+      "about": "Simple wrappers for AI CLI tools (llm, claude, codex)",
+      "needs": ["sh"],
+      "repo": "https://github.com/mlld-lang/modules",
       "keywords": [
         "ai",
         "llm",
@@ -23,23 +16,30 @@
         "codex",
         "cli"
       ],
+      "license": "CC0",
       "mlldVersion": ">=0.5.0",
-      "publishedAt": "2025-05-30T00:00:00Z"
-    },
-    "@mlld/http": {
-      "name": "@mlld/http",
-      "description": "Simple HTTP client wrappers for REST APIs and web requests",
-      "author": {
-        "name": "mlld Core Team",
-        "github": "mlld"
-      },
+      "category": "clis",
+      "ownerGithubUserIds": [123456789],
       "source": {
         "type": "github",
         "repo": "mlld-lang/modules",
         "hash": "ed50964c950ec332141e3c8f9b3ee0296230a42a",
-        "url": "https://raw.githubusercontent.com/mlld-lang/modules/ed50964c950ec332141e3c8f9b3ee0296230a42a/http/http.mld"
+        "url": "https://raw.githubusercontent.com/mlld-lang/modules/ed50964c950ec332141e3c8f9b3ee0296230a42a/ai/ai.mld"
       },
-      "dependencies": {},
+      "dependencies": {
+        "sh": {
+          "commands": ["llm", "claude"]
+        }
+      },
+      "publishedAt": "2025-05-30T00:00:00Z"
+    },
+    "@mlld/http": {
+      "name": "@mlld/http",
+      "author": "mlld",
+      "version": "1.0.0",
+      "about": "Simple HTTP client wrappers for REST APIs and web requests",
+      "needs": ["sh"],
+      "repo": "https://github.com/mlld-lang/modules",
       "keywords": [
         "http",
         "api",
@@ -47,7 +47,21 @@
         "curl",
         "web"
       ],
+      "license": "CC0",
       "mlldVersion": ">=0.5.0",
+      "category": "apis",
+      "ownerGithubUserIds": [123456789],
+      "source": {
+        "type": "github",
+        "repo": "mlld-lang/modules",
+        "hash": "ed50964c950ec332141e3c8f9b3ee0296230a42a",
+        "url": "https://raw.githubusercontent.com/mlld-lang/modules/ed50964c950ec332141e3c8f9b3ee0296230a42a/http/http.mld"
+      },
+      "dependencies": {
+        "sh": {
+          "commands": ["curl"]
+        }
+      },
       "publishedAt": "2025-05-30T00:00:00Z"
     }
   }

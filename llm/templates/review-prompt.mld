@@ -52,6 +52,32 @@ Please evaluate this module submission based on these criteria:
 - Are there usage examples?
 - Is the API well-documented?
 
+### 6. Dependencies
+- Does the module correctly declare its runtime needs?
+- Are the needs accurate based on the code?
+- Are version requirements reasonable?
+- Are all used packages/commands declared in the detailed dependencies?
+
+### 7. Category Assignment
+Based on the module's functionality, assign it to exactly ONE of these categories:
+- **prompts**: Templates for LLM prompting and AI interactions
+- **utilities**: General-purpose helper functions and tools
+- **when**: Predicates and conditions for use with @when directives
+- **filters**: Data filtering and selection functions
+- **formatters**: Text and data formatting functions
+- **commands**: Command-line tool wrappers and executors
+- **apis**: API clients and web service integrations
+- **clis**: Command-line interface tools and utilities
+- **templates**: Document and code templates (non-prompt)
+- **integrations**: External service connections and workflows
+- **generators**: Content and code generation tools
+- **validators**: Data validation and schema checking
+- **transformers**: Data format conversion and transformation
+- **workflows**: Multi-step automation and orchestration
+- **dev**: Development utilities (linting, testing, build helpers)
+- **tests**: Testing utilities and assertion helpers
+- **context**: Tools for gathering and organizing context for AI
+
 ## Your Response
 
 You MUST start your response with exactly one of these words:
@@ -59,11 +85,15 @@ You MUST start your response with exactly one of these words:
 - **REQUEST_CHANGES**: There are issues that must be fixed before acceptance
 - **COMMENT**: You have non-blocking suggestions or need clarification
 
-After your decision word, provide detailed reasoning for your decision. Be specific about any issues or suggestions.
+Immediately after your decision word, on the next line, provide the category assignment:
+**CATEGORY: [category-name]**
+
+Then provide detailed reasoning for your decision. Be specific about any issues or suggestions.
 
 Example format:
 ```
 APPROVE
+CATEGORY: apis
 
 This module provides excellent value by... [detailed reasoning]
 ```

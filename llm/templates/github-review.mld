@@ -19,7 +19,9 @@ mlld-version: ">=1.0.0-rc"
 
 ### Review Details
 - **Module**: `{{context.module.name || "Unknown"}}`
-- **Author**: @{{context.pr.author}}
+- **Author**: @{{context.module.author || context.pr.author}}
+- **Category**: `{{review.category || "utilities"}}`
+- **Owner IDs**: {{context.module.ownerGithubUserIds ? context.module.ownerGithubUserIds.join(', ') : 'Not specified'}}
 - **Validation**: {{context.validation.valid ? "✅ Passed" : "❌ Failed"}}
 - **Review Version**: 1.0.0
 
