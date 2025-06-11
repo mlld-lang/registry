@@ -1,107 +1,99 @@
-# 🤖 LLM Review System
+# LLM Review System
 
-The mlld registry uses an autonomous LLM-powered review system to evaluate module submissions.
+The mlld registry uses an LLM-powered review system to evaluate module submissions.
 
 ## Overview
 
-The registry achieves **self-governance** by using mlld scripts to review mlld modules - a true meta achievement! When modules are submitted via pull request, Claude AI automatically reviews them for quality, security, and usefulness.
+Pull requests containing new modules are automatically reviewed by Claude AI. The system uses mlld scripts to analyze module submissions and provide review decisions.
 
-## How It Works
+## Process
 
 ### 1. Module Submission
-Authors can submit modules using either:
-- **Manual process**: `node tools/publish.js` provides instructions
-- **Automated process**: `node tools/auto-publish.js` creates PR automatically
+Authors submit modules via:
+- Manual: `node tools/publish.js` generates metadata and instructions
+- Automated: `node tools/auto-publish.js` creates PR directly
 
-### 2. Automated Review Pipeline
-When a PR is created:
-1. **Validation workflow** checks module structure and metadata
-2. **LLM review workflow** runs Claude AI review using mlld
-3. Claude provides one of three decisions:
-   - ✅ **APPROVE** - Module meets all quality standards
-   - ❌ **REQUEST_CHANGES** - Issues must be addressed
-   - 💬 **COMMENT** - Needs human review
+### 2. Review Pipeline
+On PR creation:
+1. Validation workflow checks structure and metadata
+2. LLM review workflow runs Claude analysis
+3. Claude returns one of three decisions:
+   - APPROVE - Module meets standards
+   - REQUEST_CHANGES - Issues need addressing
+   - COMMENT - Requires human review
 
-### 3. Automated Actions
-Based on Claude's decision:
-- **APPROVE**: PR can be auto-merged when all checks pass
-- **REQUEST_CHANGES**: Author must address feedback
-- **COMMENT**: Maintainers review Claude's analysis
+### 3. Actions
+- APPROVE: PR eligible for auto-merge when checks pass
+- REQUEST_CHANGES: Author must address feedback
+- COMMENT: Maintainers review Claude's analysis
 
-## Technical Implementation
+## Technical Details
 
 ### Environment Variables
-The system requires these GitHub secrets:
 ```
-ANTHROPIC_API_KEY     # Claude API key for reviews
+ANTHROPIC_API_KEY     # Claude API key
 ```
 
-### Key Components
+### Components
 
-#### LLM Review Script (`tools/llm-review-claude-cli.mld`)
-- Imports PR data from environment variables
-- Fetches PR diff and file changes
-- Constructs review prompt with registry requirements
-- Calls Claude via CLI for analysis
-- Sets GitHub Actions environment variables
+**LLM Review Script** (`tools/llm-review-claude-cli.mld`)
+- Reads PR data from environment
+- Fetches diff and changes
+- Constructs review prompt
+- Calls Claude via CLI
+- Sets GitHub Actions variables
 
-#### Auto-Merge Script (`tools/llm-auto-merge.mld`)
+**Auto-Merge Script** (`tools/llm-auto-merge.mld`)
 - Monitors approved PRs
-- Waits for all checks to pass
-- Auto-merges when conditions are met
-- Registry updated immediately on merge
+- Waits for check completion
+- Merges when conditions met
+- Updates registry on merge
 
 ### Review Criteria
 
-Claude evaluates modules based on:
+**Quality Standards**
+- Correct module name format (@username/module-name)
+- Documentation and examples included
+- Solves real problems
+- Valid mlld syntax
 
-#### Quality Standards
-- Clear, descriptive module names (@username/module-name format)
-- Comprehensive documentation and examples
-- Real utility - solves actual problems
-- Proper mlld syntax and best practices
+**Security Checks**
+- No hardcoded secrets
+- Safe command execution
+- No malicious patterns
+- Input validation present
 
-#### Security Checks
-- No hardcoded secrets or API keys
-- Safe command execution practices
-- No malicious code patterns
-- Proper input validation
-
-#### Registry Requirements
-- Valid source (GitHub gist or repository)
-- Immutable references (commit hashes)
-- Required metadata fields
-- Appropriate for PUBLIC distribution
+**Registry Requirements**
+- Valid source URL (gist or repository)
+- Commit hash references
+- Required metadata complete
+- Suitable for public use
 
 ## Bot Identity
 
-Reviews are posted by the **mlld Registry Bot**:
-- Uses GitHub Actions bot account
-- Clear visual indicators for decisions
-- Professional messaging with Claude attribution
-- Helpful feedback for improvements
+Reviews posted by GitHub Actions bot:
+- Clear decision indicators
+- Claude attribution in messages
+- Actionable feedback provided
 
-## Current Limitations
+## Limitations
 
-1. **Output Capture**: mlld exec output capture pending
-2. **Template Interpolation**: Some edge cases in command templates
-3. **Bot Account**: Currently uses github-actions[bot]
-   - Future: Dedicated GitHub App for better identity
+1. mlld exec output capture pending implementation
+2. Some template interpolation edge cases
+3. Uses github-actions[bot] instead of dedicated app
 
-## Monitoring and Improvement
+## Monitoring
 
-The system is designed to learn and improve:
-1. Review decisions are logged for analysis
-2. Prompts can be refined based on outcomes
-3. Human maintainers can override when needed
-4. Community feedback shapes review criteria
+System improvements through:
+- Logged review decisions
+- Prompt refinement based on outcomes
+- Human override capability
+- Community feedback integration
 
-## Self-Governance Philosophy
+## Governance Model
 
-The registry embodies mlld's philosophy:
-- **Decentralized**: No central authority needed
-- **Transparent**: All reviews are public
-- **Fair**: Consistent automated evaluation
-- **Evolving**: Improves through community input
-
-By using mlld to review mlld modules, we demonstrate the language's capability while building a sustainable, self-governing ecosystem.
+The system provides:
+- Decentralized operation
+- Transparent public reviews
+- Consistent evaluation
+- Community-driven evolution
