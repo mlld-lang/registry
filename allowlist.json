@@ -2,8 +2,6 @@
   "description": "Trusted authors who can publish modules without LLM review",
   "criteria": "Authors who have published at least one useful/productive module",
   "trustedAuthors": [
-    "mlld",
-    "mlld-lang",
     "adamavenir"
   ],
   "metadata": {
