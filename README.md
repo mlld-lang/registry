@@ -1,101 +1,132 @@
 # mlld registry
 
-> **⚠️ PUBLIC REGISTRY**: All modules in this registry are PUBLIC and accessible to anyone. For private modules, use custom resolvers instead. 
+PUBLIC REGISTRY: All modules in this registry are PUBLIC and accessible to anyone. For private modules, use the --private flag with mlld publish.
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Using a Module
 
+```bash
+mlld install @alice/utils
+```
+
 ```mlld
 @import { greet } from @alice/utils
-@add [[{{greet}}]]
+@add [[{{greet("World")}}]]
 ```
 
 ### Publishing a Module
 
-1. Create a PUBLIC gist with your mlld code
-2. Get the raw URL with commit hash
-3. Fork this repository
-4. Add your module to `modules.json`
-5. Submit a pull request
+```bash
+# Automated publishing (recommended)
+mlld publish my-module.mld.md
 
-## 📦 How It Works
+# Manual publishing
+See "Manual Publishing" section below
+```
 
-The mlld registry uses a decentralized approach:
+## How It Works
 
-1. **Modules are stored as GitHub Gists** - providing versioning and accessibility
-2. **Registry on GitHub** - simple JSON files map module names to URLs
-3. **Content addressing via commit hashes** - ensures integrity and immutability
-4. **Local caching** - for offline access and performance
+The mlld registry uses GitHub for storage and distribution:
+
+1. Modules stored as GitHub gists or in repositories
+2. Central registry (modules.json) maps names to URLs
+3. Content addressing via commit hashes
+4. Local caching for offline access
 
 ### Resolution Flow
 
 ```
 @import @alice/utils
     ↓
-Query: registry/modules.json on GitHub
+Query registry/modules.json on GitHub
     ↓
-Returns: Module metadata with source URL
+Return module metadata with source URL
     ↓
-Fetch content from GitHub & cache by hash
+Fetch content and cache by hash
     ↓
-Module ready to use!
+Module ready to use
 ```
 
-## 📝 Publishing Your Module
+## Publishing with CLI
 
-### Step 1: Create Your Gist
+The mlld CLI handles most publishing automatically.
 
-Create a PUBLIC gist at https://gist.github.com with your mlld code:
+### Prerequisites
 
-```mlld
----
-author: yourgithub
-module: @yourgithub/awesome-utils
-description: Awesome utilities for mlld scripts
----
+1. Install mlld: `npm install -g mlld`
+2. Authenticate: `mlld auth login`
+3. Create module with `.mld.md` extension
 
-@text greet = [[Hello, {{name}}!]]
-@text farewell = [[Goodbye, {{name}}!]]
+### Module Requirements
 
-@exec format_json(data) = @run [jq '.' <<< '{{data}}']
-```
-
-**Required Frontmatter Fields:**
+Required frontmatter fields:
+- `name` - Module identifier (lowercase, hyphens)
 - `author` - Your GitHub username
-- `module` - Full module name (@username/module)
-- `description` - What your module does
+- `about` - Brief description
+- `needs` - Runtime dependencies (empty array for pure mlld)
+- `license` - Must be "CC0"
 
-### Step 2: Generate Module Metadata
+Example:
+```markdown
+---
+name: string-utils
+author: alice
+about: String manipulation utilities
+needs: []
+license: CC0
+---
 
-Use our helper tool with your source URL:
+# String Utils
+
+## Module
+
+```mlld-run
+@exec slugify(text) = @run js [(@text.toLowerCase().replace(/\s+/g, '-'))]
+```
+```
+
+### Publish Command
 
 ```bash
-./tools/publish.js @yourgithub/awesome-utils <source-url>
+mlld publish my-module.mld.md
 ```
 
-**Supported URL formats:**
-- **Gist URL**: `https://gist.github.com/username/gist-id`
-- **GitHub file**: `https://github.com/owner/repo/blob/main/path/file.mld`
-- **Raw URL**: `https://gist.githubusercontent.com/username/gist-id/raw/hash/file.mld`
-- **External**: Any other HTTP(S) URL
+The command:
+1. Validates module syntax and metadata
+2. Detects git repository or creates gist
+3. Submits pull request to registry
+4. Displays module URL when complete
 
-The tool will automatically:
-- Fetch the latest commit hash
-- Find your `.mld` file
-- Generate the precise raw URL
-- Create module metadata
+Options:
+- `--dry-run` - Preview without publishing
+- `--force` - Publish with uncommitted changes
+- `--message <msg>` - Custom PR message
+- `--gist` - Force gist creation
+- `--repo` - Force repository publishing
 
-This generates the metadata JSON and provides step-by-step instructions.
+## Manual Publishing
 
-### Step 3: Submit Your Module
+If you cannot use the CLI:
 
-1. Fork this repository
-2. Add your module entry to `modules.json`
+### Step 1: Create Gist
+
+Create a PUBLIC gist with your module code including required frontmatter.
+
+### Step 2: Generate Metadata
+
+```bash
+node registry/tools/publish.js @username/module-name <gist-url>
+```
+
+### Step 3: Submit PR
+
+1. Fork mlld-lang/registry
+2. Add entry to modules.json
 3. Run validation: `node tools/validate.js`
-4. Submit a pull request
+4. Submit pull request
 
-## 🔍 Module Format
+## Module Format
 
 ### modules.json Structure
 
@@ -157,7 +188,7 @@ This generates the metadata JSON and provides step-by-step instructions.
 - **publishedAt**: ISO 8601 timestamp
 - **stats**: Usage statistics (maintained by system)
 
-## 🛠️ Tools
+## Tools
 
 ### Validation Script
 
@@ -216,7 +247,7 @@ Options:
 - `--keywords` - Comma-separated keywords
 - `--dry-run` - Preview without making changes
 
-## 📋 Guidelines
+## Guidelines
 
 ### Module Naming
 - Use format: `@username/module-name`
@@ -242,7 +273,7 @@ Options:
 - Keep dependencies minimal
 - Test with your dependencies
 
-## 🔒 Security
+## Security
 
 ### Content Integrity
 - All modules are addressed by content hash
@@ -251,10 +282,10 @@ Options:
 - Local verification of content hashes
 
 ### PUBLIC Nature
-- **All modules in this registry are PUBLIC**
+- All modules in this registry are PUBLIC
 - Anyone can view and use your code
 - Do not publish sensitive or proprietary code
-- For private modules, use custom resolvers
+- For private modules, use --private flag
 
 ### Reporting Issues
 If you discover a security issue in a module:
@@ -262,24 +293,22 @@ If you discover a security issue in a module:
 2. If no response, open an issue here
 3. For urgent issues, email security@mlld-lang.org
 
-## 🤝 Contributing
+## Contributing
 
-We welcome contributions! Please:
+### Submission Requirements
 
-1. Read the guidelines above
-2. Ensure your module adds value
-3. Test thoroughly before submitting
-4. Be responsive to feedback
-5. Help review other submissions
+1. Module must add value to the ecosystem
+2. Code must be tested and documented
+3. No duplicates of existing functionality
+4. Responsive to maintainer feedback
 
-### Automated Processes
+### Automated Review
 
-The registry uses **autonomous LLM-powered governance**:
-
-1. **Automated Review**: Claude AI reviews all module submissions
-2. **Quality Checks**: Validates structure, security, and usefulness
-3. **Auto-merge**: Approved modules are merged automatically
-4. **Registry Update**: `modules.json` updated immediately on merge
+All submissions are reviewed by an LLM system that:
+- Validates structure and metadata
+- Checks for security issues
+- Assesses code quality
+- Auto-merges approved modules
 
 See [docs/LLM-REVIEW-SYSTEM.md](docs/LLM-REVIEW-SYSTEM.md) for details.
 
@@ -290,21 +319,14 @@ See [docs/LLM-REVIEW-SYSTEM.md](docs/LLM-REVIEW-SYSTEM.md) for details.
 - [LLM Review System](docs/LLM-REVIEW-SYSTEM.md) - Automated review details
 - [Known Issues](docs/KNOWN-ISSUES.md) - Current limitations and workarounds
 
-## 📊 Registry Statistics
-
-- Total Modules: See `modules.json`
-- Authors: Check unique author count
-- Categories: Browse by keywords
-- Recent: Sort by publishedAt
-
-## 🔗 Resources
+## Resources
 
 - [mlld Documentation](https://mlld.ai/docs)
 - [mlld GitHub](https://github.com/mlld-lang/mlld)
 - [Registry Issues](https://github.com/mlld-lang/registry/issues)
 - [Example Modules](https://github.com/mlld-lang/mlld/tree/main/examples)
 
-## 📜 License
+## License
 
-The registry infrastructure is MIT licensed.
-Individual modules are licensed by their authors.
+Registry infrastructure: MIT
+Individual modules: Licensed by their authors (CC0 required for registry inclusion)
