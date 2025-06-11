@@ -1,5 +1,46 @@
 {
   "version": "1.0.0",
   "updated": "2025-05-30T00:00:00Z",
-  "modules": {}
+  "modules": {},
+  "@mlld/array": {
+    "name": "array",
+    "author": "mlld",
+    "version": "1.0.0",
+    "about": "Array operations",
+    "needs": [
+      "js"
+    ],
+    "repo": "https://github.com/mlld-lang/modules",
+    "keywords": [
+      "arrays",
+      "lodash",
+      "filter",
+      "map",
+      "find",
+      "includes",
+      "math",
+      "range",
+      "zip",
+      "range",
+      "chunk"
+    ],
+    "bugs": "https://github.com/mlld-lang/modules/issues",
+    "license": "CC0",
+    "mlldVersion": "*",
+    "ownerGithubUserIds": [
+      110551
+    ],
+    "source": {
+      "type": "github",
+      "url": "https://raw.githubusercontent.com/mlld-lang/modules/281ad3d67dd9451c4c10624f2cb8b36c3624d7ec/core/array.mld.md",
+      "contentHash": "5a1b7276ef26f1ec6bd98ae0a5d9bbb1d8cdff0a94ad2ae60203258224dfc66c",
+      "repository": {
+        "type": "git",
+        "url": "https://github.com/mlld-lang/modules",
+        "commit": "281ad3d67dd9451c4c10624f2cb8b36c3624d7ec",
+        "path": "core/array.mld.md"
+      }
+    },
+    "publishedAt": "2025-06-11T22:05:30.442Z"
+  }
 }
