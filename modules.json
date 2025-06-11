@@ -1,5 +1,40 @@
 {
   "version": "1.0.0",
   "updated": "2025-05-30T00:00:00Z",
-  "modules": {}
+  "modules": {},
+  "@mlld/fix-relative-links": {
+    "name": "fix-relative-links",
+    "author": "mlld",
+    "version": "1.0.0",
+    "about": "Fix relative markdown links based on context",
+    "needs": [
+      "node"
+    ],
+    "repo": "https://github.com/mlld-lang/modules",
+    "keywords": [
+      "markdown",
+      "relative",
+      "links",
+      "paths",
+      "pipeline"
+    ],
+    "bugs": "https://github.com/mlld-lang/modules/issues",
+    "license": "CC0",
+    "mlldVersion": "*",
+    "ownerGithubUserIds": [
+      110551
+    ],
+    "source": {
+      "type": "github",
+      "url": "https://raw.githubusercontent.com/mlld-lang/modules/281ad3d67dd9451c4c10624f2cb8b36c3624d7ec/new/fix-relative-links.mld.md",
+      "contentHash": "1fd4ec04ce69af12e3a9dc153f741f4dbce423b96ec4662fed7deecf66c216eb",
+      "repository": {
+        "type": "git",
+        "url": "https://github.com/mlld-lang/modules",
+        "commit": "281ad3d67dd9451c4c10624f2cb8b36c3624d7ec",
+        "path": "new/fix-relative-links.mld.md"
+      }
+    },
+    "publishedAt": "2025-06-11T22:04:39.348Z"
+  }
 }
