@@ -1,0 +1,37 @@
+{
+  "author": "mlld",
+  "modules": {
+    "@mlld/fs": {
+      "name": "fs",
+      "author": "mlld",
+      "version": "1.0.0",
+      "about": "Filesystem operations",
+      "needs": [
+        "sh"
+      ],
+      "repo": "https://github.com/mlld-lang/modules",
+      "keywords": [
+        "fs",
+        "filesystem"
+      ],
+      "bugs": "https://github.com/mlld-lang/modules/issues",
+      "license": "CC0",
+      "mlldVersion": "*",
+      "ownerGithubUserIds": [
+        110551
+      ],
+      "source": {
+        "type": "github",
+        "url": "https://raw.githubusercontent.com/mlld-lang/modules/281ad3d67dd9451c4c10624f2cb8b36c3624d7ec/core/fs.mld.md",
+        "contentHash": "f5f79cf59c90385facc22a81c1bb9b4d1780289a849f0013ac4981c7a6742054",
+        "repository": {
+          "type": "git",
+          "url": "https://github.com/mlld-lang/modules",
+          "commit": "281ad3d67dd9451c4c10624f2cb8b36c3624d7ec",
+          "path": "core/fs.mld.md"
+        }
+      },
+      "publishedAt": "2025-06-11T22:37:14.876Z"
+    }
+  }
+}
