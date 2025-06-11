@@ -1,0 +1,42 @@
+{
+  "author": "mlld",
+  "modules": {
+    "@mlld/http": {
+      "name": "http",
+      "author": "mlld",
+      "version": "1.0.0",
+      "about": "HTTP methods using fetch",
+      "needs": [
+        "js"
+      ],
+      "repo": "https://github.com/mlld-lang/modules",
+      "keywords": [
+        "http",
+        "api",
+        "get",
+        "put",
+        "post",
+        "delete",
+        "rest"
+      ],
+      "bugs": "https://github.com/mlld-lang/modules/issues",
+      "license": "CC0",
+      "mlldVersion": "*",
+      "ownerGithubUserIds": [
+        110551
+      ],
+      "source": {
+        "type": "github",
+        "url": "https://raw.githubusercontent.com/mlld-lang/modules/281ad3d67dd9451c4c10624f2cb8b36c3624d7ec/core/http.mld.md",
+        "contentHash": "ca18a5e15733ecc367b9a89efac25463cac45f553b2e756708b807c2b455e6c3",
+        "repository": {
+          "type": "git",
+          "url": "https://github.com/mlld-lang/modules",
+          "commit": "281ad3d67dd9451c4c10624f2cb8b36c3624d7ec",
+          "path": "core/http.mld.md"
+        }
+      },
+      "publishedAt": "2025-06-11T22:36:27.442Z"
+    }
+  }
+}
