@@ -1,0 +1,53 @@
+{
+  "author": "mlld",
+  "modules": {
+    "@mlld/string": {
+      "name": "string",
+      "author": "mlld",
+      "version": "1.0.0",
+      "about": "String operations",
+      "needs": [
+        "js"
+      ],
+      "repo": "https://github.com/mlld-lang/modules",
+      "keywords": [
+        "length",
+        "transformation",
+        "camelCase",
+        "snake_case",
+        "kebab-case",
+        "SCREAMING_SNAKE",
+        "SNAKE-KEBAB",
+        "substring",
+        "slice",
+        "split",
+        "join",
+        "pad",
+        "replace",
+        "starsWith",
+        "endsWith",
+        "escape",
+        "unescape",
+        "encode"
+      ],
+      "bugs": "https://github.com/mlld-lang/modules/issues",
+      "license": "CC0",
+      "mlldVersion": "*",
+      "ownerGithubUserIds": [
+        110551
+      ],
+      "source": {
+        "type": "github",
+        "url": "https://raw.githubusercontent.com/mlld-lang/modules/281ad3d67dd9451c4c10624f2cb8b36c3624d7ec/core/string.mld.md",
+        "contentHash": "6d2edde630d6bbda7ba6b8cace3aa13c5faac7b65030f3e3a14f3ae4c96b4a34",
+        "repository": {
+          "type": "git",
+          "url": "https://github.com/mlld-lang/modules",
+          "commit": "281ad3d67dd9451c4c10624f2cb8b36c3624d7ec",
+          "path": "core/string.mld.md"
+        }
+      },
+      "publishedAt": "2025-06-11T22:36:47.234Z"
+    }
+  }
+}
