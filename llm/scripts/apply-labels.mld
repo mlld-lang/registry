@@ -1,0 +1,49 @@
+---
+description: Apply GitHub labels based on LLM review results
+mlld-version: ">=1.3.0"
+---
+
+# Apply Review Labels
+
+@import { PR_NUMBER, REPO_OWNER, REPO_NAME, LLM_RECOMMENDATION, LLM_CATEGORY } from @INPUT
+
+## Set Default Values
+
+@text recommendation = @LLM_RECOMMENDATION || "COMMENT"
+@text category = @LLM_CATEGORY || "uncategorized"
+@text repo = [[{{REPO_OWNER}}/{{REPO_NAME}}]]
+
+## Create Missing Labels if Needed
+
+@exec createLabel(name, color, description) = @run [(
+  gh label create "@name" \
+    --repo @repo \
+    --color "@color" \
+    --description "@description" \
+    2>/dev/null || true
+)]
+
+>> Ensure labels exist
+@run @createLabel("llm-approved", "0e8a16", "Module approved by LLM review")
+@run @createLabel("needs-changes", "d93f0b", "Changes requested by LLM review")
+@run @createLabel("needs-review", "fbca04", "Needs manual review")
+
+## Apply Recommendation Label
+
+@when @recommendation: [
+  "APPROVE" => @run [(gh pr edit @PR_NUMBER --repo @repo --add-label "llm-approved")]
+  "REQUEST_CHANGES" => @run [(gh pr edit @PR_NUMBER --repo @repo --add-label "needs-changes")]
+  "COMMENT" => @run [(gh pr edit @PR_NUMBER --repo @repo --add-label "needs-review")]
+]
+
+## Apply Category Label
+
+@when @category: [
+  "uncategorized" => @output "No category label to apply" to stdout
+  true => @run @createLabel("module-@category", "1d76db", "Module category: @category")
+  true => @run [(gh pr edit @PR_NUMBER --repo @repo --add-label "module-@category")]
+]
+
+## Summary
+
+@output [[✅ Labels applied for PR #{{PR_NUMBER}}: {{recommendation}} ({{category}})]] to stdout

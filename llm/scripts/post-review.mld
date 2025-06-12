@@ -1,0 +1,30 @@
+---
+description: Post GitHub review based on LLM recommendation
+mlld-version: ">=1.3.0"
+---
+
+# Post Review Comment
+
+@import { PR_NUMBER, REPO_OWNER, REPO_NAME, LLM_RECOMMENDATION, LLM_REVIEW_BODY } from @INPUT
+
+## Set Default Values
+
+@text recommendation = @LLM_RECOMMENDATION || "COMMENT"
+@text reviewBody = @LLM_REVIEW_BODY || "Review failed to generate"
+@text repo = [[{{REPO_OWNER}}/{{REPO_NAME}}]]
+
+## Debug Output
+
+@output [[Posting review for PR #{{PR_NUMBER}} with recommendation: {{recommendation}}]] to stdout
+
+## Post Review Based on Recommendation
+
+@when @recommendation: [
+  "APPROVE" => @run [(gh pr review @PR_NUMBER --repo @repo --approve --body "@reviewBody")]
+  "REQUEST_CHANGES" => @run [(gh pr review @PR_NUMBER --repo @repo --request-changes --body "@reviewBody")]
+  "COMMENT" => @run [(gh pr comment @PR_NUMBER --repo @repo --body "@reviewBody")]
+]
+
+## Summary
+
+@output [[✅ Review posted successfully]] to stdout

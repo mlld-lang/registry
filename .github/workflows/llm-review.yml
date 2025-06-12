@@ -52,7 +52,7 @@ jobs:
     - name: Install mlld
       if: steps.check-allowlist.outputs.trusted == 'false'
       run: |
-        npm install -g mlld@1.3.0
+        npm install -g --omit=optional mlld@1.3.0
         
     - name: Build combined registry
       if: steps.check-allowlist.outputs.trusted == 'false'
