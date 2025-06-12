@@ -25,10 +25,7 @@ jobs:
         with:
           node-version: '20'
           
-      - name: Install mlld
-        run: |
-          npm install -g --omit=optional mlld@latest
-          mlld --version
+      # Skip mlld install - use npx instead to avoid libsecret issues
           
       - name: Install GitHub CLI
         run: |
@@ -49,7 +46,7 @@ jobs:
         run: |
           # Run the mlld review script
           # The script will set environment variables directly
-          mlld llm/scripts/review-pr.mld
+          npx mlld@latest llm/scripts/review-pr.mld
           
       - name: Post Review Comment
         if: always()
@@ -59,7 +56,7 @@ jobs:
           REPO_OWNER: ${{ github.repository_owner }}
           REPO_NAME: ${{ github.event.repository.name }}
         run: |
-          mlld llm/scripts/post-review.mld
+          npx mlld@latest llm/scripts/post-review.mld
           
       - name: Add Labels
         if: always()
@@ -69,4 +66,4 @@ jobs:
           REPO_OWNER: ${{ github.repository_owner }}
           REPO_NAME: ${{ github.event.repository.name }}
         run: |
-          mlld llm/scripts/apply-labels.mld
+          npx mlld@latest llm/scripts/apply-labels.mld

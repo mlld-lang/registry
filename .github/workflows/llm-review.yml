@@ -32,7 +32,7 @@ jobs:
         PR_AUTHOR: ${{ github.event.pull_request.user.login }}
       run: |
         echo "Checking if $PR_AUTHOR is in allowlist..."
-        mlld llm/scripts/check-allowlist.mld || true
+        npx mlld@latest llm/scripts/check-allowlist.mld || true
         
     - name: Auto-approve trusted authors
       if: steps.check-allowlist.outputs.trusted == 'true'
@@ -49,10 +49,7 @@ jobs:
           
           console.log('✅ Auto-approved PR from trusted author');
           
-    - name: Install mlld
-      if: steps.check-allowlist.outputs.trusted == 'false'
-      run: |
-        npm install -g --omit=optional mlld@latest
+    # Remove the install step - we'll use npx instead
         
     - name: Build combined registry
       if: steps.check-allowlist.outputs.trusted == 'false'
@@ -72,7 +69,7 @@ jobs:
         echo "Running automated review for PR #$PR_NUMBER"
         # Run mlld to generate the review
         # The script will set environment variables using @output directives
-        mlld llm/scripts/review-pr.mld
+        npx mlld@latest llm/scripts/review-pr.mld
         
         # The environment variables are now set by mlld:
         # - LLM_RECOMMENDATION
