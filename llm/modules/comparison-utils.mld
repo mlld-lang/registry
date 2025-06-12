@@ -46,13 +46,3 @@ mlld-version: ">=1.0.0-rc"
   return "true";
 )]
 
-@data module = {
-  "greaterThan": @greaterThan,
-  "lessThan": @lessThan,
-  "equals": @equals,
-  "strictEquals": @strictEquals,
-  "contains": @contains,
-  "matches": @matches,
-  "includes": @includes,
-  "isTruthy": @isTruthy
-}

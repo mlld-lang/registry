@@ -57,11 +57,3 @@ mlld-version: ">=1.0.0-rc"
     --silent && echo "true" || echo ""
 )]
 
-@data module = {
-  "getPRData": @getPRData,
-  "getPRDiff": @getPRDiff,
-  "parseChangedFiles": @parseChangedFiles,
-  "createReview": @createReview,
-  "addComment": @addComment,
-  "isCollaborator": @isCollaborator
-}

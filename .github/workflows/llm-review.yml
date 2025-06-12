@@ -49,11 +49,10 @@ jobs:
           
           console.log('✅ Auto-approved PR from trusted author');
           
-    - name: Install mlld and Claude CLI
+    - name: Install mlld
       if: steps.check-allowlist.outputs.trusted == 'false'
       run: |
-        npm install -g mlld@1.0.0-rc-3
-        npm install -g @anthropic-ai/claude-code
+        npm install -g mlld@1.3.0
         
     - name: Build combined registry
       if: steps.check-allowlist.outputs.trusted == 'false'
@@ -71,7 +70,21 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         echo "Running automated review for PR #$PR_NUMBER"
-        mlld --stdout llm/scripts/review-pr.mld
+        # Run mlld to generate the review
+        # The script will set environment variables using @output directives
+        mlld llm/scripts/review-pr.mld
+        
+        # The environment variables are now set by mlld:
+        # - LLM_RECOMMENDATION
+        # - LLM_CATEGORY
+        # - LLM_REVIEW_BODY
+        
+        # Pass them to GitHub Actions environment
+        echo "LLM_RECOMMENDATION=$LLM_RECOMMENDATION" >> $GITHUB_ENV
+        echo "LLM_CATEGORY=$LLM_CATEGORY" >> $GITHUB_ENV
+        echo "LLM_REVIEW_BODY<<EOF" >> $GITHUB_ENV
+        echo "$LLM_REVIEW_BODY" >> $GITHUB_ENV
+        echo "EOF" >> $GITHUB_ENV
         
     - name: Auto-approve if recommended
       if: steps.check-allowlist.outputs.trusted == 'false' && env.LLM_RECOMMENDATION == 'APPROVE'
@@ -83,7 +96,7 @@ jobs:
             repo: context.repo.repo,
             pull_number: context.issue.number,
             event: 'APPROVE',
-            body: '🤖 **mlld Registry Bot**\n\n✅ **Decision: APPROVED**\n\n' + process.env.LLM_REVIEW_REASONING + '\n\n---\n*I am an automated reviewer powered by Claude AI. I help maintain quality standards for the mlld module registry.*'
+            body: process.env.LLM_REVIEW_BODY
           });
           
     - name: Request changes if issues found
@@ -96,7 +109,7 @@ jobs:
             repo: context.repo.repo,
             pull_number: context.issue.number,
             event: 'REQUEST_CHANGES',
-            body: '🤖 **mlld Registry Bot**\n\n❌ **Decision: CHANGES REQUESTED**\n\n' + process.env.LLM_REVIEW_REASONING + '\n\n---\n*I am an automated reviewer powered by Claude AI. I help maintain quality standards for the mlld module registry.*'
+            body: process.env.LLM_REVIEW_BODY
           });
           
     - name: Comment with review
@@ -109,5 +122,5 @@ jobs:
             owner: context.repo.owner,
             repo: context.repo.repo,
             issue_number: context.issue.number,
-            body: '🤖 **mlld Registry Bot**\n\n💬 **Decision: COMMENT**\n\n' + process.env.LLM_REVIEW_REASONING + '\n\n---\n*I am an automated reviewer powered by Claude AI. I help maintain quality standards for the mlld module registry.*'
+            body: process.env.LLM_REVIEW_BODY
           });

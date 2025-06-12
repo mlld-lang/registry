@@ -1,17 +1,17 @@
 ---
 description: Check if PR author is on the trusted allowlist
-mlld-version: ">=1.0.0-rc"
+mlld-version: ">=1.3.0"
 ---
 
 # Check Trusted Author Status
 
 @import { PR_AUTHOR } from @INPUT
-@import { includes } from [@./llm/modules/comparison-utils.mld]
+@import { includes } from "../modules/comparison-utils.mld"
 
 ## Read Allowlist
 
 >> Read the allowlist file from project root
-@text allowlistContent = [@./allowlist.json]
+@path allowlistContent = "../../allowlist.json"
 
 >> Parse the JSON
 @exec parseAllowlist(content) = @run js [(
@@ -50,8 +50,7 @@ mlld-version: ">=1.0.0-rc"
 
 ## Exit Code for GitHub Actions
 
->> GitHub Actions uses exit code to determine trusted status
->> Exit 0 = trusted (skip review), Exit 1 = not trusted (needs review)
+>> GitHub Actions uses output to determine trusted status
 @when @isTrusted: [
   true  => @run [(echo "trusted=true" >> $GITHUB_OUTPUT)]
   false => @run [(echo "trusted=false" >> $GITHUB_OUTPUT)]

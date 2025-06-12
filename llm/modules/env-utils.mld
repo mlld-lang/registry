@@ -43,7 +43,7 @@ mlld-version: ">=1.0.0-rc"
 
 >> Get environment variable with fallback
 @exec getEnv(name, fallback) = @run js [(
-  process.env[name] || fallback || ''
+  return process.env[name] || fallback || '';
 )]
 
 >> Check if running in CI environment
@@ -54,8 +54,3 @@ mlld-version: ">=1.0.0-rc"
   return isCI ? "true" : "";
 )]
 
-@data module = {
-  "validateEnvironment": @validateEnvironment,
-  "getEnv": @getEnv,
-  "isCI": @isCI
-}

@@ -158,8 +158,3 @@ mlld-version: ">=1.0.0-rc"
   return null;
 )]
 
-@data module = {
-  "extractModuleContent": @extractModuleContent,
-  "validateModule": @validateModule,
-  "parseModulePath": @parseModulePath
-}
