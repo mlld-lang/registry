@@ -6,12 +6,11 @@ mlld-version: ">=1.3.0"
 # Check Trusted Author Status
 
 @import { PR_AUTHOR } from @input
-@import { includes } from "../modules/comparison-utils.mld"
 
 ## Read Allowlist
 
 >> Read the allowlist file from project root
-@path allowlistContent = "../../allowlist.json"
+@text allowlistContent = @run [(cat ./allowlist.json)]
 
 >> Parse the JSON
 @exec parseAllowlist(content) = @run js [(
@@ -32,38 +31,48 @@ mlld-version: ">=1.3.0"
   }
 )]
 
-@data allowlist = @parseAllowlist(@allowlistContent)
+@data allowlistData = @parseAllowlist(@allowlistContent)
 
 ## Check Trust Status
 
-@text errorMessage = [[⚠️ Failed to parse allowlist: {{allowlist.error}}]]
-@data isInvalid = @allowlist.valid == false
-@when @isInvalid => @add @errorMessage
+@text errorMessage = [[⚠️ Failed to parse allowlist: {{allowlistData.error}}]]
+@exec checkError(allowlist) = @run js [(
+  return !allowlist || !allowlist.valid;
+)]
+@data hasError = @checkError(@allowlistData)
+@when @hasError => @add "⚠️ Failed to read or parse allowlist file"
 
 >> Check if author is trusted
 @exec checkTrust(allowlist, author) = @run js [(
-  if (allowlist && allowlist.valid) {
-    return includes(allowlist.authors, author);
+  if (allowlist && allowlist.valid && Array.isArray(allowlist.authors)) {
+    return allowlist.authors.includes(author) ? "true" : "";
   }
-  return false;
+  return "";
 )]
 
-@data isTrusted = @checkTrust(@allowlist, @PR_AUTHOR)
+@data isTrusted = @checkTrust(@allowlistData, @PR_AUTHOR)
 
 ## Report Status
 
-@text trustedMessage = [[✅ {{PR_AUTHOR}} is a trusted author ({{allowlist.count}} total trusted authors)]]
-@text notTrustedMessage = [[ℹ️ {{PR_AUTHOR}} is not on allowlist, will proceed with LLM review]]
+@exec reportStatus(trusted, author, count) = @run js [(
+  if (trusted === "true" || trusted === true) {
+    return `✅ ${author} is a trusted author (${count} total trusted authors)`;
+  } else {
+    return `ℹ️ ${author} is not on allowlist, will proceed with LLM review`;
+  }
+)]
 
-@when @isTrusted: [
-  true  => @add @trustedMessage
-  false => @add @notTrustedMessage
-]
+@text statusMessage = @reportStatus(@isTrusted, @PR_AUTHOR, @allowlistData.count)
+@add @statusMessage
 
 ## Exit Code for GitHub Actions
 
 >> GitHub Actions uses output to determine trusted status
+@exec setGitHubOutput(value) = @run sh [(
+  echo "trusted=$value" >> $GITHUB_OUTPUT
+)]
+
 @when @isTrusted: [
-  true  => @run [(echo "trusted=true" >> $GITHUB_OUTPUT)]
-  false => @run [(echo "trusted=false" >> $GITHUB_OUTPUT)]
+  true  => @run @setGitHubOutput("true")
+  false => @run @setGitHubOutput("false")
 ]

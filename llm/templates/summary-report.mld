@@ -6,31 +6,31 @@ mlld-version: ">=1.0.0-rc"
 # Summary Report Template
 
 >> Create a summary report of the review process
-@text createSummaryReport(prData, validation, review) = [[
-## 📊 Review Summary
+@exec createSummaryReport(prData, validation, review) = @run js [(
+  const pr = typeof prData === 'string' ? JSON.parse(prData) : prData;
+  const val = typeof validation === 'string' ? JSON.parse(validation) : validation;
+  const rev = typeof review === 'string' ? JSON.parse(review) : review;
+  
+  return `## 📊 Review Summary
 
 ### Pull Request
-- **PR**: #{{prData.number}} - {{prData.title}}
-- **Author**: @{{prData.author.login}}
-- **Files**: {{prData.files.length}} changed
+- **PR**: #${pr.number} - ${pr.title}
+- **Author**: @${pr.author?.login || pr.author}
+- **Files**: ${pr.files?.length || 0} changed
 
-### Validation
-- **Status**: {{validation.valid ? "✅ Passed" : "❌ Failed"}}
-- **Checks**: {{validation.checkedFields}} fields validated
-{{validation.issues.length > 0 ? "- **Issues**: " + validation.issues.length + " found" : ""}}
+### Validation Status
+${val.valid ? "✅ All automated checks passed" : "❌ Validation failed"}
+${val.issues && val.issues.length > 0 ? "\nIssues:\n" + val.issues.map(i => "- " + i).join("\n") : ""}
 
-### Review Decision
-- **Recommendation**: {{review.recommendation}}
-- **Type**: {{review.error ? "Fallback (AI unavailable)" : "AI Review"}}
+### AI Review Decision
+- **Recommendation**: ${rev.recommendation}
+- **Category**: ${rev.category || "uncategorized"}
 
-### Module Info
-{{validation.moduleData.name ? "- **Name**: `" + validation.moduleData.name + "`" : ""}}
-{{validation.moduleData.author ? "- **Author**: " + validation.moduleData.author : ""}}
-{{validation.moduleData.description ? "- **Description**: " + validation.moduleData.description : ""}}
+${rev.reasoning ? "### Review Details\n" + rev.reasoning : ""}
 
 ---
-*Review completed at {{new Date().toISOString()}}*
-]]
+*Review completed at ${new Date().toISOString()}*`;
+)]
 
 @data module = {
   "createSummaryReport": @createSummaryReport

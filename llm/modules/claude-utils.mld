@@ -8,26 +8,25 @@ mlld-version: ">=1.0.0-rc"
 # Claude API Utilities
 
 >> Query Claude CLI with automatic retry
-@exec queryClaudeAPI(prompt, maxRetries) = @run [(
-  # Use claude CLI with proper error handling
-  attempts=0
-  while [ $attempts -lt ${maxRetries} ]; do
-    response=$(claude --print "${prompt}" 2>&1)
-    exit_code=$?
-    
-    if [ $exit_code -eq 0 ]; then
-      echo "$response"
-      exit 0
-    fi
-    
-    attempts=$((attempts + 1))
-    if [ $attempts -lt ${maxRetries} ]; then
-      sleep $((attempts * 2))  # Exponential backoff
-    fi
-  done
+@exec queryClaudeAPI(prompt, maxRetries) = @run js [(
+  const { execSync } = require('child_process');
   
-  echo "ERROR: Claude request failed after ${maxRetries} attempts"
-  exit 1
+  let attempts = 0;
+  while (attempts < maxRetries) {
+    try {
+      const response = execSync(`claude --print "${prompt}"`, { encoding: 'utf8', stdio: 'pipe' });
+      return response;
+    } catch (error) {
+      attempts++;
+      if (attempts < maxRetries) {
+        // Exponential backoff
+        const sleepTime = attempts * 2;
+        execSync(`sleep ${sleepTime}`);
+      }
+    }
+  }
+  
+  return `ERROR: Claude request failed after ${maxRetries} attempts`;
 )]
 
 >> Parse Claude's review response

@@ -6,22 +6,24 @@ mlld-version: ">=1.0.0-rc"
 # Review Prompt Template
 
 >> Generate the review prompt for Claude
-@text reviewPrompt(context) = [[
-You are reviewing a module submission to the mlld public registry. The mlld registry is a collection of reusable modules that extend mlld's capabilities.
+@exec reviewPrompt(context) = @run js [(
+  const ctx = typeof context === 'string' ? JSON.parse(context) : context;
+  
+  return `You are reviewing a module submission to the mlld public registry. The mlld registry is a collection of reusable modules that extend mlld's capabilities.
 
 ## Pull Request Information
-- PR #{{context.pr.number}}: {{context.pr.title}}
-- Author: {{context.pr.author}}
-- Files changed: {{context.pr.files.length}}
+- PR #${ctx.pr.number}: ${ctx.pr.title}
+- Author: ${ctx.pr.author}
+- Files changed: ${ctx.pr.files.length}
 
 ## Module Being Submitted
-```json
-{{JSON.stringify(context.module, null, 2)}}
-```
+\`\`\`json
+${JSON.stringify(ctx.module, null, 2)}
+\`\`\`
 
 ## Automated Validation Results
-Status: {{context.validation.valid ? "✅ PASSED" : "❌ FAILED"}}
-{{context.validation.issues.length > 0 ? "\nIssues found:\n" + context.validation.issues.map(i => "- " + i).join("\n") : ""}}
+Status: ${ctx.validation.valid ? "✅ PASSED" : "❌ FAILED"}
+${ctx.validation.issues && ctx.validation.issues.length > 0 ? "\nIssues found:\n" + ctx.validation.issues.map(i => "- " + i).join("\n") : ""}
 
 ## Review Criteria
 
@@ -91,13 +93,13 @@ Immediately after your decision word, on the next line, provide the category ass
 Then provide detailed reasoning for your decision. Be specific about any issues or suggestions.
 
 Example format:
-```
+\`\`\`
 APPROVE
 CATEGORY: apis
 
 This module provides excellent value by... [detailed reasoning]
-```
-]]
+\`\`\``;
+)]
 
 @data module = {
   "reviewPrompt": @reviewPrompt

@@ -5,13 +5,20 @@ mlld-version: ">=1.3.0"
 
 # Post Review Comment
 
-@import { * } from @input
+@import { PR_NUMBER, REPO_OWNER, REPO_NAME, LLM_RECOMMENDATION, LLM_REVIEW_BODY } from @input
 
 ## Set Default Values
 
-@text recommendation = @LLM_RECOMMENDATION || "COMMENT"
-@text reviewBody = @LLM_REVIEW_BODY || "Review failed to generate"
-@text repo = @REPO_OWNER + "/" + @REPO_NAME
+@exec setDefault(value, defaultValue) = @run js [(
+  return value || defaultValue;
+)]
+
+@text recommendation = @setDefault(@LLM_RECOMMENDATION, "COMMENT")
+@text reviewBody = @setDefault(@LLM_REVIEW_BODY, "Review failed to generate")
+@exec buildRepo(owner, name) = @run js [(
+  return owner + "/" + name;
+)]
+@text repoPath = @buildRepo(@REPO_OWNER, @REPO_NAME)
 
 ## Debug Output
 
@@ -20,10 +27,23 @@ mlld-version: ">=1.3.0"
 
 ## Post Review Based on Recommendation
 
+>> Use exec to create review commands
+@exec postApproval(pr, repo, body) = @run [(
+  gh pr review $pr --repo $repo --approve --body "$body"
+)]
+
+@exec postChanges(pr, repo, body) = @run [(
+  gh pr review $pr --repo $repo --request-changes --body "$body"
+)]
+
+@exec postComment(pr, repo, body) = @run [(
+  gh pr comment $pr --repo $repo --body "$body"
+)]
+
 @when @recommendation: [
-  "APPROVE" => @run [(gh pr review @PR_NUMBER --repo @repo --approve --body "@reviewBody")]
-  "REQUEST_CHANGES" => @run [(gh pr review @PR_NUMBER --repo @repo --request-changes --body "@reviewBody")]
-  "COMMENT" => @run [(gh pr comment @PR_NUMBER --repo @repo --body "@reviewBody")]
+  "APPROVE" => @run @postApproval(@PR_NUMBER, @repoPath, @reviewBody)
+  "REQUEST_CHANGES" => @run @postChanges(@PR_NUMBER, @repoPath, @reviewBody)
+  "COMMENT" => @run @postComment(@PR_NUMBER, @repoPath, @reviewBody)
 ]
 
 ## Summary

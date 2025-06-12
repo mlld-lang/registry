@@ -51,9 +51,13 @@ mlld-version: ">=1.0.0-rc"
 )]
 
 >> Check if user is a collaborator
-@exec isCollaborator(user, repo) = @run [(
-  gh api \
-    repos/@repo/collaborators/@user \
-    --silent && echo "true" || echo ""
+@exec isCollaborator(user, repo) = @run js [(
+  try {
+    const { execSync } = require('child_process');
+    execSync(`gh api repos/${repo}/collaborators/${user} --silent`, { stdio: 'pipe' });
+    return "true";
+  } catch (e) {
+    return "";
+  }
 )]
 

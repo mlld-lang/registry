@@ -5,13 +5,20 @@ mlld-version: ">=1.3.0"
 
 # Apply Review Labels
 
-@import { * } from @input
+@import { PR_NUMBER, REPO_OWNER, REPO_NAME, LLM_RECOMMENDATION, LLM_CATEGORY } from @input
 
 ## Set Default Values
 
-@text recommendation = @LLM_RECOMMENDATION || "COMMENT"
-@text category = @LLM_CATEGORY || "uncategorized"
-@text repo = @REPO_OWNER + "/" + @REPO_NAME
+@exec setDefault(value, defaultValue) = @run js [(
+  return value || defaultValue;
+)]
+
+@text recommendation = @setDefault(@LLM_RECOMMENDATION, "COMMENT")
+@text category = @setDefault(@LLM_CATEGORY, "uncategorized")
+@exec buildRepo(owner, name) = @run js [(
+  return owner + "/" + name;
+)]
+@text repo = @buildRepo(@REPO_OWNER, @REPO_NAME)
 
 ## Create Missing Labels if Needed
 
@@ -38,8 +45,12 @@ mlld-version: ">=1.3.0"
 ## Apply Category Label
 
 @when @category: [
-  "uncategorized" => @output "No category label to apply" to stdout
+  "uncategorized" => @add "No category label to apply"
   true => @run @createLabel("module-@category", "1d76db", "Module category: @category")
+]
+
+@when @category: [
+  "uncategorized" => @add ""
   true => @run [(gh pr edit @PR_NUMBER --repo @repo --add-label "module-@category")]
 ]
 

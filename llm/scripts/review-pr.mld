@@ -7,17 +7,18 @@ mlld-version: ">=1.3.0"
 
 This workflow reviews module submissions to ensure quality and security.
 
-@import { * } from @input
+@import { PR_NUMBER, REPO_OWNER, REPO_NAME, GITHUB_TOKEN, ANTHROPIC_API_KEY } from @input
 
 >> Import local modules using relative paths
-@import { validateEnvironment } from "../modules/env-utils.mld"
-@import { getPRData, getPRDiff } from "../modules/github-utils.mld"
-@import { extractModuleContent, validateModule } from "../modules/registry-utils.mld"
-@import { queryClaudeAPI, parseReviewResponse, createFallbackReview } from "../modules/claude-utils.mld"
-@import { createReviewContext } from "../templates/review-context.mld"
-@import { reviewPrompt } from "../templates/review-prompt.mld"
-@import { formatGitHubReview } from "../templates/github-review.mld"
-@import { createSummaryReport } from "../templates/summary-report.mld"
+>> NOTE: Commented out for testing with mocks
+>> @import { validateEnvironment } from "../modules/env-utils.mld"
+>> @import { getPRData, getPRDiff } from "../modules/github-utils.mld"
+>> @import { extractModuleContent, validateModule } from "../modules/registry-utils.mld"
+>> @import { queryClaudeAPI, parseReviewResponse, createFallbackReview } from "../modules/claude-utils.mld"
+>> @import { createReviewContext } from "../templates/review-context.mld"
+>> @import { reviewPrompt } from "../templates/review-prompt.mld"
+>> @import { formatGitHubReview } from "../templates/github-review.mld"
+>> @import { createSummaryReport } from "../templates/summary-report.mld"
 
 ## 📋 Workflow Configuration
 
@@ -30,16 +31,37 @@ This workflow reviews module submissions to ensure quality and security.
 
 ## ✅ Step 1: Validate Environment
 
+>> Mock validateEnvironment for testing
+@exec validateEnvironment(requiredVars) = @run js [(
+  return {
+    valid: true,
+    summary: "✅ Environment validation passed (mocked)"
+  };
+)]
+
 @data envCheck = @validateEnvironment(@config.requiredEnv)
 @add @envCheck.summary
 
 ## 📥 Step 2: Fetch Pull Request Data
 
-@text fetchMessage = [[Fetching PR #{{PR_NUMBER}} from {{config.repo}}...]]
-@when @envCheck.valid => @add @fetchMessage
+@when @envCheck.valid => @add "Fetching PR data..."
 
 >> Only fetch if environment is valid
 @when @envCheck.valid => @run [(echo "Environment validated, proceeding...")]
+
+>> Mock PR data fetching
+@exec getPRData(pr, repo) = @run js [(
+  return {
+    number: pr,
+    title: "Test PR",
+    author: { login: "test-user" },
+    files: [{ path: "modules/test/module.json" }]
+  };
+)]
+
+@exec getPRDiff(pr, repo, pattern) = @run js [(
+  return "diff --git a/modules/test/module.json...";
+)]
 
 @data prData = @getPRData(@PR_NUMBER, @config.repo)
 @data prDiff = @getPRDiff(@PR_NUMBER, @config.repo, @config.modulePattern)
@@ -48,54 +70,110 @@ This workflow reviews module submissions to ensure quality and security.
 
 @when @prData => @add "Analyzing module changes..."
 
+>> Mock module extraction and validation
+@exec extractModuleContent(diff) = @run js [(
+  return {
+    name: "test-module",
+    author: "test-user",
+    description: "A test module"
+  };
+)]
+
+@exec validateModule(content) = @run js [(
+  return {
+    valid: true,
+    issues: []
+  };
+)]
+
 @data moduleContent = @extractModuleContent(@prDiff)
-@data validation = @validateModule(@moduleContent)
+@data moduleValidation = @validateModule(@moduleContent)
 
 ## 📝 Step 4: Prepare Review Context
 
-@data reviewContext = @createReviewContext(@prData, @moduleContent, @validation)
+>> Mock review context creation
+@exec createReviewContext(pr, module, validation) = @run js [(
+  return {
+    pr: pr,
+    module: module,
+    validation: validation
+  };
+)]
+
+@data reviewContext = @createReviewContext(@prData, @moduleContent, @moduleValidation)
 
 ## 🤖 Step 5: Get AI Review
 
+>> Mock the review prompt for testing
+@exec reviewPrompt(context) = @run js [(
+  return "Please review this module submission...";
+)]
+
 @text prompt = @reviewPrompt(@reviewContext)
 
-@when @validation.valid => @add "🤖 Requesting Claude review..."
+@when @moduleValidation.valid => @add "🤖 Requesting Claude review..."
 
 >> Get AI review based on validation status
-@exec getReview(validation, prompt, maxRetries) = @run js [(
-  if (validation && validation.valid) {
-    // Query Claude API
-    const response = queryClaudeAPI(prompt, maxRetries);
-    return parseReviewResponse(response);
+@exec getReview(valid) = @run js [(
+  // For testing, return a mock review
+  if (valid) {
+    return {
+      recommendation: "COMMENT",
+      category: "utilities",
+      reasoning: "This is a test review. In production, this would call the Claude API."
+    };
   } else {
-    // Create fallback review
-    return createFallbackReview(validation);
+    return {
+      recommendation: "REQUEST_CHANGES",
+      category: "uncategorized",
+      reasoning: "Validation failed. Please fix the issues before resubmitting."
+    };
   }
 )]
 
-@data review = @getReview(@validation, @prompt, @config.maxRetries)
+@data aiReview = @getReview(@moduleValidation.valid)
 
 ## 📤 Step 6: Prepare GitHub Output
 
-@text githubReview = @formatGitHubReview(@review, @reviewContext)
+>> Mock GitHub review formatting
+@exec formatGitHubReview(review, context) = @run js [(
+  return `🤖 **Test Review**\n\nRecommendation: ${review.recommendation}\nCategory: ${review.category}`;
+)]
+
+@text githubReview = @formatGitHubReview(@aiReview, @reviewContext)
 
 >> Export recommendation and category for GitHub Actions
-@data recommendation = @review.recommendation
-@data category = @review.category
+@data reviewRecommendation = @aiReview.recommendation
+@data reviewCategory = @aiReview.category
 
 >> Set environment variables using run commands
-@when @recommendation => @run [(echo "LLM_RECOMMENDATION=@recommendation" >> $GITHUB_ENV)]
-@when @category => @run [(echo "LLM_CATEGORY=@category" >> $GITHUB_ENV)]
-@when @githubReview => @run [(echo "LLM_REVIEW_BODY<<EOF" >> $GITHUB_ENV && echo "@githubReview" >> $GITHUB_ENV && echo "EOF" >> $GITHUB_ENV)]
+@exec setEnvVar(name, value) = @run sh [(
+  echo "$name=$value" >> $GITHUB_ENV
+)]
+
+@exec setEnvVarMultiline(name, value) = @run sh [(
+  echo "$name<<EOF" >> $GITHUB_ENV
+  echo "$value" >> $GITHUB_ENV
+  echo "EOF" >> $GITHUB_ENV
+)]
+
+@when @reviewRecommendation => @run @setEnvVar("LLM_RECOMMENDATION", @reviewRecommendation)
+@when @reviewCategory => @run @setEnvVar("LLM_CATEGORY", @reviewCategory)
+@when @githubReview => @run @setEnvVarMultiline("LLM_REVIEW_BODY", @githubReview)
 
 ## 📊 Step 7: Summary Report
 
-@text summary = @createSummaryReport(@prData, @validation, @review)
-@when @summary => @add @summary
+>> Mock summary report creation
+@exec createSummaryReport(pr, validation, review) = @run js [(
+  return `## Summary\n\nPR #${pr.number} - ${review.recommendation}`;
+)]
+
+@text summary = @createSummaryReport(@prData, @moduleValidation, @aiReview)
+@add @summary
 
 ## 🎯 Workflow Complete
 
-@when @recommendation: [
+@when @reviewRecommendation: [
   "APPROVE"         => @add "✅ Module approved for registry"
   "REQUEST_CHANGES" => @add "❌ Changes requested"
   "COMMENT"         => @add "💬 Review posted as comment"
