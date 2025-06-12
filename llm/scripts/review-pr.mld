@@ -87,7 +87,22 @@ This workflow reviews module submissions to ensure quality and security.
 )]
 
 @data moduleContent = @extractModuleContent(@prDiff)
-@data moduleValidation = @validateModule(@moduleContent)
+
+>> Add safety check for module validation
+@exec safeValidateModule(content) = @run js [(
+  if (!content || typeof content !== 'object') {
+    return {
+      valid: false,
+      issues: ["No module content found"]
+    };
+  }
+  return {
+    valid: true,
+    issues: []
+  };
+)]
+
+@data moduleValidation = @safeValidateModule(@moduleContent)
 
 ## 📝 Step 4: Prepare Review Context
 
@@ -133,6 +148,20 @@ This workflow reviews module submissions to ensure quality and security.
 
 @data aiReview = @getReview(@moduleValidation.valid)
 
+>> Add safety check for AI review
+@exec ensureReview(review) = @run js [(
+  if (!review || typeof review !== 'object') {
+    return {
+      recommendation: "COMMENT",
+      category: "error",
+      reasoning: "Failed to generate review"
+    };
+  }
+  return review;
+)]
+
+@data safeAiReview = @ensureReview(@aiReview)
+
 ## 📤 Step 6: Prepare GitHub Output
 
 >> Mock GitHub review formatting
@@ -140,11 +169,11 @@ This workflow reviews module submissions to ensure quality and security.
   return `🤖 **Test Review**\n\nRecommendation: ${review.recommendation}\nCategory: ${review.category}`;
 )]
 
-@text githubReview = @formatGitHubReview(@aiReview, @reviewContext)
+@text githubReview = @formatGitHubReview(@safeAiReview, @reviewContext)
 
 >> Export recommendation and category for GitHub Actions
-@data reviewRecommendation = @aiReview.recommendation
-@data reviewCategory = @aiReview.category
+@data reviewRecommendation = @safeAiReview.recommendation
+@data reviewCategory = @safeAiReview.category
 
 >> Set environment variables using run commands
 @exec setEnvVar(name, value) = @run sh [(
