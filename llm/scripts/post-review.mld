@@ -5,17 +5,18 @@ mlld-version: ">=1.3.0"
 
 # Post Review Comment
 
-@import { PR_NUMBER, REPO_OWNER, REPO_NAME, LLM_RECOMMENDATION, LLM_REVIEW_BODY } from @INPUT
+@import { * } from @input
 
 ## Set Default Values
 
 @text recommendation = @LLM_RECOMMENDATION || "COMMENT"
 @text reviewBody = @LLM_REVIEW_BODY || "Review failed to generate"
-@text repo = [[{{REPO_OWNER}}/{{REPO_NAME}}]]
+@text repo = @REPO_OWNER + "/" + @REPO_NAME
 
 ## Debug Output
 
-@output [[Posting review for PR #{{PR_NUMBER}} with recommendation: {{recommendation}}]] to stdout
+@text debugMessage = [[Posting review for PR #{{PR_NUMBER}} with recommendation: {{recommendation}}]]
+@add @debugMessage
 
 ## Post Review Based on Recommendation
 
@@ -27,4 +28,4 @@ mlld-version: ">=1.3.0"
 
 ## Summary
 
-@output [[✅ Review posted successfully]] to stdout
+@add "✅ Review posted successfully"

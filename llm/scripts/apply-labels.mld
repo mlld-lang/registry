@@ -5,13 +5,13 @@ mlld-version: ">=1.3.0"
 
 # Apply Review Labels
 
-@import { PR_NUMBER, REPO_OWNER, REPO_NAME, LLM_RECOMMENDATION, LLM_CATEGORY } from @INPUT
+@import { * } from @input
 
 ## Set Default Values
 
 @text recommendation = @LLM_RECOMMENDATION || "COMMENT"
 @text category = @LLM_CATEGORY || "uncategorized"
-@text repo = [[{{REPO_OWNER}}/{{REPO_NAME}}]]
+@text repo = @REPO_OWNER + "/" + @REPO_NAME
 
 ## Create Missing Labels if Needed
 
@@ -19,8 +19,7 @@ mlld-version: ">=1.3.0"
   gh label create "@name" \
     --repo @repo \
     --color "@color" \
-    --description "@description" \
-    2>/dev/null || true
+    --description "@description"
 )]
 
 >> Ensure labels exist
@@ -46,4 +45,5 @@ mlld-version: ">=1.3.0"
 
 ## Summary
 
-@output [[✅ Labels applied for PR #{{PR_NUMBER}}: {{recommendation}} ({{category}})]] to stdout
+@text summaryMessage = [[✅ Labels applied for PR #{{PR_NUMBER}}: {{recommendation}} ({{category}})]]
+@add @summaryMessage

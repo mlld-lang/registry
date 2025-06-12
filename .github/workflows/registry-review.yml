@@ -27,7 +27,7 @@ jobs:
           
       - name: Install mlld
         run: |
-          npm install -g --omit=optional mlld@1.3.0
+          npm install -g --omit=optional mlld@latest
           mlld --version
           
       - name: Install GitHub CLI
@@ -48,6 +48,7 @@ jobs:
           PR_AUTHOR: ${{ github.event.pull_request.user.login }}
         run: |
           # Run the mlld review script
+          # The script will set environment variables directly
           mlld llm/scripts/review-pr.mld
           
       - name: Post Review Comment

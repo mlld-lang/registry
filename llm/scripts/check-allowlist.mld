@@ -5,7 +5,7 @@ mlld-version: ">=1.3.0"
 
 # Check Trusted Author Status
 
-@import { PR_AUTHOR } from @INPUT
+@import { PR_AUTHOR } from @input
 @import { includes } from "../modules/comparison-utils.mld"
 
 ## Read Allowlist
@@ -36,16 +36,28 @@ mlld-version: ">=1.3.0"
 
 ## Check Trust Status
 
-@when @allowlist.valid: [
-  true  => @data isTrusted = @includes(@allowlist.authors, @PR_AUTHOR)
-  false => @add [[⚠️ Failed to parse allowlist: {{allowlist.error}}]]
-]
+@text errorMessage = [[⚠️ Failed to parse allowlist: {{allowlist.error}}]]
+@data isInvalid = @allowlist.valid == false
+@when @isInvalid => @add @errorMessage
+
+>> Check if author is trusted
+@exec checkTrust(allowlist, author) = @run js [(
+  if (allowlist && allowlist.valid) {
+    return includes(allowlist.authors, author);
+  }
+  return false;
+)]
+
+@data isTrusted = @checkTrust(@allowlist, @PR_AUTHOR)
 
 ## Report Status
 
+@text trustedMessage = [[✅ {{PR_AUTHOR}} is a trusted author ({{allowlist.count}} total trusted authors)]]
+@text notTrustedMessage = [[ℹ️ {{PR_AUTHOR}} is not on allowlist, will proceed with LLM review]]
+
 @when @isTrusted: [
-  true  => @add [[✅ {{PR_AUTHOR}} is a trusted author ({{allowlist.count}} total trusted authors)]]
-  false => @add [[ℹ️ {{PR_AUTHOR}} is not on allowlist, will proceed with LLM review]]
+  true  => @add @trustedMessage
+  false => @add @notTrustedMessage
 ]
 
 ## Exit Code for GitHub Actions
