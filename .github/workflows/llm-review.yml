@@ -1,10 +1,13 @@
 name: LLM PR Review
 
+# Disabled in favor of Vercel webhook service
+# on:
+#   pull_request:
+#     types: [opened, synchronize]
+#     paths:
+#       - 'modules/**/*.json'
 on:
-  pull_request:
-    types: [opened, synchronize]
-    paths:
-      - 'modules/**/*.json'
+  workflow_dispatch: # Manual trigger only
 
 permissions:
   contents: read
@@ -69,19 +72,28 @@ jobs:
         echo "Running automated review for PR #$PR_NUMBER"
         # Run mlld to generate the review
         # The script will set environment variables using @output directives
-        npx mlld@latest llm/scripts/review-pr.mld
+        # Try the regular review script, fall back to simple if it fails
+        npx mlld@latest llm/scripts/review-pr.mld || npx mlld@latest llm/scripts/review-pr-simple.mld || {
+          echo "Review script failed, setting default values"
+          echo "LLM_RECOMMENDATION=COMMENT" >> $GITHUB_ENV
+          echo "LLM_CATEGORY=error" >> $GITHUB_ENV
+          echo "LLM_REVIEW_BODY=Failed to generate automated review. Please review manually." >> $GITHUB_ENV
+          exit 0
+        }
         
         # The environment variables are now set by mlld:
         # - LLM_RECOMMENDATION
         # - LLM_CATEGORY
         # - LLM_REVIEW_BODY
         
-        # Pass them to GitHub Actions environment
-        echo "LLM_RECOMMENDATION=$LLM_RECOMMENDATION" >> $GITHUB_ENV
-        echo "LLM_CATEGORY=$LLM_CATEGORY" >> $GITHUB_ENV
-        echo "LLM_REVIEW_BODY<<EOF" >> $GITHUB_ENV
-        echo "$LLM_REVIEW_BODY" >> $GITHUB_ENV
-        echo "EOF" >> $GITHUB_ENV
+        # Pass them to GitHub Actions environment (if not already set by error handler)
+        if [ -n "$LLM_RECOMMENDATION" ]; then
+          echo "LLM_RECOMMENDATION=$LLM_RECOMMENDATION" >> $GITHUB_ENV
+          echo "LLM_CATEGORY=$LLM_CATEGORY" >> $GITHUB_ENV
+          echo "LLM_REVIEW_BODY<<EOF" >> $GITHUB_ENV
+          echo "$LLM_REVIEW_BODY" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+        fi
         
     - name: Auto-approve if recommended
       if: steps.check-allowlist.outputs.trusted == 'false' && env.LLM_RECOMMENDATION == 'APPROVE'
