@@ -150,14 +150,27 @@ This workflow reviews module submissions to ensure quality and security.
 
 >> Add safety check for AI review
 @exec ensureReview(review) = @run js [(
+  console.error('ensureReview input type:', typeof review);
+  console.error('ensureReview input value:', JSON.stringify(review));
+  
   if (!review || typeof review !== 'object') {
+    console.error('Creating fallback review object');
     return {
       recommendation: "COMMENT",
       category: "error",
       reasoning: "Failed to generate review"
     };
   }
-  return review;
+  
+  // Ensure all required fields exist
+  const safeReview = {
+    recommendation: review.recommendation || "COMMENT",
+    category: review.category || "uncategorized",
+    reasoning: review.reasoning || "No reasoning provided"
+  };
+  
+  console.error('Returning safe review:', JSON.stringify(safeReview));
+  return safeReview;
 )]
 
 @data safeAiReview = @ensureReview(@aiReview)
@@ -172,8 +185,20 @@ This workflow reviews module submissions to ensure quality and security.
 @text githubReview = @formatGitHubReview(@safeAiReview, @reviewContext)
 
 >> Export recommendation and category for GitHub Actions
-@data reviewRecommendation = @safeAiReview.recommendation
-@data reviewCategory = @safeAiReview.category
+>> Use exec to safely extract fields
+@exec extractField(obj, field) = @run js [(
+  console.error(`Extracting field '${field}' from:`, JSON.stringify(obj));
+  if (!obj || typeof obj !== 'object') {
+    console.error('Object is not valid, returning default');
+    return field === 'recommendation' ? 'COMMENT' : 'uncategorized';
+  }
+  const value = obj[field];
+  console.error(`Field value: ${value}`);
+  return value || (field === 'recommendation' ? 'COMMENT' : 'uncategorized');
+)]
+
+@data reviewRecommendation = @extractField(@safeAiReview, "recommendation")
+@data reviewCategory = @extractField(@safeAiReview, "category")
 
 >> Set environment variables using run commands
 @exec setEnvVar(name, value) = @run sh [(
