@@ -1,38 +1,22 @@
 # mlld registry
 
-PUBLIC REGISTRY: All modules in this registry are PUBLIC and accessible to anyone. For private modules, use the --private flag with mlld publish.
+All modules in this registry are PUBLIC and accessible to anyone. For private modules, use the --private flag with `mlld publish`
 
-## Quick Start
-
-### Using a Module
+## Publishing a Module
 
 ```bash
-mlld install @alice/utils
-```
-
-```mlld
-@import { greet } from @alice/utils
-@add [[{{greet("World")}}]]
-```
-
-### Publishing a Module
-
-```bash
-# Automated publishing (recommended)
 mlld publish my-module.mld.md
-
-# Manual publishing
-See "Manual Publishing" section below
 ```
 
 ## How It Works
 
-The mlld registry uses GitHub for storage and distribution:
+The mlld registry uses a modular architecture with GitHub for storage:
 
-1. Modules stored as GitHub gists or in repositories
-2. Central registry (modules.json) maps names to URLs
-3. Content addressing via commit hashes
-4. Local caching for offline access
+1. Each module has its own file at `modules/{author}/{module}.json`
+2. GitHub Actions builds combined `modules.json` on merge
+3. Modules stored as GitHub gists or in repositories
+4. Content addressing via commit hashes
+5. Local caching for offline access
 
 ### Resolution Flow
 
@@ -56,7 +40,7 @@ The mlld CLI handles most publishing automatically.
 
 1. Install mlld: `npm install -g mlld`
 2. Authenticate: `mlld auth login`
-3. Create module with `.mld.md` extension
+3. Create module with `.mld.md` extension (`mlld init` will set this up)
 
 ### Module Requirements
 
@@ -105,147 +89,82 @@ Options:
 - `--gist` - Force gist creation
 - `--repo` - Force repository publishing
 
-## Manual Publishing
-
-If you cannot use the CLI:
-
-### Step 1: Create Gist
-
-Create a PUBLIC gist with your module code including required frontmatter.
-
-### Step 2: Generate Metadata
-
-```bash
-node registry/tools/publish.js @username/module-name <gist-url>
-```
-
-### Step 3: Submit PR
-
-1. Fork mlld-lang/registry
-2. Add entry to modules.json
-3. Run validation: `node tools/validate.js`
-4. Submit pull request
-
 ## Module Format
 
-### modules.json Structure
+### Individual Module File Structure
+
+Each module is stored in `modules/{author}/{module}.json`:
 
 ```json
 {
-  "@alice/utils": {
-    "name": "@alice/utils",
-    "description": "Common utilities for mlld scripts",
-    "author": {
-      "name": "Alice Johnson",
-      "github": "alicej"
-    },
-    "source": {
-      "type": "gist",
-      "id": "8bb1c645c1cf0dd515bd8f834fb82fcf",
-      "hash": "59d76372d3c4a93e7aae34cb98b13a8e99dfb95f",
-      "url": "https://gist.githubusercontent.com/alicej/8bb1c645c1cf0dd515bd8f834fb82fcf/raw/59d76372d3c4a93e7aae34cb98b13a8e99dfb95f/utils.mld"
-    },
-    "dependencies": {},
-    "keywords": ["utils", "helpers", "strings"],
-    "mlldVersion": ">=0.5.0",
-    "publishedAt": "2024-01-15T10:30:00Z"
+  "name": "utils",
+  "author": "alice",
+  "version": "1.0.0",
+  "about": "Common utilities for mlld scripts",
+  "needs": [],
+  "license": "CC0",
+  "source": {
+    "type": "gist",
+    "url": "https://gist.githubusercontent.com/alice/8bb1c645c1cf0dd515bd8f834fb82fcf/raw/59d76372d3c4a93e7aae34cb98b13a8e99dfb95f/utils.mld",
+    "contentHash": "sha256:abcdef123456...",
+    "gistId": "8bb1c645c1cf0dd515bd8f834fb82fcf"
   },
-  "@bob/templates": {
-    "name": "@bob/templates",
-    "description": "Project templates and scaffolding",
-    "author": {
-      "name": "Bob Smith",
-      "github": "bobsmith"
-    },
-    "source": {
-      "type": "github",
-      "repo": "bobsmith/mlld-templates",
-      "hash": "a1b2c3d4e5f6789abcdef0123456789abcdef012",
-      "url": "https://raw.githubusercontent.com/bobsmith/mlld-templates/a1b2c3d4e5f6789abcdef0123456789abcdef012/templates.mld"
-    },
-    "dependencies": {},
-    "keywords": ["templates", "scaffolding"],
-    "mlldVersion": ">=0.5.0",
-    "publishedAt": "2024-01-16T14:30:00Z"
-  }
+  "dependencies": {},
+  "keywords": ["utils", "helpers", "strings"],
+  "mlldVersion": ">=1.0.0",
+  "publishedAt": "2024-01-15T10:30:00Z",
+  "publishedBy": 123456
 }
 ```
 
 ### Field Descriptions
 
-- **name** (required): Module identifier in format `@username/module-name`
-- **description** (required): Clear description of what the module does
-- **author** (required): Object with `name` and `github` fields
+- **name** (required): Module name (lowercase with hyphens)
+- **author** (required): GitHub username
+- **version** (optional): Semantic version
+- **about** (required): Clear description of what the module does
+- **needs** (required): Runtime dependencies array (e.g., ["js", "node"])
+- **license** (required): Must be "CC0"
 - **source** (required): Object with source information
-  - `type`: Source type - "gist", "github", or "external"
-  - `id`: The 32-character gist ID (for gists)
-  - `repo`: Repository name "owner/repo" (for GitHub repos)
-  - `hash`: The 40-character commit hash
+  - `type`: Source type - "gist" or "github"
   - `url`: Full raw content URL
+  - `contentHash`: SHA256 hash of the content
+  - `gistId`: The gist ID (for gists)
+  - `repository`: Repo details (for GitHub repos)
 - **dependencies**: Map of module names to their commit hashes
 - **keywords**: Array of lowercase keywords for discovery
-- **mlldVersion**: Required mlld version (e.g., ">=0.5.0")
-- **publishedAt**: ISO 8601 timestamp
-- **stats**: Usage statistics (maintained by system)
+- **mlldVersion**: Required mlld version (e.g., ">=1.0.0")
+- **publishedAt**: ISO 8601 timestamp (set automatically)
+- **publishedBy**: GitHub user ID (set automatically)
 
 ## Tools
 
+### Build Script
+
+Builds and validates the combined registry:
+
+```bash
+# Build registry from module files
+node tools/build-registry.js
+```
+
+This script:
+- Finds all module JSON files
+- Validates structure and metadata
+- Ensures path matches module content
+- Generates `modules.json` and `modules.generated.json`
+
 ### Validation Script
 
-Validates all modules in the registry:
+Validates the entire registry:
 
 ```bash
 # Validate all modules
 node tools/validate.js
 
-# Skip content fetching (faster, metadata only)
-node tools/validate.js --skip-content
-
-# Save detailed report
+# Validate with detailed report
 node tools/validate.js --save-report
 ```
-
-### Publishing Tools
-
-#### Manual Publish Helper
-
-Guides you through the publishing process step-by-step:
-
-```bash
-node tools/publish.js @username/module-name <source-url>
-```
-
-This tool:
-- Fetches metadata from your source (gist/repo)
-- Generates the module JSON structure
-- Provides detailed instructions for manual PR submission
-
-#### Auto-Publish Tool
-
-Automatically creates a pull request for your module:
-
-```bash
-# Set your GitHub token first
-export GITHUB_TOKEN=your_github_token
-
-# Auto-publish your module
-node tools/auto-publish.js @username/module-name <source-url> --description "Your module description"
-
-# Or use npm script
-npm run publish:auto -- @username/module-name <source-url>
-```
-
-This tool:
-- Automatically forks the registry (if needed)
-- Creates a branch with your module
-- Submits a pull request
-- Triggers automated LLM review
-
-Options:
-- `--token` - GitHub personal access token (or set GITHUB_TOKEN)
-- `--description` - Module description
-- `--keywords` - Comma-separated keywords
-- `--dry-run` - Preview without making changes
 
 ## Guidelines
 
@@ -304,11 +223,12 @@ If you discover a security issue in a module:
 
 ### Automated Review
 
-All submissions are reviewed by an LLM system that:
+All submissions are reviewed by Claude AI via Vercel webhook:
 - Validates structure and metadata
 - Checks for security issues
 - Assesses code quality
-- Auto-merges approved modules
+- Posts review comments on PR
+- Human maintainers make final merge decision
 
 See [docs/LLM-REVIEW-SYSTEM.md](docs/LLM-REVIEW-SYSTEM.md) for details.
 

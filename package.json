@@ -6,17 +6,13 @@
   "scripts": {
     "build": "node tools/build-registry.js",
     "validate": "node tools/validate.js",
-    "validate:report": "node tools/validate.js --save-report",
-    "dns:sync": "node tools/dns-sync.js",
-    "publish:help": "node tools/publish.js --help",
-    "publish:auto": "node tools/auto-publish.js"
+    "validate:report": "node tools/validate.js --save-report"
   },
   "keywords": [
     "mlld",
     "registry",
     "modules",
-    "gist",
-    "dns"
+    "gist"
   ],
   "author": "mlld-lang",
   "license": "MIT",

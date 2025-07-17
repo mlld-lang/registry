@@ -1,0 +1,73 @@
+name: Build Module Registry
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'modules/**/*.json'
+      - 'tools/build-registry.js'
+  pull_request:
+    paths:
+      - 'modules/**/*.json'
+      - 'tools/build-registry.js'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        
+    - name: Install dependencies
+      run: |
+        npm install glob
+        
+    - name: Build registry
+      run: node tools/build-registry.js
+      
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: registry-output
+        path: |
+          modules.json
+          modules.generated.json
+          
+    - name: Comment PR with build result
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          const registry = JSON.parse(fs.readFileSync('modules.generated.json', 'utf8'));
+          const moduleCount = Object.keys(registry.modules).length;
+          
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: `✅ Registry build successful!\n\n**Modules in registry:** ${moduleCount}`
+          });
+          
+    - name: Commit generated files
+      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      run: |
+        git config --local user.email "github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        git add modules.json modules.generated.json
+        git diff --staged --quiet || (
+          git commit -m "Build registry [skip ci]" -m "Generated from commit ${{ github.sha }}"
+          git push
+        )

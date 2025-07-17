@@ -1,99 +1,78 @@
 # LLM Review System
 
-The mlld registry uses an LLM-powered review system to evaluate module submissions.
+The mlld registry uses an LLM-powered review system via Vercel webhooks to evaluate module submissions.
 
 ## Overview
 
-Pull requests containing new modules are automatically reviewed by Claude AI. The system uses mlld scripts to analyze module submissions and provide review decisions.
+Pull requests containing new modules are automatically reviewed by Claude AI through a Vercel webhook service. The system uses mlld scripts to analyze module submissions and provide review decisions.
+
+## Architecture
+
+```
+GitHub PR → Webhook → Vercel Service → mlld Script → Claude API → Review Comment
+```
 
 ## Process
 
 ### 1. Module Submission
-Authors submit modules via:
-- Manual: `node tools/publish.js` generates metadata and instructions
-- Automated: `node tools/auto-publish.js` creates PR directly
+Authors submit modules via `mlld publish`:
+- Creates individual module file at `modules/{author}/{module}.json`
+- Opens pull request to registry repository
+- Triggers GitHub webhook to Vercel
 
 ### 2. Review Pipeline
-On PR creation:
-1. Validation workflow checks structure and metadata
-2. LLM review workflow runs Claude analysis
-3. Claude returns one of three decisions:
-   - APPROVE - Module meets standards
-   - REQUEST_CHANGES - Issues need addressing
-   - COMMENT - Requires human review
+On PR creation/update:
+1. GitHub sends webhook to Vercel service
+2. Vercel fetches and runs `llm/scripts/review-pr.mld`
+3. Script extracts module from PR files
+4. Validates module structure and metadata
+5. Queries Claude API for code review
+6. Posts review as PR comment
 
-### 3. Actions
-- APPROVE: PR eligible for auto-merge when checks pass
-- REQUEST_CHANGES: Author must address feedback
-- COMMENT: Maintainers review Claude's analysis
+### 3. Review Decisions
+Claude returns one of three decisions:
+- **APPROVE** - Module meets all standards
+- **REQUEST_CHANGES** - Issues need addressing
+- **COMMENT** - Requires human review
+
+### 4. Build Process
+When PR is merged:
+1. GitHub Actions runs `build-registry.yml`
+2. Combines all module files into `modules.json`
+3. Validates entire registry
+4. Commits generated files
 
 ## Technical Details
 
 ### Environment Variables
-```
-ANTHROPIC_API_KEY     # Claude API key
-```
+Required in Vercel:
+- `GITHUB_TOKEN` - For GitHub API access
+- `ANTHROPIC_API_KEY` - For Claude API
+- `GITHUB_WEBHOOK_SECRET` - For webhook validation
 
-### Components
-
-**LLM Review Script** (`tools/llm-review-claude-cli.mld`)
-- Reads PR data from environment
-- Fetches diff and changes
-- Constructs review prompt
-- Calls Claude via CLI
-- Sets GitHub Actions variables
-
-**Auto-Merge Script** (`tools/llm-auto-merge.mld`)
-- Monitors approved PRs
-- Waits for check completion
-- Merges when conditions met
-- Updates registry on merge
+### Key Scripts
+- `llm/scripts/review-pr.mld` - Main review orchestration
+- `llm/modules/registry-utils.mld` - Module extraction and validation
+- `llm/modules/claude-utils.mld` - Claude API integration
 
 ### Review Criteria
+1. **Real Value**: Does it solve actual problems?
+2. **Security**: No hardcoded secrets, safe operations
+3. **Code Quality**: Well-structured, documented
+4. **Licensing**: Must be CC0
+5. **Metadata**: Complete and accurate
 
-**Quality Standards**
-- Correct module name format (@username/module-name)
-- Documentation and examples included
-- Solves real problems
-- Valid mlld syntax
+## Benefits
 
-**Security Checks**
-- No hardcoded secrets
-- Safe command execution
-- No malicious patterns
-- Input validation present
+1. **Scalability**: Automated first-pass review
+2. **Consistency**: Same criteria for all modules
+3. **Security**: Secrets isolated in Vercel
+4. **Flexibility**: Easy to update review logic
+5. **Transparency**: All reviews are public
 
-**Registry Requirements**
-- Valid source URL (gist or repository)
-- Commit hash references
-- Required metadata complete
-- Suitable for public use
+## Future Improvements
 
-## Bot Identity
-
-Reviews posted by GitHub Actions bot:
-- Clear decision indicators
-- Claude attribution in messages
-- Actionable feedback provided
-
-## Limitations
-
-1. mlld exec output capture pending implementation
-2. Some template interpolation edge cases
-3. Uses github-actions[bot] instead of dedicated app
-
-## Monitoring
-
-System improvements through:
-- Logged review decisions
-- Prompt refinement based on outcomes
-- Human override capability
-- Community feedback integration
-
-## Governance Model
-
-The system provides:
-- Decentralized operation
-- Transparent public reviews
-- Consistent evaluation
-- Community-driven evolution
+- Caching for repeated reviews
+- More sophisticated security analysis
+- Integration with other AI models
+- Custom review criteria per module type

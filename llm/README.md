@@ -18,15 +18,15 @@ llm/
 
 ## How It Works
 
-1. **PR Created**: GitHub Actions triggers the workflow
-2. **Allowlist Check**: `check-allowlist.mld` verifies if author is trusted
-3. **Review Process**: `review-pr.mld` orchestrates the review:
+1. **PR Created**: GitHub webhook sent to Vercel service
+2. **Vercel Service**: Fetches and runs `review-pr.mld`
+3. **Review Process**: Script orchestrates the review:
    - Validates environment variables
-   - Fetches PR data via GitHub CLI
-   - Extracts and validates module JSON
+   - Fetches PR data via GitHub API
+   - Extracts module from new file structure
    - Generates review prompt from template
    - Queries Claude for review
-   - Formats response for GitHub
+   - Posts review comment on PR
 
 ## Running Locally
 
@@ -45,34 +45,16 @@ ANTHROPIC_API_KEY=$ANTHROPIC_API_KEY \
 mlld llm/scripts/review-pr.mld
 ```
 
-### Check Allowlist
-```bash
-PR_AUTHOR=someuser mlld llm/scripts/check-allowlist.mld
-```
 
 ## Modules
 
-### env-utils
-Environment variable validation and utilities
-- `validateEnvironment(vars)` - Check if required env vars exist
-- `getEnv(name, fallback)` - Get env var with fallback
-- `isCI()` - Check if running in CI environment
-
-### comparison-utils
-Comparison functions for conditional logic
-- `greaterThan(a, b)`, `lessThan(a, b)`, `equals(a, b)`
-- `contains(str, substr)`, `matches(str, pattern)`
-- `includes(arr, value)`, `isTruthy(value)`
-
-### github-utils
-GitHub API operations via CLI
-- `getPRData(pr, repo)` - Fetch PR metadata
-- `getPRDiff(pr, repo, paths)` - Get diff for specific paths
-- `createReview(pr, repo, event, body)` - Post review
+Note: The following core modules are imported from @mlld:
+- **@mlld/env** - Environment variable utilities
+- **@mlld/github** - GitHub API operations
 
 ### registry-utils
 Module validation and parsing
-- `extractModuleContent(diff)` - Parse module JSON from git diff
+- `extractModuleFromPR(prFiles, diff)` - Extract module from PR files
 - `validateModule(data)` - Validate module metadata
 - `parseModulePath(path)` - Extract author/module from path
 
