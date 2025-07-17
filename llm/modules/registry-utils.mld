@@ -7,50 +7,84 @@ mlld-version: ">=1.0.0-rc"
 
 # Registry Module Utilities
 
->> Extract module JSON from a git diff
-@exec extractModuleContent(diff) = @run js [(
+>> Extract module content from PR with new file structure
+/exe @extractModuleFromPR(prFiles, diff) = js {
+  // Find module JSON files in the PR
+  const moduleFiles = prFiles.filter(f => 
+    f.path.startsWith('modules/') && 
+    f.path.endsWith('.json') &&
+    f.path.split('/').length === 3  // Ensure proper structure
+  );
+  
+  if (moduleFiles.length === 0) {
+    return { error: "No module files found in PR" };
+  }
+  
+  if (moduleFiles.length > 1) {
+    return { error: "Multiple module files in single PR not allowed" };
+  }
+  
+  const modulePath = moduleFiles[0].path;
+  const pathParts = modulePath.split('/');
+  const pathAuthor = pathParts[1];
+  const pathModuleName = pathParts[2].replace('.json', '');
+  
+  // Extract content from diff
   const lines = diff.split('\n');
   const addedLines = [];
-  let inAddedSection = false;
+  let inFile = false;
+  let collectingJson = false;
   
   for (const line of lines) {
-    // Skip diff headers
-    if (line.startsWith('diff --git') || line.startsWith('index ')) continue;
-    if (line.startsWith('---') || line.startsWith('+++')) continue;
-    
-    // Track if we're in an added section
-    if (line.startsWith('@@')) {
-      inAddedSection = true;
+    if (line.includes(`+++ b/${modulePath}`)) {
+      inFile = true;
       continue;
     }
     
-    // Collect added lines (lines starting with +)
-    if (inAddedSection && line.startsWith('+')) {
+    if (inFile && line.startsWith('+') && line.includes('{')) {
+      collectingJson = true;
+    }
+    
+    if (collectingJson && line.startsWith('+')) {
+      // Remove the + prefix
       addedLines.push(line.substring(1));
+      
+      // Check if this looks like the end of JSON
+      if (line.trim() === '+}') {
+        break;
+      }
     }
   }
   
-  // Try to parse as JSON
-  const jsonStr = addedLines.join('\n').trim();
-  if (!jsonStr) {
-    return { error: "No content found in diff" };
-  }
-  
+  // Parse the module content
   try {
-    const parsed = JSON.parse(jsonStr);
-    return parsed;
+    const jsonStr = addedLines.join('\n');
+    const module = JSON.parse(jsonStr);
+    
+    // Validate path matches content
+    if (module.author !== pathAuthor) {
+      return { 
+        error: `Author mismatch: file path has '${pathAuthor}' but content has '${module.author}'`
+      };
+    }
+    
+    if (module.name !== pathModuleName) {
+      return { 
+        error: `Module name mismatch: file path has '${pathModuleName}' but content has '${module.name}'`
+      };
+    }
+    
+    return module;
   } catch (e) {
-    // If not valid JSON, return what we found
     return { 
-      error: "Invalid JSON", 
-      raw: jsonStr,
+      error: "Invalid JSON in module file",
       parseError: e.message 
     };
   }
-)]
+}
 
 >> Validate a module's metadata and structure
-@exec validateModule(moduleData) = @run js [(
+/exe @validateModule(moduleData) = js {
   const issues = [];
   
   // Handle error case from extraction
@@ -142,19 +176,21 @@ mlld-version: ">=1.0.0-rc"
     checkedFields: required.length,
     moduleData: moduleData
   };
-)]
+}
 
 >> Extract author and module name from path
-@exec parseModulePath(path) = @run js [(
-  // Expected format: modules/author/module-name/module.json
+/exe @parseModulePath(path) = js {
+  // Expected format: modules/author/module-name.json
   const parts = path.split('/');
-  if (parts.length >= 4 && parts[0] === 'modules') {
+  if (parts.length === 3 && parts[0] === 'modules') {
+    const filename = parts[2];
+    const moduleName = filename.replace('.json', '');
     return {
       author: parts[1],
-      moduleName: parts[2],
-      filename: parts[3]
+      moduleName: moduleName,
+      filename: filename
     };
   }
   return null;
-)]
+}
 

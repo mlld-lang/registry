@@ -6,7 +6,7 @@ mlld-version: ">=1.0.0-rc"
 # GitHub Review Formatter
 
 >> Format the review for GitHub
-@exec formatGitHubReview(review, context) = @run js [(
+/exe @formatGitHubReview(review, context) = js {
   const r = typeof review === 'string' ? JSON.parse(review) : review;
   const ctx = typeof context === 'string' ? JSON.parse(context) : context;
   
@@ -36,8 +36,8 @@ ${r.reasoning || r.error || "No detailed reasoning provided."}
 
 *This is an automated review. Human maintainers will make the final decision.*
 *Review powered by Claude 3*`;
-)]
+}
 
-@data module = {
+/var @module = {
   "formatGitHubReview": @formatGitHubReview
 }

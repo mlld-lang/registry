@@ -6,7 +6,7 @@ mlld-version: ">=1.0.0-rc"
 # Review Prompt Template
 
 >> Generate the review prompt for Claude
-@exec reviewPrompt(context) = @run js [(
+/exe @reviewPrompt(context) = js {
   const ctx = typeof context === 'string' ? JSON.parse(context) : context;
   
   return `You are reviewing a module submission to the mlld public registry. The mlld registry is a collection of reusable modules that extend mlld's capabilities.
@@ -99,8 +99,8 @@ CATEGORY: apis
 
 This module provides excellent value by... [detailed reasoning]
 \`\`\``;
-)]
+}
 
-@data module = {
+/var @module = {
   "reviewPrompt": @reviewPrompt
 }

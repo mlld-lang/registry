@@ -1,106 +1,128 @@
 #!/usr/bin/env node
 
-import fs from 'fs';
+import fs from 'fs/promises';
 import path from 'path';
+import { glob } from 'glob';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 async function buildRegistry() {
-  console.log('Building registry from user directories...');
+  const rootDir = path.join(__dirname, '..');
+  const modulesDir = path.join(rootDir, 'modules');
+  const outputPath = path.join(rootDir, 'modules.json');
+  const generatedPath = path.join(rootDir, 'modules.generated.json');
   
-  const modulesDir = path.join(__dirname, '..', 'modules');
-  const outputFile = path.join(__dirname, '..', 'modules.json');
+  console.log('🔨 Building module registry...\n');
   
-  // Initialize registry structure
+  // Find all module JSON files
+  const moduleFiles = await glob('modules/**/*.json', { cwd: rootDir });
+  
   const registry = {
-    version: "1.0.0",
-    updated: new Date().toISOString(),
+    version: "2.0.0",
+    generated: new Date().toISOString(),
     modules: {}
   };
   
-  // Read all user directories
-  const userDirs = fs.readdirSync(modulesDir, { withFileTypes: true })
-    .filter(dirent => dirent.isDirectory())
-    .map(dirent => dirent.name);
+  const errors = [];
   
-  console.log(`Found ${userDirs.length} user directories: ${userDirs.join(', ')}`);
-  
-  // Process each user directory
-  for (const username of userDirs) {
-    const userRegistryPath = path.join(modulesDir, username, 'registry.json');
-    
-    if (!fs.existsSync(userRegistryPath)) {
-      console.warn(`Warning: ${username}/registry.json not found, skipping`);
-      continue;
-    }
+  // Process each module file
+  for (const filePath of moduleFiles) {
+    const fullPath = path.join(rootDir, filePath);
     
     try {
-      const userRegistry = JSON.parse(fs.readFileSync(userRegistryPath, 'utf8'));
+      const content = await fs.readFile(fullPath, 'utf8');
+      const module = JSON.parse(content);
       
-      // Validate user registry structure
-      if (!userRegistry.author || !userRegistry.modules) {
-        console.error(`Error: Invalid registry format for ${username}`);
+      // Extract expected author and name from path
+      const pathParts = filePath.split('/');
+      if (pathParts.length !== 3) {
+        errors.push(`Invalid path structure: ${filePath}`);
         continue;
       }
       
-      // Validate author matches directory name
-      if (userRegistry.author !== username) {
-        console.error(`Error: Author mismatch for ${username}: expected '${username}', got '${userRegistry.author}'`);
+      const [, pathAuthor, pathFile] = pathParts;
+      const pathModuleName = path.basename(pathFile, '.json');
+      
+      // Validate path matches content
+      if (module.author !== pathAuthor) {
+        errors.push(`Author mismatch in ${filePath}: expected ${pathAuthor}, got ${module.author}`);
         continue;
       }
       
-      let moduleCount = 0;
-      
-      // Add each module from user registry
-      for (const [moduleId, moduleData] of Object.entries(userRegistry.modules)) {
-        // Validate module ID format
-        if (!moduleId.startsWith(`@${username}/`)) {
-          console.error(`Error: Invalid module ID '${moduleId}' for user '${username}'. Must start with '@${username}/'`);
-          continue;
-        }
-        
-        // Check for duplicates
-        if (registry.modules[moduleId]) {
-          console.error(`Error: Duplicate module ID '${moduleId}' found in ${username}/registry.json`);
-          continue;
-        }
-        
-        // Validate module structure
-        if (!moduleData.name || !moduleData.author || !moduleData.source) {
-          console.error(`Error: Invalid module structure for '${moduleId}' in ${username}/registry.json`);
-          continue;
-        }
-        
-        // Validate author consistency
-        if (moduleData.author.github !== username) {
-          console.error(`Error: Module author mismatch for '${moduleId}': expected '${username}', got '${moduleData.author.github}'`);
-          continue;
-        }
-        
-        registry.modules[moduleId] = moduleData;
-        moduleCount++;
+      if (module.name !== pathModuleName) {
+        errors.push(`Module name mismatch in ${filePath}: expected ${pathModuleName}, got ${module.name}`);
+        continue;
       }
       
-      console.log(`✅ Added ${moduleCount} modules from ${username}`);
+      // Validate required fields
+      const required = ['name', 'author', 'about', 'needs', 'license', 'source'];
+      const missing = required.filter(field => !module[field]);
+      if (missing.length > 0) {
+        errors.push(`Missing required fields in ${filePath}: ${missing.join(', ')}`);
+        continue;
+      }
       
+      // Validate license
+      if (module.license !== 'CC0') {
+        errors.push(`Invalid license in ${filePath}: must be CC0`);
+        continue;
+      }
+      
+      // Build the module key
+      const moduleKey = `@${module.author}/${module.name}`;
+      
+      // Check for duplicates
+      if (registry.modules[moduleKey]) {
+        errors.push(`Duplicate module found: ${moduleKey} in ${filePath}`);
+        continue;
+      }
+      
+      // Add to registry
+      registry.modules[moduleKey] = module;
+      
+      console.log(`✓ Added ${moduleKey}`);
     } catch (error) {
-      console.error(`Error processing ${username}/registry.json: ${error.message}`);
+      errors.push(`Error processing ${filePath}: ${error.message}`);
     }
   }
   
-  // Write combined registry
-  fs.writeFileSync(outputFile, JSON.stringify(registry, null, 2));
+  // Check for errors
+  if (errors.length > 0) {
+    console.error('\n❌ Build failed with errors:\n');
+    errors.forEach(err => console.error(`  - ${err}`));
+    process.exit(1);
+  }
   
-  const totalModules = Object.keys(registry.modules).length;
-  console.log(`\n🎉 Built registry with ${totalModules} total modules`);
-  console.log(`📝 Output written to modules.json`);
+  // Sort modules for consistent output
+  const sortedModules = Object.keys(registry.modules)
+    .sort()
+    .reduce((acc, key) => {
+      acc[key] = registry.modules[key];
+      return acc;
+    }, {});
   
-  return registry;
+  registry.modules = sortedModules;
+  
+  // Write generated file (pretty printed)
+  await fs.writeFile(
+    generatedPath, 
+    JSON.stringify(registry, null, 2) + '\n'
+  );
+  
+  // Write distribution file (minified)
+  await fs.writeFile(
+    outputPath,
+    JSON.stringify(registry)
+  );
+  
+  console.log(`\n✅ Built registry with ${Object.keys(registry.modules).length} modules`);
+  console.log(`📁 Output: ${outputPath} (minified)`);
+  console.log(`📁 Output: ${generatedPath} (formatted)`);
 }
 
-// CLI usage
-if (import.meta.url === `file://${process.argv[1]}`) {
+// Run if called directly
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
   buildRegistry().catch(error => {
     console.error('Build failed:', error);
     process.exit(1);

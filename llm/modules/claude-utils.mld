@@ -8,7 +8,7 @@ mlld-version: ">=1.0.0-rc"
 # Claude API Utilities
 
 >> Query Claude CLI with automatic retry
-@exec queryClaudeAPI(prompt, maxRetries) = @run js [(
+/exe @queryClaudeAPI(prompt, maxRetries) = js {
   const { execSync } = require('child_process');
   
   let attempts = 0;
@@ -27,10 +27,10 @@ mlld-version: ">=1.0.0-rc"
   }
   
   return `ERROR: Claude request failed after ${maxRetries} attempts`;
-)]
+}
 
 >> Parse Claude's review response
-@exec parseReviewResponse(response) = @run js [(
+/exe @parseReviewResponse(response) = js {
   // Handle error cases
   if (!response || response.startsWith("ERROR:")) {
     return {
@@ -85,10 +85,10 @@ mlld-version: ">=1.0.0-rc"
     reasoning: reasoning,
     raw: response
   };
-)]
+}
 
 >> Create a fallback review for when Claude is unavailable
-@exec createFallbackReview(validation) = @run js [(
+/exe @createFallbackReview(validation) = js {
   if (validation.valid) {
     return {
       recommendation: "COMMENT",

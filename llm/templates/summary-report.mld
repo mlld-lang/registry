@@ -6,7 +6,7 @@ mlld-version: ">=1.0.0-rc"
 # Summary Report Template
 
 >> Create a summary report of the review process
-@exec createSummaryReport(prData, validation, review) = @run js [(
+/exe @createSummaryReport(prData, validation, review) = js {
   const pr = typeof prData === 'string' ? JSON.parse(prData) : prData;
   const val = typeof validation === 'string' ? JSON.parse(validation) : validation;
   const rev = typeof review === 'string' ? JSON.parse(review) : review;
@@ -30,8 +30,8 @@ ${rev.reasoning ? "### Review Details\n" + rev.reasoning : ""}
 
 ---
 *Review completed at ${new Date().toISOString()}*`;
-)]
+}
 
-@data module = {
+/var @module = {
   "createSummaryReport": @createSummaryReport
 }
