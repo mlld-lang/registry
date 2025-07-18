@@ -38,7 +38,7 @@ jobs:
       run: node tools/build-registry.js
       
     - name: Upload artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: registry-output
         path: |
