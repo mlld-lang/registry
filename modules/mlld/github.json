@@ -1,0 +1,25 @@
+{
+  "name": "github",
+  "author": "mlld",
+  "version": "1.0.0",
+  "about": "GitHub CLI wrapper for PR, issue, and repository operations",
+  "needs": ["sh"],
+  "repo": "https://github.com/mlld-lang/mlld",
+  "bugs": "https://github.com/mlld-lang/mlld/issues",
+  "keywords": ["github", "gh", "pr", "pull-request", "issue", "repository", "api", "cli"],
+  "license": "CC0",
+  "mlldVersion": "*",
+  "source": {
+    "type": "github",
+    "url": "https://raw.githubusercontent.com/mlld-lang/mlld/main/modules/llm/modules/github.mld.md",
+    "contentHash": "sha256:c2d6a874f8e5ffd6f365b2777d4fcecad83eac7deb631f3363b3cc2936a69f4a",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/mlld-lang/mlld",
+      "commit": "main",
+      "path": "modules/llm/modules/github.mld.md"
+    }
+  },
+  "publishedAt": "2024-01-17T00:00:00Z",
+  "publishedBy": 0
+}
