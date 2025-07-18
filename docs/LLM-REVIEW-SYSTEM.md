@@ -23,7 +23,7 @@ Authors submit modules via `mlld publish`:
 ### 2. Review Pipeline
 On PR creation/update:
 1. GitHub sends webhook to Vercel service
-2. Vercel fetches and runs `llm/scripts/review-pr.mld`
+2. Vercel fetches and runs `llm/run/review-pr.mld`
 3. Script extracts module from PR files
 4. Validates module structure and metadata
 5. Queries Claude API for code review
@@ -51,7 +51,7 @@ Required in Vercel:
 - `GITHUB_WEBHOOK_SECRET` - For webhook validation
 
 ### Key Scripts
-- `llm/scripts/review-pr.mld` - Main review orchestration
+- `llm/run/review-pr.mld` - Main review orchestration
 - `llm/modules/registry-utils.mld` - Module extraction and validation
 - `llm/modules/claude-utils.mld` - Claude API integration
 

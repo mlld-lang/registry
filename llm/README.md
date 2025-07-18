@@ -13,7 +13,7 @@ The system is built using mlld's orchestration philosophy:
 llm/
 ├── modules/         # Reusable utility modules
 ├── templates/       # Content templates (prompts, formats)
-└── scripts/         # Main workflows
+└── run/             # Main workflows
 ```
 
 ## How It Works
@@ -32,7 +32,7 @@ llm/
 
 ### Test Environment Validation
 ```bash
-mlld llm/scripts/review-pr.mld
+mlld llm/run/review-pr.mld
 ```
 
 ### Test with Mock PR
@@ -42,7 +42,7 @@ REPO_OWNER=mlld-lang \
 REPO_NAME=registry \
 GITHUB_TOKEN=$GITHUB_TOKEN \
 ANTHROPIC_API_KEY=$ANTHROPIC_API_KEY \
-mlld llm/scripts/review-pr.mld
+mlld llm/run/review-pr.mld
 ```
 
 
@@ -98,11 +98,6 @@ if (moduleData.someField && !isValid(moduleData.someField)) {
 
 ### Adding New Review Criteria
 Edit `llm/templates/review-prompt.mld` to add new sections to the prompt.
-
-### Creating New Utilities
-1. Create new module in `llm/modules/`
-2. Export functions via `@data module = { ... }`
-3. Import in scripts with `@import { func } from [@./llm/modules/your-module.mld]`
 
 ## Troubleshooting
 
