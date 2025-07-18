@@ -66,7 +66,9 @@ This workflow reviews module submissions to ensure quality and security.
 /var @aiReview = @parseReviewResponse(@claudeResponse)
 
 >> Fallback if AI review fails
-/when !@aiReview.recommendation => /var @aiReview = @createFallbackReview(@moduleValidation)
+/when @aiReview.recommendation [
+  false => var @aiReview = @createFallbackReview(@moduleValidation)
+]
 
 ## 📤 Step 6: Prepare GitHub Output
 

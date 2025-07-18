@@ -55,12 +55,20 @@ jobs:
           const registry = JSON.parse(fs.readFileSync('modules.generated.json', 'utf8'));
           const moduleCount = Object.keys(registry.modules).length;
           
-          github.rest.issues.createComment({
-            issue_number: context.issue.number,
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            body: `✅ Registry build successful!\n\n**Modules in registry:** ${moduleCount}`
-          });
+          // Check if this is a fork PR (which won't have write permissions)
+          const isFork = context.payload.pull_request?.head?.repo?.full_name !== context.payload.repository.full_name;
+          
+          if (isFork) {
+            console.log('PR from fork detected - skipping comment due to permission restrictions');
+            console.log(`✅ Registry build successful! Modules in registry: ${moduleCount}`);
+          } else {
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `✅ Registry build successful!\n\n**Modules in registry:** ${moduleCount}`
+            });
+          }
           
     - name: Commit generated files
       if: github.ref == 'refs/heads/main' && github.event_name == 'push'
