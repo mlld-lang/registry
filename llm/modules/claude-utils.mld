@@ -102,5 +102,5 @@ mlld-version: ">=1.0.0-rc"
       reasoning: `Automated validation failed:\n\n${validation.issues.map(i => `- ${i}`).join('\n')}\n\nPlease fix these issues before resubmitting.`
     };
   }
-)]
+}
 
