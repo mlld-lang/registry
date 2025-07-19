@@ -58,10 +58,10 @@ This workflow reviews module submissions to ensure quality and security.
 
 >> Only fetch if environment is valid
 /when @envCheck.valid => /show `📥 Fetching PR #@MLLD_PR_NUMBER from @config.repo...`
-/when @envCheck.valid => /var @prData = @github.pr_view(@MLLD_PR_NUMBER, @config.repo)
+/when @envCheck.valid => /var @prData = @github.pr.view(@MLLD_PR_NUMBER, @config.repo)
 /when @envCheck.valid => /show "✅ PR data fetched"
 /when @envCheck.valid => /show "📥 Fetching PR diff..."
-/when @envCheck.valid => /var @prDiff = @github.pr_diff(@MLLD_PR_NUMBER, @config.repo, @config.modulePattern)
+/when @envCheck.valid => /var @prDiff = @github.pr.diff(@MLLD_PR_NUMBER, @config.repo, @config.modulePattern)
 /when @envCheck.valid => /show "✅ PR diff fetched"
 
 ## 🔍 Step 3: Extract Module Information
