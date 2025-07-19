@@ -14,7 +14,7 @@ mlld-version: ">=1.0.0-rc"
   let attempts = 0;
   while (attempts < maxRetries) {
     try {
-      const response = execSync(`claude --print "${prompt}"`, { encoding: 'utf8', stdio: 'pipe' });
+      const response = execSync(`claude --model claude-3-5-haiku-latest --print "${prompt}"`, { encoding: 'utf8', stdio: 'pipe' });
       return response;
     } catch (error) {
       attempts++;
