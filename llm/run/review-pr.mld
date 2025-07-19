@@ -7,19 +7,35 @@ mlld-version: ">=1.3.0"
 
 This workflow reviews module submissions to ensure quality and security.
 
+/show "🚀 Starting review workflow..."
+
 /import { PR_NUMBER, REPO_OWNER, REPO_NAME, GITHUB_TOKEN, ANTHROPIC_API_KEY } from @input
 
+/show "✅ Imported environment variables"
+
 >> Import core modules
+/show "📦 Importing @mlld/env..."
 /import { env } from @mlld/env
+/show "📦 Importing @mlld/github..."
 /import { github } from @mlld/github
 
+/show "✅ Core modules imported"
+
 >> Import local modules
+/show "📦 Importing registry-utils..."
 /import { extractModuleFromPR, validateModule } from "../modules/registry-utils.mld"
+/show "📦 Importing claude-utils..."
 /import { queryClaudeAPI, parseReviewResponse, createFallbackReview } from "../modules/claude-utils.mld"
+/show "📦 Importing review-context..."
 /import { createReviewContext } from "../templates/review-context.mld"
+/show "📦 Importing review-prompt..."
 /import { reviewPrompt } from "../templates/review-prompt.mld"
+/show "📦 Importing github-review..."
 /import { formatGitHubReview } from "../templates/github-review.mld"
+/show "📦 Importing summary-report..."
 /import { createSummaryReport } from "../templates/summary-report.mld"
+
+/show "✅ All modules imported successfully"
 
 ## 📋 Workflow Configuration
 
@@ -32,6 +48,7 @@ This workflow reviews module submissions to ensure quality and security.
 
 ## ✅ Step 1: Validate Environment
 
+/show "🔍 Checking required environment variables..."
 /var @envCheck = @env.validate(@config.requiredEnv)
 /show @envCheck.summary
 
@@ -40,16 +57,24 @@ This workflow reviews module submissions to ensure quality and security.
 /when @envCheck.valid => /show "Fetching PR data..."
 
 >> Only fetch if environment is valid
+/when @envCheck.valid => /show `📥 Fetching PR #@PR_NUMBER from @config.repo...`
 /when @envCheck.valid => /var @prData = @github.pr.view(@PR_NUMBER, @config.repo)
+/when @envCheck.valid => /show "✅ PR data fetched"
+/when @envCheck.valid => /show "📥 Fetching PR diff..."
 /when @envCheck.valid => /var @prDiff = @github.pr.diff(@PR_NUMBER, @config.repo, @config.modulePattern)
+/when @envCheck.valid => /show "✅ PR diff fetched"
 
 ## 🔍 Step 3: Extract Module Information
 
 /when @prData => /show "Analyzing module changes..."
 
 >> Extract module from PR files instead of diff parsing
+/when @prData => /show "🔍 Extracting module from PR..."
 /var @moduleContent = @extractModuleFromPR(@prData.files, @prDiff)
+/show "✅ Module extracted"
+/show "🔍 Validating module..."
 /var @moduleValidation = @validateModule(@moduleContent)
+/show "✅ Module validation complete"
 
 ## 📝 Step 4: Prepare Review Context
 
