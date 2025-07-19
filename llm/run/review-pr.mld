@@ -9,7 +9,7 @@ This workflow reviews module submissions to ensure quality and security.
 
 /show "🚀 Starting review workflow..."
 
-/import { PR_NUMBER, REPO_OWNER, REPO_NAME, GITHUB_TOKEN, ANTHROPIC_API_KEY } from @input
+/import { MLLD_PR_NUMBER, MLLD_REPO_OWNER, MLLD_REPO_NAME, MLLD_GITHUB_TOKEN, MLLD_ANTHROPIC_API_KEY } from @input
 
 /show "✅ Imported environment variables"
 
@@ -40,8 +40,8 @@ This workflow reviews module submissions to ensure quality and security.
 ## 📋 Workflow Configuration
 
 /var @config = {
-  "requiredEnv": ["ANTHROPIC_API_KEY", "GITHUB_TOKEN"],
-  "repo": `@REPO_OWNER/@REPO_NAME`,
+  "requiredEnv": ["MLLD_ANTHROPIC_API_KEY", "MLLD_GITHUB_TOKEN"],
+  "repo": `@MLLD_REPO_OWNER/@MLLD_REPO_NAME`,
   "modulePattern": "modules/**/*.json",
   "maxRetries": 3
 }
@@ -57,11 +57,11 @@ This workflow reviews module submissions to ensure quality and security.
 /when @envCheck.valid => /show "Fetching PR data..."
 
 >> Only fetch if environment is valid
-/when @envCheck.valid => /show `📥 Fetching PR #@PR_NUMBER from @config.repo...`
-/when @envCheck.valid => /var @prData = @github.pr.view(@PR_NUMBER, @config.repo)
+/when @envCheck.valid => /show `📥 Fetching PR #@MLLD_PR_NUMBER from @config.repo...`
+/when @envCheck.valid => /var @prData = @github.pr_view(@MLLD_PR_NUMBER, @config.repo)
 /when @envCheck.valid => /show "✅ PR data fetched"
 /when @envCheck.valid => /show "📥 Fetching PR diff..."
-/when @envCheck.valid => /var @prDiff = @github.pr.diff(@PR_NUMBER, @config.repo, @config.modulePattern)
+/when @envCheck.valid => /var @prDiff = @github.pr_diff(@MLLD_PR_NUMBER, @config.repo, @config.modulePattern)
 /when @envCheck.valid => /show "✅ PR diff fetched"
 
 ## 🔍 Step 3: Extract Module Information
