@@ -1,6 +1,6 @@
 {
   "version": "2.0.0",
-  "generated": "2025-07-20T02:41:44.867Z",
+  "generated": "2025-07-20T03:06:01.449Z",
   "modules": {
     "@mlld/ai-cli": {
       "name": "ai-cli",
@@ -45,8 +45,8 @@
       "needs": [
         "js"
       ],
-      "repo": "https://github.com/mlld-lang/mlld",
-      "bugs": "https://github.com/mlld-lang/mlld/issues",
+      "repo": "https://github.com/mlld-lang/modules",
+      "bugs": "https://github.com/mlld-lang/modules/issues",
       "keywords": [
         "environment",
         "env",
@@ -60,13 +60,13 @@
       "mlldVersion": "*",
       "source": {
         "type": "github",
-        "url": "https://raw.githubusercontent.com/mlld-lang/mlld/main/modules/llm/modules/env.mld.md",
-        "contentHash": "sha256:34c0762c1c1d19d3d7dac6a7be38c59cd4314382567764c5b11695b1ce1f67bb",
+        "url": "https://raw.githubusercontent.com/mlld-lang/modules/8a6d6b5d40fc25d7a7a309e100bdd6580e76d0b4/llm/modules/env.mld.md",
+        "contentHash": "2adb65cd63cc6e57fc194674dd04d5386ffc320d0677601c8a8602e494591b8d",
         "repository": {
           "type": "git",
-          "url": "https://github.com/mlld-lang/mlld",
-          "commit": "main",
-          "path": "modules/llm/modules/env.mld.md"
+          "url": "https://github.com/mlld-lang/modules",
+          "commit": "8a6d6b5d40fc25d7a7a309e100bdd6580e76d0b4",
+          "path": "llm/modules/env.mld.md"
         }
       },
       "publishedAt": "2024-01-17T00:00:00Z",
