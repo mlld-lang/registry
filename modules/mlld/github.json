@@ -12,7 +12,7 @@
   "source": {
     "type": "github",
     "url": "https://raw.githubusercontent.com/mlld-lang/modules/8a6d6b5d40fc25d7a7a309e100bdd6580e76d0b4/llm/modules/github.mld.md",
-    "contentHash": "32d8a93c80d835347a7246f1c4756e0556d1a85808e17e232f026e96a65e1633",
+    "contentHash": "a88873860a7b35b061ba09f903e81c16382376d58ca36449f064fe8def82fac9",
     "repository": {
       "type": "git",
       "url": "https://github.com/mlld-lang/modules",
