@@ -9,8 +9,18 @@ mlld-version: ">=1.0.0-rc"
 
 >> Extract module content from PR with new file structure
 /exe @extractModuleFromPR(prFiles, diff) = js {
+  // Add error checking for undefined inputs
+  if (!prFiles) {
+    return { error: "PR files data is undefined - check GitHub API response" };
+  }
+  
+  if (!Array.isArray(prFiles)) {
+    return { error: `PR files is not an array, got: ${typeof prFiles}` };
+  }
+  
   // Find module JSON files in the PR
   const moduleFiles = prFiles.filter(f => 
+    f && f.path && 
     f.path.startsWith('modules/') && 
     f.path.endsWith('.json') &&
     f.path.split('/').length === 3  // Ensure proper structure
