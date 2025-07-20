@@ -11,12 +11,12 @@
   "mlldVersion": "*",
   "source": {
     "type": "github",
-    "url": "https://raw.githubusercontent.com/mlld-lang/modules/3cce7fe9f706bb0699d1303d6a438316c38c6974/llm/modules/github.mld.md",
-    "contentHash": "9c86cb430d6fd5d7e01c7d41c2f6bbc9799adb92645bac87e755985ce6bf5272",
+    "url": "https://raw.githubusercontent.com/mlld-lang/modules/3676e3d6e4e22d40ab0b6ec9acf68d12f301af3b/llm/modules/github.mld.md",
+    "contentHash": "3ba91ac192643bda837d1d69233c6f1e340085df76a68ab3108fb2d50b838a68",
     "repository": {
       "type": "git",
       "url": "https://github.com/mlld-lang/modules",
-      "commit": "3cce7fe9f706bb0699d1303d6a438316c38c6974",
+      "commit": "3676e3d6e4e22d40ab0b6ec9acf68d12f301af3b",
       "path": "llm/modules/github.mld.md"
     }
   },
