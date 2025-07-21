@@ -91,7 +91,13 @@ This workflow reviews module submissions to ensure quality and security.
 
 /var @moduleSourceUrl = @getSourceUrl(@moduleContent)
 /when @moduleSourceUrl => /show `📥 Loading module source from: @moduleSourceUrl`
+
+>> Always define moduleSourceContent, either with loaded content or null
 /when @moduleSourceUrl => /var @moduleSourceContent = <@moduleSourceUrl>
+/when @moduleSourceUrl: [
+  false => /var @moduleSourceContent = null
+]
+
 /when @moduleSourceContent => /show "✅ Module source loaded"
 
 /show "🔍 Validating module..."
@@ -100,13 +106,8 @@ This workflow reviews module submissions to ensure quality and security.
 
 ## 📝 Step 4: Prepare Review Context
 
->> Create review context with source content if available
-/when @moduleSourceContent => /var @reviewContext = @createReviewContext(@prData, @moduleContent, @moduleValidation, @moduleSourceContent)
-
->> Or without source content if not available
-/when @moduleSourceContent: [
-  false => /var @reviewContext = @createReviewContext(@prData, @moduleContent, @moduleValidation, null)
-]
+>> Create review context (moduleSourceContent is always defined, either with content or null)
+/var @reviewContext = @createReviewContext(@prData, @moduleContent, @moduleValidation, @moduleSourceContent)
 
 ## 🤖 Step 5: Get AI Review
 
