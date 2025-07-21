@@ -1,6 +1,6 @@
 {
   "version": "2.0.0",
-  "generated": "2025-07-21T09:48:04.087Z",
+  "generated": "2025-07-21T20:48:03.604Z",
   "modules": {
     "@mlld/ai-cli": {
       "name": "ai-cli",
@@ -96,12 +96,12 @@
       "mlldVersion": "*",
       "source": {
         "type": "github",
-        "url": "https://raw.githubusercontent.com/mlld-lang/modules/57999f405adacb56dcb7f292a5a1fe425be94260/llm/modules/github.mld.md",
-        "contentHash": "83b9ccec5c419f5c016049832f4759e414d426198a177883abff6d0f340428d1",
+        "url": "https://raw.githubusercontent.com/mlld-lang/modules/8dcca68b4a09cc6b18f7f2f3ab37aedd1d8527ef/llm/modules/github.mld.md",
+        "contentHash": "d97ea413088cbd0ad039da1aab48ef419996ee79ea4e286051644b3109fad2d7",
         "repository": {
           "type": "git",
           "url": "https://github.com/mlld-lang/modules",
-          "commit": "57999f405adacb56dcb7f292a5a1fe425be94260",
+          "commit": "8dcca68b4a09cc6b18f7f2f3ab37aedd1d8527ef",
           "path": "llm/modules/github.mld.md"
         }
       },
