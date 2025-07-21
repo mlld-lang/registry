@@ -79,12 +79,12 @@ This workflow reviews module submissions to ensure quality and security.
 ]
 
 >> Extract the source URL from the module JSON (only if no error)
-/exe @getSourceUrl(moduleContent) = js {
-  if (moduleContent.error) {
+/exe @getSourceUrl(module) = js {
+  if (module.error) {
     return null;
   }
-  if (moduleContent.source && moduleContent.source.url) {
-    return moduleContent.source.url;
+  if (module.source && module.source.url) {
+    return module.source.url;
   }
   return null;
 }
