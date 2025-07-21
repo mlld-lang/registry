@@ -7,7 +7,7 @@ mlld-version: ">=1.0.0-rc"
 
 >> Create a structured review context from PR and module data
 /exe @createReviewContext(prData, moduleContent, validation) = js {
-  const pr = JSON.parse(prData);
+  const pr = typeof prData === 'string' ? JSON.parse(prData) : prData;
   
   // Extract relevant PR info
   const context = {
