@@ -5,126 +5,48 @@ mlld-version: ">=1.3.0"
 
 # 🤖 Automated Module Review
 
-This workflow reviews module submissions to ensure quality and security.
-
-/show "🚀 Starting review workflow..."
-
 /import { MLLD_PR_NUMBER, MLLD_REPO_OWNER, MLLD_REPO_NAME, MLLD_GITHUB_TOKEN, MLLD_ANTHROPIC_API_KEY } from @input
-
-/show "✅ Imported environment variables"
-
->> Import core modules
-/show "📦 Importing @mlld/env..."
 /import { env } from @mlld/env
-/show "📦 Importing @mlld/github..."
 /import { github } from @mlld/github
-
-/show "✅ Core modules imported"
-
->> Import local modules
-/show "📦 Importing registry-utils..."
 /import { extractModuleFromPR, validateModule } from "../modules/registry-utils.mld"
-/show "📦 Importing claude-utils..."
 /import { queryClaudeAPI, parseReviewResponse, createFallbackReview } from "../modules/claude-utils.mld"
-/show "📦 Importing review-context..."
 /import { createReviewContext } from "../templates/review-context.mld"
-/show "📦 Importing review-prompt..."
 /import { reviewPrompt } from "../templates/review-prompt.mld"
-/show "📦 Importing github-review..."
 /import { formatGitHubReview } from "../templates/github-review.mld"
-/show "📦 Importing summary-report..."
 /import { createSummaryReport } from "../templates/summary-report.mld"
 
-/show "✅ All modules imported successfully"
+## Configuration
 
-## 📋 Workflow Configuration
+/var @repo = `@MLLD_REPO_OWNER/@MLLD_REPO_NAME`
 
-/var @config = {
-  "requiredEnv": ["MLLD_ANTHROPIC_API_KEY", "MLLD_GITHUB_TOKEN"],
-  "repo": `@MLLD_REPO_OWNER/@MLLD_REPO_NAME`,
-  "modulePattern": "modules/**/*.json",
-  "maxRetries": 3
-}
+## Fetch PR Data
 
-## ✅ Step 1: Validate Environment
+/var @prData = @github.pr.view(@MLLD_PR_NUMBER, @repo)
+/show "PR Data:"
+/show @prData
 
-/show "🔍 Checking required environment variables..."
-/var @envCheck = @env.validate(@config.requiredEnv)
-/show @envCheck.summary
+/var @prFiles = @github.pr.files(@MLLD_PR_NUMBER, @repo)
+/show "PR Files:"
+/show @prFiles
 
-## 📥 Step 2: Fetch Pull Request Data
+/var @prDiff = @github.pr.diff(@MLLD_PR_NUMBER, @repo)
+## Extract Module
 
-/when @envCheck.valid => /show "Fetching PR data..."
+/var @moduleContent = @extractModuleFromPR(@prFiles, @prDiff)
+/show "Module Content:"
+/show @moduleContent
 
->> Only fetch if environment is valid
-/when @envCheck.valid => /show `📥 Fetching PR #@MLLD_PR_NUMBER from @config.repo...`
-/when @envCheck.valid => /var @prData = @github.pr.view(@MLLD_PR_NUMBER, @config.repo)
-/when @envCheck.valid => /show "✅ PR data fetched"
-/when @envCheck.valid => /show "📥 Fetching PR diff..."
-/when @envCheck.valid => /var @prDiff = @github.pr.diff(@MLLD_PR_NUMBER, @config.repo, @config.modulePattern)
-/when @envCheck.valid => /show "✅ PR diff fetched"
-
-## 🔍 Step 3: Extract Module Information
-
-/when @prData => /show "Analyzing module changes..."
-
->> Extract module from PR files instead of diff parsing
-/when @prData => /show "🔍 Extracting module from PR..."
-/var @moduleContent = @extractModuleFromPR(@prData.files, @prDiff)
-
->> Check if extraction succeeded
-/when @moduleContent.error => /show `❌ Module extraction failed: @moduleContent.error`
-/when @moduleContent.error: [
-  false => /show "✅ Module extracted"
-]
-
->> Extract the source URL from the module JSON (only if no error)
-/exe @getSourceUrl(module) = js {
-  if (module.error) {
-    return null;
-  }
-  if (module.source && module.source.url) {
-    return module.source.url;
-  }
-  return null;
-}
-
-/var @moduleSourceUrl = @getSourceUrl(@moduleContent)
-/when @moduleSourceUrl => /show `📥 Loading module source from: @moduleSourceUrl`
-
->> Always define moduleSourceContent, either with loaded content or null
-/when @moduleSourceUrl => /var @moduleSourceContent = <@moduleSourceUrl>
-/when @moduleSourceUrl: [
-  false => /var @moduleSourceContent = null
-]
-
-/when @moduleSourceContent => /show "✅ Module source loaded"
-
-/show "🔍 Validating module..."
+/var @moduleSourceContent = <@moduleContent.source.url>
 /var @moduleValidation = @validateModule(@moduleContent)
-/show "✅ Module validation complete"
 
-## 📝 Step 4: Prepare Review Context
+## Prepare Review
 
->> Create review context (moduleSourceContent is always defined, either with content or null)
 /var @reviewContext = @createReviewContext(@prData, @moduleContent, @moduleValidation, @moduleSourceContent)
-
-## 🤖 Step 5: Get AI Review
-
 /var @prompt = @reviewPrompt(@reviewContext)
-
-/when @moduleValidation.valid => /show "🤖 Requesting Claude review..."
-
->> Query Claude with retry logic
-/var @claudeResponse = @queryClaudeAPI(@prompt, @config.maxRetries)
+/var @claudeResponse = @queryClaudeAPI(@prompt, 3)
 /var @aiReview = @parseReviewResponse(@claudeResponse)
 
->> Fallback if AI review fails
-/when @aiReview.recommendation: [
-  false => /var @aiReview = @createFallbackReview(@moduleValidation)
-]
-
-## 📤 Step 6: Prepare GitHub Output
+## Post Review
 
 /var @githubReview = @formatGitHubReview(@aiReview, @reviewContext)
 
@@ -139,25 +61,15 @@ This workflow reviews module submissions to ensure quality and security.
   echo "EOF" >> $GITHUB_ENV
 }
 
-/when @aiReview.recommendation => /run @setEnvVar("LLM_RECOMMENDATION", @aiReview.recommendation)
-/when @aiReview.category => /run @setEnvVar("LLM_CATEGORY", @aiReview.category)
-/when @githubReview => /run @setEnvVarMultiline("LLM_REVIEW_BODY", @githubReview)
+/run @setEnvVar("LLM_RECOMMENDATION", @aiReview.recommendation)
+/run @setEnvVar("LLM_CATEGORY", @aiReview.category)
+/run @setEnvVarMultiline("LLM_REVIEW_BODY", @githubReview)
 
 >> Post the review to GitHub
-/when @githubReview => /show "📤 Posting review to GitHub..."
-/when @githubReview => /var @reviewResult = @github.pr.review(@MLLD_PR_NUMBER, @config.repo, @aiReview.recommendation.toLowerCase(), @githubReview)
-/when @reviewResult => /show "✅ Review posted to GitHub"
-/when @reviewResult.error => /show `❌ Failed to post review: @reviewResult.error`
+/var @reviewResult = @github.pr.review(@MLLD_PR_NUMBER, @repo, @aiReview.recommendation.toLowerCase(), @githubReview)
 
-## 📊 Step 7: Summary Report
+/show "Review Result:"
+/show @reviewResult
 
 /var @summary = @createSummaryReport(@prData, @moduleValidation, @aiReview)
 /show @summary
-
-## 🎯 Workflow Complete
-
-/when @aiReview.recommendation: [
-  "APPROVE"         => /show "✅ Module approved for registry"
-  "REQUEST_CHANGES" => /show "❌ Changes requested"
-  "COMMENT"         => /show "💬 Review posted as comment"
-]
