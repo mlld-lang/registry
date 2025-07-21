@@ -20,10 +20,10 @@ mlld-version: ">=1.0.0-rc"
   
   // Find module JSON files in the PR
   const moduleFiles = prFiles.filter(f => 
-    f && f.path && 
-    f.path.startsWith('modules/') && 
-    f.path.endsWith('.json') &&
-    f.path.split('/').length === 3  // Ensure proper structure
+    f && f.filename && 
+    f.filename.startsWith('modules/') && 
+    f.filename.endsWith('.json') &&
+    f.filename.split('/').length === 3  // Ensure proper structure
   );
   
   if (moduleFiles.length === 0) {
@@ -34,7 +34,7 @@ mlld-version: ">=1.0.0-rc"
     return { error: "Multiple module files in single PR not allowed" };
   }
   
-  const modulePath = moduleFiles[0].path;
+  const modulePath = moduleFiles[0].filename;
   const pathParts = modulePath.split('/');
   const pathAuthor = pathParts[1];
   const pathModuleName = pathParts[2].replace('.json', '');

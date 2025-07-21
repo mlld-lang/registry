@@ -36,6 +36,8 @@ mlld-version: ">=1.3.0"
 /show "Module Content:"
 /show @moduleContent
 
+/when @moduleContent.error => /show `ERROR: Module extraction failed: @moduleContent.error`
+
 /var @moduleSourceContent = <@moduleContent.source.url>
 /var @moduleValidation = @validateModule(@moduleContent)
 
