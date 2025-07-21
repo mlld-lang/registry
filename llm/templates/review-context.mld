@@ -14,9 +14,9 @@ mlld-version: ">=1.0.0-rc"
     pr: {
       number: pr.number,
       title: pr.title,
-      author: pr.author.login,
-      files: pr.files.map(f => ({
-        path: f.path,
+      author: pr.user ? pr.user.login : 'unknown',
+      files: (pr.files || []).map(f => ({
+        path: f.filename || f.path,
         changes: f.additions + f.deletions
       }))
     },
