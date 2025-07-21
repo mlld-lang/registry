@@ -21,6 +21,9 @@ mlld-version: ">=1.0.0-rc"
 ${JSON.stringify(ctx.module, null, 2)}
 \`\`\`
 
+## Module Source Code
+${ctx.moduleSource ? '```\n' + ctx.moduleSource + '\n```' : 'ERROR: Could not load module source content'}
+
 ## Automated Validation Results
 Status: ${ctx.validation.valid ? "✅ PASSED" : "❌ FAILED"}
 ${ctx.validation.issues && ctx.validation.issues.length > 0 ? "\nIssues found:\n" + ctx.validation.issues.map(i => "- " + i).join("\n") : ""}

@@ -72,13 +72,20 @@ This workflow reviews module submissions to ensure quality and security.
 /when @prData => /show "🔍 Extracting module from PR..."
 /var @moduleContent = @extractModuleFromPR(@prData.files, @prDiff)
 /show "✅ Module extracted"
+
+>> Extract the source URL from the module JSON
+/when @moduleContent.source && @moduleContent.source.url => /var @moduleSourceUrl = @moduleContent.source.url
+/when @moduleSourceUrl => /show `📥 Loading module source from: @moduleSourceUrl`
+/when @moduleSourceUrl => /var @moduleSourceContent = <@moduleSourceUrl>
+/when @moduleSourceContent => /show "✅ Module source loaded"
+
 /show "🔍 Validating module..."
 /var @moduleValidation = @validateModule(@moduleContent)
 /show "✅ Module validation complete"
 
 ## 📝 Step 4: Prepare Review Context
 
-/var @reviewContext = @createReviewContext(@prData, @moduleContent, @moduleValidation)
+/var @reviewContext = @createReviewContext(@prData, @moduleContent, @moduleValidation, @moduleSourceContent)
 
 ## 🤖 Step 5: Get AI Review
 
@@ -113,6 +120,12 @@ This workflow reviews module submissions to ensure quality and security.
 /when @aiReview.recommendation => /run @setEnvVar("LLM_RECOMMENDATION", @aiReview.recommendation)
 /when @aiReview.category => /run @setEnvVar("LLM_CATEGORY", @aiReview.category)
 /when @githubReview => /run @setEnvVarMultiline("LLM_REVIEW_BODY", @githubReview)
+
+>> Post the review to GitHub
+/when @githubReview => /show "📤 Posting review to GitHub..."
+/when @githubReview => /var @reviewResult = @github.pr.review(@MLLD_PR_NUMBER, @config.repo, @aiReview.recommendation.toLowerCase(), @githubReview)
+/when @reviewResult && !@reviewResult.error => /show "✅ Review posted to GitHub"
+/when @reviewResult.error => /show `❌ Failed to post review: @reviewResult.error`
 
 ## 📊 Step 7: Summary Report
 
