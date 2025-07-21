@@ -100,7 +100,13 @@ This workflow reviews module submissions to ensure quality and security.
 
 ## 📝 Step 4: Prepare Review Context
 
-/var @reviewContext = @createReviewContext(@prData, @moduleContent, @moduleValidation, @moduleSourceContent)
+>> Create review context with source content if available
+/when @moduleSourceContent => /var @reviewContext = @createReviewContext(@prData, @moduleContent, @moduleValidation, @moduleSourceContent)
+
+>> Or without source content if not available
+/when @moduleSourceContent: [
+  false => /var @reviewContext = @createReviewContext(@prData, @moduleContent, @moduleValidation, null)
+]
 
 ## 🤖 Step 5: Get AI Review
 

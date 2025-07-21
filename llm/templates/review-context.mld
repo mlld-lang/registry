@@ -6,7 +6,7 @@ mlld-version: ">=1.0.0-rc"
 # Review Context Builder
 
 >> Create a structured review context from PR and module data
-/exe @createReviewContext(prData, moduleContent, validation, moduleSourceContent) = js {
+/exe @createReviewContext(prData, moduleContent, validation, sourceContent) = js {
   const pr = typeof prData === 'string' ? JSON.parse(prData) : prData;
   
   // Extract relevant PR info
@@ -21,7 +21,7 @@ mlld-version: ">=1.0.0-rc"
       }))
     },
     module: moduleContent,
-    moduleSource: moduleSourceContent || null,
+    moduleSource: sourceContent || null,
     validation: validation,
     metadata: {
       timestamp: new Date().toISOString(),
