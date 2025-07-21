@@ -71,10 +71,17 @@ This workflow reviews module submissions to ensure quality and security.
 >> Extract module from PR files instead of diff parsing
 /when @prData => /show "🔍 Extracting module from PR..."
 /var @moduleContent = @extractModuleFromPR(@prData.files, @prDiff)
-/show "✅ Module extracted"
 
->> Extract the source URL from the module JSON
-/when @moduleContent.source => /var @moduleSourceUrl = @moduleContent.source.url
+>> Check if extraction succeeded
+/when @moduleContent.error => /show `❌ Module extraction failed: @moduleContent.error`
+/when @moduleContent.error: [
+  false => /show "✅ Module extracted"
+]
+
+>> Extract the source URL from the module JSON (only if no error)
+/when @moduleContent.error: [
+  false => /when @moduleContent.source => /var @moduleSourceUrl = @moduleContent.source.url
+]
 /when @moduleSourceUrl => /show `📥 Loading module source from: @moduleSourceUrl`
 /when @moduleSourceUrl => /var @moduleSourceContent = <@moduleSourceUrl>
 /when @moduleSourceContent => /show "✅ Module source loaded"
