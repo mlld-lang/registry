@@ -124,7 +124,7 @@ This workflow reviews module submissions to ensure quality and security.
 >> Post the review to GitHub
 /when @githubReview => /show "📤 Posting review to GitHub..."
 /when @githubReview => /var @reviewResult = @github.pr.review(@MLLD_PR_NUMBER, @config.repo, @aiReview.recommendation.toLowerCase(), @githubReview)
-/when @reviewResult && !@reviewResult.error => /show "✅ Review posted to GitHub"
+/when @reviewResult => /show "✅ Review posted to GitHub"
 /when @reviewResult.error => /show `❌ Failed to post review: @reviewResult.error`
 
 ## 📊 Step 7: Summary Report
