@@ -54,10 +54,8 @@ mlld-version: ">=1.3.0"
 
 
 >> Post the review to GitHub
-/run @reviewResult = @github.pr.review(@MLLD_PR_NUMBER, @repo, @aiReview.recommendation.toLowerCase(), @githubReview)
-
 /show "Review Result:"
-/show @reviewResult
+/run @github.pr.review(@MLLD_PR_NUMBER, @repo, @aiReview.recommendation.toLowerCase(), @githubReview)
 
 /var @summary = @createSummaryReport(@prData, @moduleValidation, @aiReview)
 /show @summary
