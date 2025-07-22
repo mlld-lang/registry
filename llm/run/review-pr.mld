@@ -52,23 +52,9 @@ mlld-version: ">=1.3.0"
 
 /var @githubReview = @formatGitHubReview(@aiReview, @reviewContext)
 
->> Export to GitHub Actions environment
-/exe @setEnvVar(name, value) = sh {
-  echo "$name=$value" >> $GITHUB_ENV
-}
-
-/exe @setEnvVarMultiline(name, value) = sh {
-  echo "$name<<EOF" >> $GITHUB_ENV
-  echo "$value" >> $GITHUB_ENV
-  echo "EOF" >> $GITHUB_ENV
-}
-
-/run @setEnvVar("LLM_RECOMMENDATION", @aiReview.recommendation)
-/run @setEnvVar("LLM_CATEGORY", @aiReview.category)
-/run @setEnvVarMultiline("LLM_REVIEW_BODY", @githubReview)
 
 >> Post the review to GitHub
-/var @reviewResult = @github.pr.review(@MLLD_PR_NUMBER, @repo, @aiReview.recommendation.toLowerCase(), @githubReview)
+/run @reviewResult = @github.pr.review(@MLLD_PR_NUMBER, @repo, @aiReview.recommendation.toLowerCase(), @githubReview)
 
 /show "Review Result:"
 /show @reviewResult
