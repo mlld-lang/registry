@@ -1,0 +1,38 @@
+{
+  "name": "conditions",
+  "author": "mlld",
+  "version": "1.0.0",
+  "about": "Conditional checks for /when",
+  "needs": [
+    "js"
+  ],
+  "repo": "https://github.com/mlld-lang/modules",
+  "keywords": [
+    "conditions",
+    "checks",
+    "tests",
+    "when",
+    "truthy",
+    "equals",
+    "includes",
+    "has",
+    "is"
+  ],
+  "bugs": "https://github.com/mlld-lang/modules/issues",
+  "license": "CC0",
+  "mlldVersion": "*",
+  "source": {
+    "type": "github",
+    "url": "https://raw.githubusercontent.com/mlld-lang/modules/e62eb3bc841e7bb1cc19967d9759fd4123b840bf/llm/modules/conditions.mld.md",
+    "contentHash": "2b6436987caa49d0f1b09ca8f532411a53b3a6199aef7efe9e1d63ea7349e125",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/mlld-lang/modules",
+      "commit": "e62eb3bc841e7bb1cc19967d9759fd4123b840bf",
+      "path": "llm/modules/conditions.mld.md"
+    }
+  },
+  "dependencies": {},
+  "publishedAt": "2025-07-22T04:30:10.199Z",
+  "publishedBy": 110551
+}
