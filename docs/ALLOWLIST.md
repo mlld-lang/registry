@@ -43,4 +43,4 @@ Authors can be removed from the allowlist for:
 
 ## Technical Details
 
-The allowlist is stored in `/allowlist.json` and checked by the GitHub Actions workflow before running LLM review. This saves on API costs and speeds up the publishing process for proven contributors.
+The allowlist is stored in `/allowlist.json` and checked by the Vercel webhook service before running LLM review. This saves on API costs and speeds up the publishing process for proven contributors.
