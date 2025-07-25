@@ -1,12 +1,8 @@
 {
-  "name": "github",
-  "author": "mlld",
   "version": "1.0.0",
-  "about": "GitHub API client for PR, issue, and repository operations",
-  "needs": ["js"],
-  "repo": "https://github.com/mlld-lang/modules",
-  "bugs": "https://github.com/mlld-lang/modules/issues",
-  "keywords": ["github", "api", "pr", "pull-request", "issue", "repository", "fetch", "rest"],
+  "needs": [
+    "js"
+  ],
   "license": "CC0",
   "mlldVersion": "*",
   "source": {
@@ -21,6 +17,18 @@
     }
   },
   "dependencies": {},
+  "keywords": [
+    "github",
+    "api",
+    "pr",
+    "pull-request",
+    "issue",
+    "repository",
+    "fetch",
+    "rest"
+  ],
+  "repo": "https://github.com/mlld-lang/modules",
+  "bugs": "https://github.com/mlld-lang/modules/issues",
   "publishedAt": "2025-07-20T02:00:00.000Z",
   "publishedBy": 110551
 }

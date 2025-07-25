@@ -1,25 +1,14 @@
 {
-  "version": "2.0.0",
-  "generated": "2025-07-24T20:32:26.794Z",
+  "version": "2.0",
+  "generated": "2025-07-25T12:56:48.815Z",
   "modules": {
     "@mlld/ai-cli": {
       "name": "ai-cli",
       "author": "mlld",
-      "version": "1.0.0",
       "about": "AI CLI wrapper for Claude, ChatGPT, and other LLMs",
+      "version": "1.0.0",
       "needs": [
         "sh"
-      ],
-      "repo": "https://github.com/mlld-lang/modules",
-      "bugs": "https://github.com/mlld-lang/modules/issues",
-      "keywords": [
-        "ai",
-        "llm",
-        "claude",
-        "chatgpt",
-        "openai",
-        "anthropic",
-        "cli"
       ],
       "license": "CC0",
       "mlldVersion": "*",
@@ -34,27 +23,39 @@
           "path": "llm/modules/ai-cli.mld.md"
         }
       },
+      "dependencies": {},
+      "keywords": [
+        "ai",
+        "llm",
+        "claude",
+        "chatgpt",
+        "openai",
+        "anthropic",
+        "cli"
+      ],
+      "repo": "https://github.com/mlld-lang/modules",
+      "bugs": "https://github.com/mlld-lang/modules/issues",
       "publishedAt": "2024-01-17T00:00:00Z",
-      "publishedBy": 0
+      "publishedBy": null,
+      "availableVersions": [
+        "1.0.0"
+      ],
+      "tags": {
+        "latest": "1.0.0",
+        "stable": "1.0.0"
+      },
+      "owners": [
+        "mlld"
+      ],
+      "maintainers": []
     },
     "@mlld/env": {
       "name": "env",
       "author": "mlld",
-      "version": "1.0.0",
       "about": "Environment variable validation and management",
+      "version": "1.0.0",
       "needs": [
         "js"
-      ],
-      "repo": "https://github.com/mlld-lang/modules",
-      "bugs": "https://github.com/mlld-lang/modules/issues",
-      "keywords": [
-        "environment",
-        "env",
-        "validation",
-        "config",
-        "secrets",
-        "ci",
-        "variables"
       ],
       "license": "CC0",
       "mlldVersion": "*",
@@ -69,28 +70,39 @@
           "path": "llm/modules/env.mld.md"
         }
       },
+      "dependencies": {},
+      "keywords": [
+        "environment",
+        "env",
+        "validation",
+        "config",
+        "secrets",
+        "ci",
+        "variables"
+      ],
+      "repo": "https://github.com/mlld-lang/modules",
+      "bugs": "https://github.com/mlld-lang/modules/issues",
       "publishedAt": "2024-01-17T00:00:00Z",
-      "publishedBy": 0
+      "publishedBy": null,
+      "availableVersions": [
+        "1.0.0"
+      ],
+      "tags": {
+        "latest": "1.0.0",
+        "stable": "1.0.0"
+      },
+      "owners": [
+        "mlld"
+      ],
+      "maintainers": []
     },
     "@mlld/github": {
       "name": "github",
       "author": "mlld",
-      "version": "1.0.0",
       "about": "GitHub API client for PR, issue, and repository operations",
+      "version": "1.0.0",
       "needs": [
         "js"
-      ],
-      "repo": "https://github.com/mlld-lang/modules",
-      "bugs": "https://github.com/mlld-lang/modules/issues",
-      "keywords": [
-        "github",
-        "api",
-        "pr",
-        "pull-request",
-        "issue",
-        "repository",
-        "fetch",
-        "rest"
       ],
       "license": "CC0",
       "mlldVersion": "*",
@@ -106,8 +118,31 @@
         }
       },
       "dependencies": {},
+      "keywords": [
+        "github",
+        "api",
+        "pr",
+        "pull-request",
+        "issue",
+        "repository",
+        "fetch",
+        "rest"
+      ],
+      "repo": "https://github.com/mlld-lang/modules",
+      "bugs": "https://github.com/mlld-lang/modules/issues",
       "publishedAt": "2025-07-20T02:00:00.000Z",
-      "publishedBy": 110551
+      "publishedBy": 110551,
+      "availableVersions": [
+        "1.0.0"
+      ],
+      "tags": {
+        "latest": "1.0.0",
+        "stable": "1.0.0"
+      },
+      "owners": [
+        "mlld"
+      ],
+      "maintainers": []
     }
   }
 }

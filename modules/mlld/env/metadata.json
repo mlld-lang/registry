@@ -1,0 +1,12 @@
+{
+  "name": "env",
+  "author": "mlld",
+  "about": "Environment variable validation and management",
+  "owners": [
+    "mlld"
+  ],
+  "maintainers": [],
+  "created": "2024-01-17T00:00:00Z",
+  "createdBy": null,
+  "firstPublishPR": null
+}

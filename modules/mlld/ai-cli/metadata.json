@@ -1,0 +1,12 @@
+{
+  "name": "ai-cli",
+  "author": "mlld",
+  "about": "AI CLI wrapper for Claude, ChatGPT, and other LLMs",
+  "owners": [
+    "mlld"
+  ],
+  "maintainers": [],
+  "created": "2024-01-17T00:00:00Z",
+  "createdBy": null,
+  "firstPublishPR": null
+}

@@ -1,12 +1,8 @@
 {
-  "name": "env",
-  "author": "mlld",
   "version": "1.0.0",
-  "about": "Environment variable validation and management",
-  "needs": ["js"],
-  "repo": "https://github.com/mlld-lang/modules",
-  "bugs": "https://github.com/mlld-lang/modules/issues",
-  "keywords": ["environment", "env", "validation", "config", "secrets", "ci", "variables"],
+  "needs": [
+    "js"
+  ],
   "license": "CC0",
   "mlldVersion": "*",
   "source": {
@@ -20,6 +16,18 @@
       "path": "llm/modules/env.mld.md"
     }
   },
+  "dependencies": {},
+  "keywords": [
+    "environment",
+    "env",
+    "validation",
+    "config",
+    "secrets",
+    "ci",
+    "variables"
+  ],
+  "repo": "https://github.com/mlld-lang/modules",
+  "bugs": "https://github.com/mlld-lang/modules/issues",
   "publishedAt": "2024-01-17T00:00:00Z",
-  "publishedBy": 0
+  "publishedBy": null
 }

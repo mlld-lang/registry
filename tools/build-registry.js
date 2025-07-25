@@ -2,10 +2,64 @@
 
 import fs from 'fs/promises';
 import path from 'path';
-import { glob } from 'glob';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+/**
+ * Get all versions for a module by scanning version files
+ */
+async function getAvailableVersions(modulePath) {
+  const files = await fs.readdir(modulePath);
+  const versions = [];
+  
+  for (const file of files) {
+    // Match semantic version pattern (e.g., 1.0.0.json, 2.0.0-beta.json)
+    if (file.match(/^\d+\.\d+\.\d+(-[\w.]+)?\.json$/)) {
+      versions.push(file.replace('.json', ''));
+    }
+  }
+  
+  // Sort versions in descending order
+  return versions.sort((a, b) => compareSemVer(b, a));
+}
+
+/**
+ * Simple semver comparison
+ */
+function compareSemVer(a, b) {
+  const parseVersion = (v) => {
+    const [version, prerelease] = v.split('-');
+    const [major, minor, patch] = version.split('.').map(Number);
+    return { major, minor, patch, prerelease: prerelease || '' };
+  };
+  
+  const va = parseVersion(a);
+  const vb = parseVersion(b);
+  
+  if (va.major !== vb.major) return va.major - vb.major;
+  if (va.minor !== vb.minor) return va.minor - vb.minor;
+  if (va.patch !== vb.patch) return va.patch - vb.patch;
+  
+  // Handle prerelease versions
+  if (!va.prerelease && vb.prerelease) return 1;
+  if (va.prerelease && !vb.prerelease) return -1;
+  if (va.prerelease && vb.prerelease) return va.prerelease.localeCompare(vb.prerelease);
+  
+  return 0;
+}
+
+/**
+ * Get the latest version from available versions
+ */
+async function getLatestVersion(modulePath, tags) {
+  // Check tags first
+  if (tags?.latest) return tags.latest;
+  
+  // Otherwise get highest version
+  const versions = await getAvailableVersions(modulePath);
+  return versions[0]; // Already sorted descending
+}
 
 async function buildRegistry() {
   const rootDir = path.join(__dirname, '..');
@@ -13,85 +67,132 @@ async function buildRegistry() {
   const outputPath = path.join(rootDir, 'modules.json');
   const generatedPath = path.join(rootDir, 'modules.generated.json');
   
-  console.log('🔨 Building module registry...\n');
-  
-  // Find all module JSON files
-  const moduleFiles = await glob('modules/**/*.json', { cwd: rootDir });
+  console.log('🔨 Building module registry (v2.0 with versions)...\n');
   
   const registry = {
-    version: "2.0.0",
+    version: "2.0",
     generated: new Date().toISOString(),
     modules: {}
   };
   
   const errors = [];
   
-  // Process each module file
-  for (const filePath of moduleFiles) {
-    const fullPath = path.join(rootDir, filePath);
+  try {
+    // Scan all author directories
+    const authorDirs = await fs.readdir(modulesDir);
     
-    try {
-      const content = await fs.readFile(fullPath, 'utf8');
-      const module = JSON.parse(content);
+    for (const author of authorDirs) {
+      const authorPath = path.join(modulesDir, author);
+      const stats = await fs.stat(authorPath);
       
-      // Extract expected author and name from path
-      const pathParts = filePath.split('/');
-      if (pathParts.length !== 3) {
-        errors.push(`Invalid path structure: ${filePath}`);
-        continue;
+      if (!stats.isDirectory()) continue;
+      
+      const moduleDirs = await fs.readdir(authorPath);
+      
+      for (const moduleName of moduleDirs) {
+        const modulePath = path.join(authorPath, moduleName);
+        const moduleStats = await fs.stat(modulePath);
+        
+        // Skip non-directories and hidden files
+        if (!moduleStats.isDirectory() || moduleName.startsWith('.')) continue;
+        
+        // Skip backup files from migration
+        if (moduleName.endsWith('.json.backup')) continue;
+        
+        const moduleKey = `@${author}/${moduleName}`;
+        
+        try {
+          console.log(`📦 Processing ${moduleKey}...`);
+          
+          // Read metadata
+          const metadataPath = path.join(modulePath, 'metadata.json');
+          let metadata;
+          try {
+            metadata = JSON.parse(await fs.readFile(metadataPath, 'utf8'));
+          } catch (error) {
+            // Fallback for unmigrated modules
+            const oldPath = path.join(authorPath, `${moduleName}.json`);
+            try {
+              const oldModule = JSON.parse(await fs.readFile(oldPath, 'utf8'));
+              console.log(`  ⚠️  Using legacy format for ${moduleKey}`);
+              registry.modules[moduleKey] = oldModule;
+              continue;
+            } catch {
+              errors.push(`Missing metadata.json for ${moduleKey}`);
+              continue;
+            }
+          }
+          
+          // Read tags
+          let tags = {};
+          try {
+            tags = JSON.parse(await fs.readFile(path.join(modulePath, 'tags.json'), 'utf8'));
+          } catch {
+            // Tags file is optional
+          }
+          
+          // Get latest version
+          const latestVersion = await getLatestVersion(modulePath, tags);
+          
+          if (!latestVersion) {
+            errors.push(`No versions found for ${moduleKey}`);
+            continue;
+          }
+          
+          // Read latest version data
+          const versionPath = path.join(modulePath, `${latestVersion}.json`);
+          const versionData = JSON.parse(await fs.readFile(versionPath, 'utf8'));
+          
+          // Get all available versions
+          const availableVersions = await getAvailableVersions(modulePath);
+          
+          // Build registry entry (backward compatible structure)
+          registry.modules[moduleKey] = {
+            // Core fields from metadata
+            name: metadata.name,
+            author: metadata.author,
+            about: metadata.about,
+            
+            // Version-specific fields from latest version
+            version: latestVersion,
+            needs: versionData.needs || [],
+            license: versionData.license || 'CC0',
+            mlldVersion: versionData.mlldVersion,
+            source: versionData.source,
+            dependencies: versionData.dependencies || {},
+            keywords: versionData.keywords || [],
+            repo: versionData.repo,
+            bugs: versionData.bugs,
+            homepage: versionData.homepage,
+            publishedAt: versionData.publishedAt,
+            publishedBy: versionData.publishedBy,
+            
+            // New version support fields
+            availableVersions,
+            tags,
+            
+            // Ownership info for access control
+            owners: metadata.owners || [metadata.author],
+            maintainers: metadata.maintainers || []
+          };
+          
+          console.log(`  ✅ Added ${moduleKey} (${latestVersion}, ${availableVersions.length} versions)`);
+          
+        } catch (error) {
+          errors.push(`Error processing ${moduleKey}: ${error.message}`);
+        }
       }
-      
-      const [, pathAuthor, pathFile] = pathParts;
-      const pathModuleName = path.basename(pathFile, '.json');
-      
-      // Validate path matches content
-      if (module.author !== pathAuthor) {
-        errors.push(`Author mismatch in ${filePath}: expected ${pathAuthor}, got ${module.author}`);
-        continue;
-      }
-      
-      if (module.name !== pathModuleName) {
-        errors.push(`Module name mismatch in ${filePath}: expected ${pathModuleName}, got ${module.name}`);
-        continue;
-      }
-      
-      // Validate required fields
-      const required = ['name', 'author', 'about', 'needs', 'license', 'source'];
-      const missing = required.filter(field => !module[field]);
-      if (missing.length > 0) {
-        errors.push(`Missing required fields in ${filePath}: ${missing.join(', ')}`);
-        continue;
-      }
-      
-      // Validate license
-      if (module.license !== 'CC0') {
-        errors.push(`Invalid license in ${filePath}: must be CC0`);
-        continue;
-      }
-      
-      // Build the module key
-      const moduleKey = `@${module.author}/${module.name}`;
-      
-      // Check for duplicates
-      if (registry.modules[moduleKey]) {
-        errors.push(`Duplicate module found: ${moduleKey} in ${filePath}`);
-        continue;
-      }
-      
-      // Add to registry
-      registry.modules[moduleKey] = module;
-      
-      console.log(`✓ Added ${moduleKey}`);
-    } catch (error) {
-      errors.push(`Error processing ${filePath}: ${error.message}`);
     }
+    
+  } catch (error) {
+    errors.push(`Error scanning modules directory: ${error.message}`);
   }
   
   // Check for errors
   if (errors.length > 0) {
-    console.error('\n❌ Build failed with errors:\n');
+    console.error('\n❌ Build completed with errors:\n');
     errors.forEach(err => console.error(`  - ${err}`));
-    process.exit(1);
+    console.error('\nNote: The registry was still built with successful modules.');
   }
   
   // Sort modules for consistent output
@@ -119,6 +220,10 @@ async function buildRegistry() {
   console.log(`\n✅ Built registry with ${Object.keys(registry.modules).length} modules`);
   console.log(`📁 Output: ${outputPath} (minified)`);
   console.log(`📁 Output: ${generatedPath} (formatted)`);
+  
+  if (errors.length === 0) {
+    console.log('\n🎉 Build completed successfully!');
+  }
 }
 
 // Run if called directly

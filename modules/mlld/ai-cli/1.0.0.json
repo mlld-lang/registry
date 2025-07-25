@@ -1,12 +1,8 @@
 {
-  "name": "ai-cli",
-  "author": "mlld",
   "version": "1.0.0",
-  "about": "AI CLI wrapper for Claude, ChatGPT, and other LLMs",
-  "needs": ["sh"],
-  "repo": "https://github.com/mlld-lang/modules",
-  "bugs": "https://github.com/mlld-lang/modules/issues",
-  "keywords": ["ai", "llm", "claude", "chatgpt", "openai", "anthropic", "cli"],
+  "needs": [
+    "sh"
+  ],
   "license": "CC0",
   "mlldVersion": "*",
   "source": {
@@ -20,6 +16,18 @@
       "path": "llm/modules/ai-cli.mld.md"
     }
   },
+  "dependencies": {},
+  "keywords": [
+    "ai",
+    "llm",
+    "claude",
+    "chatgpt",
+    "openai",
+    "anthropic",
+    "cli"
+  ],
+  "repo": "https://github.com/mlld-lang/modules",
+  "bugs": "https://github.com/mlld-lang/modules/issues",
   "publishedAt": "2024-01-17T00:00:00Z",
-  "publishedBy": 0
+  "publishedBy": null
 }
