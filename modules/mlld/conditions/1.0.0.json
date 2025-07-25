@@ -1,0 +1,35 @@
+{
+  "version": "1.0.0",
+  "needs": [
+    "js"
+  ],
+  "license": "CC0",
+  "mlldVersion": "*",
+  "source": {
+    "type": "github",
+    "url": "https://raw.githubusercontent.com/mlld-lang/modules/c635bc17da27f612d766764ff0ca86b9b8d39e84/llm/modules/conditions.mld.md",
+    "contentHash": "2b6436987caa49d0f1b09ca8f532411a53b3a6199aef7efe9e1d63ea7349e125",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/mlld-lang/modules",
+      "commit": "c635bc17da27f612d766764ff0ca86b9b8d39e84",
+      "path": "llm/modules/conditions.mld.md"
+    }
+  },
+  "dependencies": {},
+  "keywords": [
+    "conditions",
+    "checks",
+    "tests",
+    "when",
+    "truthy",
+    "equals",
+    "includes",
+    "has",
+    "is"
+  ],
+  "repo": "https://github.com/mlld-lang/modules",
+  "bugs": "https://github.com/mlld-lang/modules/issues",
+  "publishedAt": "2025-07-25T18:31:24.714Z",
+  "publishedBy": 110551
+}
