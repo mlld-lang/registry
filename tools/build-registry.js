@@ -67,7 +67,7 @@ async function buildRegistry() {
   const outputPath = path.join(rootDir, 'modules.json');
   const generatedPath = path.join(rootDir, 'modules.generated.json');
   
-  console.log('🔨 Building module registry (v2.0 with versions)...\n');
+  console.log('🔨 Building module registry...\n');
   
   const registry = {
     version: "2.0",
@@ -167,7 +167,7 @@ async function buildRegistry() {
             publishedAt: versionData.publishedAt,
             publishedBy: versionData.publishedBy,
             
-            // New version support fields
+            // Version support fields
             availableVersions,
             tags,
             
