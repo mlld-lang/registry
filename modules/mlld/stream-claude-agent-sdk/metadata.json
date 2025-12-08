@@ -1,0 +1,12 @@
+{
+  "name": "stream-claude-agent-sdk",
+  "author": "mlld",
+  "about": "Streaming format adapter for Claude Agent SDK NDJSON output",
+  "owners": [
+    "mlld"
+  ],
+  "maintainers": [],
+  "created": "2025-12-08T01:29:33.374Z",
+  "createdBy": 110551,
+  "firstPublishPR": null
+}
