@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "generated": "2025-12-08T05:25:39.446Z",
+  "generated": "2025-12-08T10:50:15.061Z",
   "modules": {
     "@mlld/ai-cli": {
       "name": "ai-cli",
@@ -148,18 +148,18 @@
       "name": "stream-claude-agent-sdk",
       "author": "mlld",
       "about": "Streaming format adapter for Claude Agent SDK NDJSON output",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "needs": [],
       "license": "CC0",
       "mlldVersion": ">=2.0.0-rc78",
       "source": {
         "type": "github",
-        "url": "https://raw.githubusercontent.com/mlld-lang/modules/70efd0499181105d8688b2b3fb7f387dd8f7c6ef/llm/modules/stream-claude-agent-sdk.mld.md",
-        "contentHash": "1e7de7f72b5eb92d70a927fe9832772acbdeeba22a366379cb39955e389e998f",
+        "url": "https://raw.githubusercontent.com/mlld-lang/modules/2d13775192a13e8ad01313d6635cb9cdd67563cc/llm/modules/stream-claude-agent-sdk.mld.md",
+        "contentHash": "ce6fb59647818f59e69d72a0864769006491a5a57ca06926101aaa0a4a7dd27b",
         "repository": {
           "type": "git",
           "url": "https://github.com/mlld-lang/modules",
-          "commit": "70efd0499181105d8688b2b3fb7f387dd8f7c6ef",
+          "commit": "2d13775192a13e8ad01313d6635cb9cdd67563cc",
           "path": "llm/modules/stream-claude-agent-sdk.mld.md"
         }
       },
@@ -167,15 +167,15 @@
       "keywords": [],
       "repo": "https://github.com/mlld-lang/modules",
       "bugs": "https://github.com/mlld-lang/modules/issues",
-      "publishedAt": "2025-12-08T01:29:33.374Z",
+      "publishedAt": "2025-12-08T05:25:02.933Z",
       "publishedBy": 110551,
       "availableVersions": [
         "1.0.1",
         "1.0.0"
       ],
       "tags": {
-        "latest": "1.0.0",
-        "stable": "1.0.0"
+        "latest": "1.0.1",
+        "stable": "1.0.1"
       },
       "owners": [
         "mlld"
