@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "generated": "2025-12-08T01:31:40.463Z",
+  "generated": "2025-12-08T05:25:39.446Z",
   "modules": {
     "@mlld/ai-cli": {
       "name": "ai-cli",
@@ -170,6 +170,7 @@
       "publishedAt": "2025-12-08T01:29:33.374Z",
       "publishedBy": 110551,
       "availableVersions": [
+        "1.0.1",
         "1.0.0"
       ],
       "tags": {
