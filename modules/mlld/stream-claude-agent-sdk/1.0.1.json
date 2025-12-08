@@ -1,0 +1,23 @@
+{
+  "version": "1.0.1",
+  "needs": [],
+  "license": "CC0",
+  "mlldVersion": ">=2.0.0-rc78",
+  "source": {
+    "type": "github",
+    "url": "https://raw.githubusercontent.com/mlld-lang/modules/2d13775192a13e8ad01313d6635cb9cdd67563cc/llm/modules/stream-claude-agent-sdk.mld.md",
+    "contentHash": "ce6fb59647818f59e69d72a0864769006491a5a57ca06926101aaa0a4a7dd27b",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/mlld-lang/modules",
+      "commit": "2d13775192a13e8ad01313d6635cb9cdd67563cc",
+      "path": "llm/modules/stream-claude-agent-sdk.mld.md"
+    }
+  },
+  "dependencies": {},
+  "keywords": [],
+  "repo": "https://github.com/mlld-lang/modules",
+  "bugs": "https://github.com/mlld-lang/modules/issues",
+  "publishedAt": "2025-12-08T05:20:55.784Z",
+  "publishedBy": 110551
+}
