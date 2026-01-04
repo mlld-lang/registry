@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "generated": "2025-12-08T10:50:15.061Z",
+  "generated": "2026-01-04T22:45:07.765Z",
   "modules": {
     "@mlld/ai-cli": {
       "name": "ai-cli",
@@ -43,6 +43,59 @@
       "tags": {
         "latest": "1.0.0",
         "stable": "1.0.0"
+      },
+      "owners": [
+        "mlld"
+      ],
+      "maintainers": []
+    },
+    "@mlld/array": {
+      "name": "array",
+      "author": "mlld",
+      "about": "Array operations with native return values",
+      "version": "2.0.0",
+      "needs": [
+        "node"
+      ],
+      "license": "CC0",
+      "mlldVersion": ">=2.0.0-rc78",
+      "source": {
+        "type": "github",
+        "url": "https://raw.githubusercontent.com/mlld-lang/modules/2d13775192a13e8ad01313d6635cb9cdd67563cc/llm/modules/array.mld.md",
+        "contentHash": "c3d201686a36d9eb3b53837839be082115292893ee4ec3d08d81d1aa7f7d14a8",
+        "repository": {
+          "type": "git",
+          "url": "https://github.com/mlld-lang/modules",
+          "commit": "2d13775192a13e8ad01313d6635cb9cdd67563cc",
+          "path": "llm/modules/array.mld.md"
+        }
+      },
+      "dependencies": {
+        "node": {}
+      },
+      "keywords": [
+        "arrays",
+        "lodash",
+        "filter",
+        "map",
+        "find",
+        "includes",
+        "math",
+        "range",
+        "zip",
+        "range",
+        "chunk"
+      ],
+      "repo": "https://github.com/mlld-lang/modules",
+      "bugs": "https://github.com/mlld-lang/modules/issues",
+      "publishedAt": "2026-01-04T22:30:42.379Z",
+      "publishedBy": 110551,
+      "availableVersions": [
+        "2.0.0"
+      ],
+      "tags": {
+        "latest": "2.0.0",
+        "stable": "2.0.0"
       },
       "owners": [
         "mlld"
@@ -176,6 +229,66 @@
       "tags": {
         "latest": "1.0.1",
         "stable": "1.0.1"
+      },
+      "owners": [
+        "mlld"
+      ],
+      "maintainers": []
+    },
+    "@mlld/string": {
+      "name": "string",
+      "author": "mlld",
+      "about": "String operations",
+      "version": "1.0.0",
+      "needs": [
+        "node"
+      ],
+      "license": "CC0",
+      "mlldVersion": ">=2.0.0-rc78",
+      "source": {
+        "type": "github",
+        "url": "https://raw.githubusercontent.com/mlld-lang/modules/2d13775192a13e8ad01313d6635cb9cdd67563cc/llm/modules/string.mld.md",
+        "contentHash": "ba1d614c9a8eac90d24479412462ac7dec685804d8f000e811ff0250f6a6aefc",
+        "repository": {
+          "type": "git",
+          "url": "https://github.com/mlld-lang/modules",
+          "commit": "2d13775192a13e8ad01313d6635cb9cdd67563cc",
+          "path": "llm/modules/string.mld.md"
+        }
+      },
+      "dependencies": {
+        "node": {}
+      },
+      "keywords": [
+        "length",
+        "transformation",
+        "camelCase",
+        "snake_case",
+        "kebab-case",
+        "SCREAMING_SNAKE",
+        "SNAKE-KEBAB",
+        "substring",
+        "slice",
+        "split",
+        "join",
+        "pad",
+        "replace",
+        "starsWith",
+        "endsWith",
+        "escape",
+        "unescape",
+        "encode"
+      ],
+      "repo": "https://github.com/mlld-lang/modules",
+      "bugs": "https://github.com/mlld-lang/modules/issues",
+      "publishedAt": "2026-01-04T22:31:02.368Z",
+      "publishedBy": 110551,
+      "availableVersions": [
+        "1.0.0"
+      ],
+      "tags": {
+        "latest": "1.0.0",
+        "stable": "1.0.0"
       },
       "owners": [
         "mlld"
