@@ -1,0 +1,12 @@
+{
+  "name": "array",
+  "author": "mlld",
+  "about": "Array operations with native return values",
+  "owners": [
+    "mlld"
+  ],
+  "maintainers": [],
+  "created": "2026-01-04T22:30:42.379Z",
+  "createdBy": 110551,
+  "firstPublishPR": null
+}
