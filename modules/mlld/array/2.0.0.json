@@ -1,0 +1,39 @@
+{
+  "version": "2.0.0",
+  "needs": [
+    "node"
+  ],
+  "license": "CC0",
+  "mlldVersion": ">=2.0.0-rc78",
+  "source": {
+    "type": "github",
+    "url": "https://raw.githubusercontent.com/mlld-lang/modules/2d13775192a13e8ad01313d6635cb9cdd67563cc/llm/modules/array.mld.md",
+    "contentHash": "c3d201686a36d9eb3b53837839be082115292893ee4ec3d08d81d1aa7f7d14a8",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/mlld-lang/modules",
+      "commit": "2d13775192a13e8ad01313d6635cb9cdd67563cc",
+      "path": "llm/modules/array.mld.md"
+    }
+  },
+  "dependencies": {
+    "node": {}
+  },
+  "keywords": [
+    "arrays",
+    "lodash",
+    "filter",
+    "map",
+    "find",
+    "includes",
+    "math",
+    "range",
+    "zip",
+    "range",
+    "chunk"
+  ],
+  "repo": "https://github.com/mlld-lang/modules",
+  "bugs": "https://github.com/mlld-lang/modules/issues",
+  "publishedAt": "2026-01-04T22:30:42.379Z",
+  "publishedBy": 110551
+}
