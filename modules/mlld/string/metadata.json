@@ -1,0 +1,12 @@
+{
+  "name": "string",
+  "author": "mlld",
+  "about": "String operations",
+  "owners": [
+    "mlld"
+  ],
+  "maintainers": [],
+  "created": "2026-01-04T22:31:02.368Z",
+  "createdBy": 110551,
+  "firstPublishPR": null
+}
