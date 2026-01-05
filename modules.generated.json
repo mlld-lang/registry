@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "generated": "2026-01-05T06:13:03.510Z",
+  "generated": "2026-01-05T09:48:05.682Z",
   "modules": {
     "@mlld/ai-cli": {
       "name": "ai-cli",
@@ -248,18 +248,18 @@
       "name": "prose",
       "author": "mlld",
       "about": "Pre-configured prose execution configs for OpenProse",
-      "version": "2.0.0",
+      "version": "2.1.0",
       "needs": [],
       "license": "CC0",
       "mlldVersion": ">=2.0.0-rc78",
       "source": {
         "type": "github",
-        "url": "https://raw.githubusercontent.com/mlld-lang/modules/86aefe5caf0e63bc67d624a48a5be3f421ed738f/llm/modules/prose.mld.md",
-        "contentHash": "f48918f41d223c51a9f604dbc02ec10ed68d68d055f261843c392c3d0a2cd306",
+        "url": "https://raw.githubusercontent.com/mlld-lang/modules/6d1792b2fa72a06e116c7ded01cf0f4f01c62982/llm/modules/prose.mld.md",
+        "contentHash": "64de99752c5f3637811bc8341445874136a9affdeb91e72cda3cebe647756383",
         "repository": {
           "type": "git",
           "url": "https://github.com/mlld-lang/modules",
-          "commit": "86aefe5caf0e63bc67d624a48a5be3f421ed738f",
+          "commit": "6d1792b2fa72a06e116c7ded01cf0f4f01c62982",
           "path": "llm/modules/prose.mld.md"
         }
       },
@@ -273,14 +273,15 @@
       ],
       "repo": "https://github.com/mlld-lang/modules",
       "bugs": "https://github.com/mlld-lang/modules/issues",
-      "publishedAt": "2026-01-05T06:11:49.940Z",
+      "publishedAt": "2026-01-05T09:46:41.895Z",
       "publishedBy": 110551,
       "availableVersions": [
+        "2.1.0",
         "2.0.0"
       ],
       "tags": {
-        "latest": "2.0.0",
-        "stable": "2.0.0"
+        "latest": "2.1.0",
+        "stable": "2.1.0"
       },
       "owners": [
         "mlld"
