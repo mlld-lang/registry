@@ -1,0 +1,12 @@
+{
+  "name": "claude",
+  "author": "mlld",
+  "about": "Claude model primitives for prose execution and direct LLM invocation",
+  "owners": [
+    "mlld"
+  ],
+  "maintainers": [],
+  "created": "2026-01-05T06:11:26.708Z",
+  "createdBy": 110551,
+  "firstPublishPR": null
+}
