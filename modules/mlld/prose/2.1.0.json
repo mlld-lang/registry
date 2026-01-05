@@ -1,0 +1,29 @@
+{
+  "version": "2.1.0",
+  "needs": [],
+  "license": "CC0",
+  "mlldVersion": ">=2.0.0-rc78",
+  "source": {
+    "type": "github",
+    "url": "https://raw.githubusercontent.com/mlld-lang/modules/6d1792b2fa72a06e116c7ded01cf0f4f01c62982/llm/modules/prose.mld.md",
+    "contentHash": "64de99752c5f3637811bc8341445874136a9affdeb91e72cda3cebe647756383",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/mlld-lang/modules",
+      "commit": "6d1792b2fa72a06e116c7ded01cf0f4f01c62982",
+      "path": "llm/modules/prose.mld.md"
+    }
+  },
+  "dependencies": {},
+  "keywords": [
+    "llm",
+    "ai",
+    "prose",
+    "openprose",
+    "orchestration"
+  ],
+  "repo": "https://github.com/mlld-lang/modules",
+  "bugs": "https://github.com/mlld-lang/modules/issues",
+  "publishedAt": "2026-01-05T09:46:41.895Z",
+  "publishedBy": 110551
+}
