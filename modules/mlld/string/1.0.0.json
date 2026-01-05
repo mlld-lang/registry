@@ -1,0 +1,46 @@
+{
+  "version": "1.0.0",
+  "needs": [
+    "node"
+  ],
+  "license": "CC0",
+  "mlldVersion": ">=2.0.0-rc78",
+  "source": {
+    "type": "github",
+    "url": "https://raw.githubusercontent.com/mlld-lang/modules/2d13775192a13e8ad01313d6635cb9cdd67563cc/llm/modules/string.mld.md",
+    "contentHash": "ba1d614c9a8eac90d24479412462ac7dec685804d8f000e811ff0250f6a6aefc",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/mlld-lang/modules",
+      "commit": "2d13775192a13e8ad01313d6635cb9cdd67563cc",
+      "path": "llm/modules/string.mld.md"
+    }
+  },
+  "dependencies": {
+    "node": {}
+  },
+  "keywords": [
+    "length",
+    "transformation",
+    "camelCase",
+    "snake_case",
+    "kebab-case",
+    "SCREAMING_SNAKE",
+    "SNAKE-KEBAB",
+    "substring",
+    "slice",
+    "split",
+    "join",
+    "pad",
+    "replace",
+    "starsWith",
+    "endsWith",
+    "escape",
+    "unescape",
+    "encode"
+  ],
+  "repo": "https://github.com/mlld-lang/modules",
+  "bugs": "https://github.com/mlld-lang/modules/issues",
+  "publishedAt": "2026-01-04T22:31:02.368Z",
+  "publishedBy": 110551
+}

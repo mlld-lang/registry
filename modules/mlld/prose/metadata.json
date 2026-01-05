@@ -1,0 +1,12 @@
+{
+  "name": "prose",
+  "author": "mlld",
+  "about": "Pre-configured prose execution configs for OpenProse",
+  "owners": [
+    "mlld"
+  ],
+  "maintainers": [],
+  "created": "2026-01-05T06:11:49.940Z",
+  "createdBy": 110551,
+  "firstPublishPR": null
+}

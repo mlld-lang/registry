@@ -1,0 +1,33 @@
+{
+  "version": "1.0.0",
+  "needs": [
+    "sh"
+  ],
+  "license": "CC0",
+  "mlldVersion": "*",
+  "source": {
+    "type": "github",
+    "url": "https://raw.githubusercontent.com/mlld-lang/modules/8a6d6b5d40fc25d7a7a309e100bdd6580e76d0b4/llm/modules/ai-cli.mld.md",
+    "contentHash": "sha256:1d70d049c829bd70eb81735969f54079985860dd6e602305d279b408fe3f3e5f",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/mlld-lang/modules",
+      "commit": "8a6d6b5d40fc25d7a7a309e100bdd6580e76d0b4",
+      "path": "llm/modules/ai-cli.mld.md"
+    }
+  },
+  "dependencies": {},
+  "keywords": [
+    "ai",
+    "llm",
+    "claude",
+    "chatgpt",
+    "openai",
+    "anthropic",
+    "cli"
+  ],
+  "repo": "https://github.com/mlld-lang/modules",
+  "bugs": "https://github.com/mlld-lang/modules/issues",
+  "publishedAt": "2024-01-17T00:00:00Z",
+  "publishedBy": null
+}

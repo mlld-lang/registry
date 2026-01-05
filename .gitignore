@@ -8,6 +8,12 @@ npm-debug.log*
 
 # Generated files
 validation-report.json
+modules.json
+!modules.generated.json
+
+# Logs
+logs/
+*.log
 
 # OS
 .DS_Store
@@ -18,3 +24,6 @@ Thumbs.db
 .idea/
 *.swp
 *.swo
+
+# Test outputs
+*.o.md

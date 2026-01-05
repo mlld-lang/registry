@@ -1,0 +1,12 @@
+{
+  "name": "github",
+  "author": "mlld",
+  "about": "GitHub API client for PR, issue, and repository operations",
+  "owners": [
+    "mlld"
+  ],
+  "maintainers": [],
+  "created": "2025-07-20T02:00:00.000Z",
+  "createdBy": 110551,
+  "firstPublishPR": null
+}

@@ -15,9 +15,14 @@ const COMMIT_HASH_REGEX = /^[a-f0-9]{40}$/;
 const GIST_URL_REGEX = /^https:\/\/gist\.githubusercontent\.com\/([^\/]+)\/([a-f0-9]{32})\/raw\/([a-f0-9]{40})\/(.+\.mld)$/;
 
 // Required metadata fields
-const REQUIRED_FIELDS = ['name', 'description', 'author', 'source', 'publishedAt', 'mlldVersion'];
-const REQUIRED_AUTHOR_FIELDS = ['name', 'github'];
-const REQUIRED_SOURCE_FIELDS = ['type', 'id', 'hash', 'url'];
+const REQUIRED_FIELDS = ['name', 'about', 'author', 'source', 'publishedAt', 'mlldVersion', 'ownerGithubUserIds'];
+const VALID_CATEGORIES = [
+  'prompts', 'utilities', 'when', 'filters', 'formatters', 
+  'commands', 'apis', 'clis', 'templates', 'integrations', 'generators',
+  'validators', 'transformers', 'workflows', 'dev', 'tests', 
+  'context'
+];
+const REQUIRED_SOURCE_FIELDS = ['type', 'hash', 'url'];
 
 // Fetch URL content
 async function fetchUrl(url) {
@@ -76,16 +81,12 @@ function validateMetadata(moduleId, metadata) {
     errors.push(`Module name mismatch: ${metadata.name} !== ${moduleId}`);
   }
   
-  // Validate author object
+  // Validate author field (now a string, not object)
   if (metadata.author) {
-    if (typeof metadata.author !== 'object') {
-      errors.push('Author must be an object');
-    } else {
-      for (const field of REQUIRED_AUTHOR_FIELDS) {
-        if (!metadata.author[field]) {
-          errors.push(`Missing required author field: ${field}`);
-        }
-      }
+    if (typeof metadata.author !== 'string') {
+      errors.push('Author must be a string');
+    } else if (!metadata.author.match(/^[a-z0-9-]+$/)) {
+      errors.push(`Invalid author format: ${metadata.author}. Must be lowercase alphanumeric with hyphens`);
     }
   }
   
@@ -113,7 +114,12 @@ function validateMetadata(moduleId, metadata) {
           errors.push(`Invalid gist ID format: ${metadata.source.id}`);
         }
         
-        // Validate commit hash
+        // Validate content hash (SHA256)
+        if (metadata.source.contentHash && !metadata.source.contentHash.match(/^[a-f0-9]{64}$/)) {
+          errors.push(`Invalid content hash format: ${metadata.source.contentHash}`);
+        }
+        
+        // Legacy: Validate commit hash (SHA1) if present
         if (metadata.source.hash && !COMMIT_HASH_REGEX.test(metadata.source.hash)) {
           errors.push(`Invalid commit hash format: ${metadata.source.hash}`);
         }
@@ -135,12 +141,32 @@ function validateMetadata(moduleId, metadata) {
           }
         }
       } else if (metadata.source.type === 'github') {
-        // Validate repo format
+        // Validate repo format (legacy)
         if (metadata.source.repo && !metadata.source.repo.match(/^[^\/]+\/[^\/]+$/)) {
           errors.push(`Invalid repo format: ${metadata.source.repo}. Must be owner/repo`);
         }
         
-        // Validate commit hash
+        // Validate content hash (SHA256)
+        if (metadata.source.contentHash && !metadata.source.contentHash.match(/^[a-f0-9]{64}$/)) {
+          errors.push(`Invalid content hash format: ${metadata.source.contentHash}`);
+        }
+        
+        // Validate repository object (new format)
+        if (metadata.source.repository) {
+          if (!metadata.source.repository.url) {
+            errors.push('Missing repository.url');
+          }
+          if (!metadata.source.repository.commit) {
+            errors.push('Missing repository.commit');
+          } else if (!COMMIT_HASH_REGEX.test(metadata.source.repository.commit)) {
+            errors.push(`Invalid repository commit hash: ${metadata.source.repository.commit}`);
+          }
+          if (!metadata.source.repository.path) {
+            errors.push('Missing repository.path');
+          }
+        }
+        
+        // Legacy: Validate commit hash (SHA1)
         if (metadata.source.hash && !COMMIT_HASH_REGEX.test(metadata.source.hash)) {
           errors.push(`Invalid commit hash format: ${metadata.source.hash}`);
         }
@@ -158,17 +184,35 @@ function validateMetadata(moduleId, metadata) {
     }
   }
   
-  // Validate dependencies
+  // Validate dependencies (runtime dependencies, not module dependencies)
   if (metadata.dependencies) {
     if (typeof metadata.dependencies !== 'object') {
       errors.push('Dependencies must be an object');
     } else {
-      for (const [dep, hash] of Object.entries(metadata.dependencies)) {
-        if (!MODULE_NAME_REGEX.test(dep)) {
-          errors.push(`Invalid dependency name: ${dep}`);
+      const validRuntimes = ['js', 'py', 'sh', 'node', 'python', 'bash'];
+      for (const [runtime, deps] of Object.entries(metadata.dependencies)) {
+        if (!validRuntimes.includes(runtime)) {
+          errors.push(`Invalid dependency runtime: ${runtime}. Must be one of: ${validRuntimes.join(', ')}`);
         }
-        if (!COMMIT_HASH_REGEX.test(hash)) {
-          errors.push(`Invalid dependency hash for ${dep}: ${hash}`);
+        if (typeof deps !== 'object') {
+          errors.push(`Dependencies for ${runtime} must be an object`);
+        } else {
+          // Validate specific dependency types
+          if (runtime === 'js' || runtime === 'node') {
+            if (deps.packages && !Array.isArray(deps.packages)) {
+              errors.push(`Dependencies.${runtime}.packages must be an array`);
+            }
+          }
+          if (runtime === 'sh' || runtime === 'bash') {
+            if (deps.commands && !Array.isArray(deps.commands)) {
+              errors.push(`Dependencies.${runtime}.commands must be an array`);
+            }
+          }
+          if (runtime === 'py' || runtime === 'python') {
+            if (deps.packages && !Array.isArray(deps.packages)) {
+              errors.push(`Dependencies.${runtime}.packages must be an array`);
+            }
+          }
         }
       }
     }
@@ -200,21 +244,77 @@ function validateMetadata(moduleId, metadata) {
     }
   }
   
+  // Validate category
+  if (metadata.category) {
+    if (!VALID_CATEGORIES.includes(metadata.category)) {
+      errors.push(`Invalid category: ${metadata.category}. Must be one of: ${VALID_CATEGORIES.join(', ')}`);
+    }
+  }
+  
+  // Validate version
+  if (metadata.version && !metadata.version.match(/^\d+\.\d+\.\d+$/)) {
+    errors.push(`Invalid version format: ${metadata.version}. Must be semver (x.y.z)`);
+  }
+  
+  // Validate license
+  if (metadata.license && typeof metadata.license !== 'string') {
+    errors.push('License must be a string');
+  }
+  
+  // Validate needs array
+  if (metadata.needs) {
+    if (!Array.isArray(metadata.needs)) {
+      errors.push('Needs must be an array');
+    } else {
+      const validNeeds = ['js', 'py', 'sh', 'node', 'python', 'bash'];
+      for (const need of metadata.needs) {
+        if (typeof need !== 'string' || !validNeeds.includes(need)) {
+          errors.push(`Invalid need: ${need}. Must be one of: ${validNeeds.join(', ')}`);
+        }
+      }
+    }
+  }
+  
+  // Validate ownerGithubUserIds array
+  if (metadata.ownerGithubUserIds) {
+    if (!Array.isArray(metadata.ownerGithubUserIds)) {
+      errors.push('ownerGithubUserIds must be an array');
+    } else {
+      for (const userId of metadata.ownerGithubUserIds) {
+        if (!Number.isInteger(userId) || userId <= 0) {
+          errors.push(`Invalid GitHub user ID: ${userId}. Must be a positive integer`);
+        }
+      }
+    }
+  } else {
+    errors.push('Missing required field: ownerGithubUserIds');
+  }
+  
   return errors;
 }
 
-// Validate gist content
-async function validateGistContent(metadata) {
+// Validate source content
+async function validateSourceContent(metadata) {
   const errors = [];
   
   try {
-    console.log(`Fetching gist content from ${metadata.source.url}...`);
+    console.log(`Fetching content from ${metadata.source.url}...`);
     const content = await fetchUrl(metadata.source.url);
     
-    // Verify content hash
-    const actualHash = crypto.createHash('sha1').update(content).digest('hex');
-    if (actualHash !== metadata.source.hash) {
-      errors.push(`Content hash mismatch: expected ${metadata.source.hash}, got ${actualHash}`);
+    // Validate content hash if present (SHA256)
+    if (metadata.source.contentHash) {
+      const actualHash = crypto.createHash('sha256').update(content).digest('hex');
+      if (actualHash !== metadata.source.contentHash) {
+        errors.push(`Content hash mismatch: expected ${metadata.source.contentHash}, got ${actualHash}`);
+      }
+    }
+    
+    // Legacy: For old gists, verify SHA1 hash
+    if (metadata.source.type === 'gist' && metadata.source.hash && !metadata.source.contentHash) {
+      const actualHash = crypto.createHash('sha1').update(content).digest('hex');
+      if (actualHash !== metadata.source.hash) {
+        errors.push(`Legacy hash mismatch: expected ${metadata.source.hash}, got ${actualHash}`);
+      }
     }
     
     // Parse frontmatter
@@ -223,11 +323,11 @@ async function validateGistContent(metadata) {
       errors.push('Gist content missing required frontmatter');
     } else {
       // Validate frontmatter matches metadata
-      if (frontmatter.author !== metadata.author.github) {
-        errors.push(`Frontmatter author mismatch: ${frontmatter.author} !== ${metadata.author.github}`);
+      if (frontmatter.author !== metadata.author) {
+        errors.push(`Frontmatter author mismatch: ${frontmatter.author} !== ${metadata.author}`);
       }
-      if (frontmatter.module !== metadata.name) {
-        errors.push(`Frontmatter module mismatch: ${frontmatter.module} !== ${metadata.name}`);
+      if (frontmatter.name !== metadata.name.split('/')[1]) {
+        errors.push(`Frontmatter name mismatch: ${frontmatter.name} !== ${metadata.name.split('/')[1]}`);
       }
     }
     
@@ -253,9 +353,9 @@ async function validateModule(moduleId, metadata, options = {}) {
   const metadataErrors = validateMetadata(moduleId, metadata);
   allErrors.push(...metadataErrors);
   
-  // Validate gist content if not skipped
+  // Validate source content if not skipped
   if (!options.skipContent && metadata.source?.url) {
-    const contentErrors = await validateGistContent(metadata);
+    const contentErrors = await validateSourceContent(metadata);
     allErrors.push(...contentErrors);
   }
   
