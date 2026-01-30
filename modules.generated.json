@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "generated": "2026-01-27T05:22:35.722Z",
+  "generated": "2026-01-30T12:24:29.825Z",
   "modules": {
     "@mlld/ai-cli": {
       "name": "ai-cli",
@@ -157,7 +157,7 @@
       "name": "claude-poll",
       "author": "mlld",
       "about": "Claude invocation with file-polling completion detection. Works around claude -p process hang by running in background and polling for a marker file.",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "needs": [
         "sh"
       ],
@@ -165,12 +165,12 @@
       "mlldVersion": ">=2.0.0-rc78",
       "source": {
         "type": "github",
-        "url": "https://raw.githubusercontent.com/mlld-lang/modules/286d56a213ec231e6ca91b0efe312b690d65012a/llm/modules/claude-poll.mld.md",
-        "contentHash": "fae91f9413e7fccc25057eff2550bd6565b7b67a5bc43f539d2a04e76b2ed618",
+        "url": "https://raw.githubusercontent.com/mlld-lang/modules/ab27254c0888169ddcce64b9ad2f26a20fe4c9af/llm/modules/claude-poll.mld.md",
+        "contentHash": "555f34fbc1eed832d05738e381338c8155729c9d0c1a474f0ad0e24c59c21788",
         "repository": {
           "type": "git",
           "url": "https://github.com/mlld-lang/modules",
-          "commit": "286d56a213ec231e6ca91b0efe312b690d65012a",
+          "commit": "ab27254c0888169ddcce64b9ad2f26a20fe4c9af",
           "path": "llm/modules/claude-poll.mld.md"
         }
       },
@@ -183,18 +183,21 @@
         "anthropic",
         "claude",
         "async",
-        "polling"
+        "polling",
+        "jsonl",
+        "events"
       ],
       "repo": "https://github.com/mlld-lang/modules",
       "bugs": "https://github.com/mlld-lang/modules/issues",
-      "publishedAt": "2026-01-26T05:12:09.936Z",
+      "publishedAt": "2026-01-30T12:24:01.877Z",
       "publishedBy": 110551,
       "availableVersions": [
+        "1.1.0",
         "1.0.0"
       ],
       "tags": {
-        "latest": "1.0.0",
-        "stable": "1.0.0"
+        "latest": "1.1.0",
+        "stable": "1.1.0"
       },
       "owners": [
         "mlld"
