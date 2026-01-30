@@ -1,0 +1,36 @@
+{
+  "version": "1.1.0",
+  "needs": [
+    "sh"
+  ],
+  "license": "CC0",
+  "mlldVersion": ">=2.0.0-rc78",
+  "source": {
+    "type": "github",
+    "url": "https://raw.githubusercontent.com/mlld-lang/modules/ab27254c0888169ddcce64b9ad2f26a20fe4c9af/llm/modules/claude-poll.mld.md",
+    "contentHash": "555f34fbc1eed832d05738e381338c8155729c9d0c1a474f0ad0e24c59c21788",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/mlld-lang/modules",
+      "commit": "ab27254c0888169ddcce64b9ad2f26a20fe4c9af",
+      "path": "llm/modules/claude-poll.mld.md"
+    }
+  },
+  "dependencies": {
+    "sh": {}
+  },
+  "keywords": [
+    "llm",
+    "ai",
+    "anthropic",
+    "claude",
+    "async",
+    "polling",
+    "jsonl",
+    "events"
+  ],
+  "repo": "https://github.com/mlld-lang/modules",
+  "bugs": "https://github.com/mlld-lang/modules/issues",
+  "publishedAt": "2026-01-30T12:24:01.877Z",
+  "publishedBy": 110551
+}
