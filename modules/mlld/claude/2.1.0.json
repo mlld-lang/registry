@@ -1,0 +1,33 @@
+{
+  "version": "2.1.0",
+  "needs": [
+    "sh"
+  ],
+  "license": "CC0",
+  "mlldVersion": ">=2.0.0-rc81",
+  "source": {
+    "type": "github",
+    "url": "https://raw.githubusercontent.com/mlld-lang/modules/6486343a54310a8b910e53d10eb069a1da3c35dc/llm/modules/claude.mld.md",
+    "contentHash": "a96a9b4839d2f21eedac1f5139f28058140d00d8c731de685f6a512bee1370c3",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/mlld-lang/modules",
+      "commit": "6486343a54310a8b910e53d10eb069a1da3c35dc",
+      "path": "llm/modules/claude.mld.md"
+    }
+  },
+  "dependencies": {
+    "sh": {}
+  },
+  "keywords": [
+    "llm",
+    "ai",
+    "anthropic",
+    "claude",
+    "prose"
+  ],
+  "repo": "https://github.com/mlld-lang/modules",
+  "bugs": "https://github.com/mlld-lang/modules/issues",
+  "publishedAt": "2026-02-19T22:50:27.808Z",
+  "publishedBy": 110551
+}
