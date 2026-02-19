@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "generated": "2026-02-19T22:56:02.229Z",
+  "generated": "2026-02-19T22:56:56.585Z",
   "modules": {
     "@mlld/ai-cli": {
       "name": "ai-cli",
@@ -158,20 +158,20 @@
       "name": "claude-poll",
       "author": "mlld",
       "about": "Claude invocation with file-polling completion detection. Works around claude -p process hang by running in background and polling for a marker file.",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "needs": [
         "sh"
       ],
       "license": "CC0",
-      "mlldVersion": ">=2.0.0-rc78",
+      "mlldVersion": ">=2.0.0-rc81",
       "source": {
         "type": "github",
-        "url": "https://raw.githubusercontent.com/mlld-lang/modules/ab27254c0888169ddcce64b9ad2f26a20fe4c9af/llm/modules/claude-poll.mld.md",
-        "contentHash": "555f34fbc1eed832d05738e381338c8155729c9d0c1a474f0ad0e24c59c21788",
+        "url": "https://raw.githubusercontent.com/mlld-lang/modules/6486343a54310a8b910e53d10eb069a1da3c35dc/llm/modules/claude-poll.mld.md",
+        "contentHash": "94993af5a536b69f106d1e91161f0dc000232d3f2850966ba1e5082cfa00643e",
         "repository": {
           "type": "git",
           "url": "https://github.com/mlld-lang/modules",
-          "commit": "ab27254c0888169ddcce64b9ad2f26a20fe4c9af",
+          "commit": "6486343a54310a8b910e53d10eb069a1da3c35dc",
           "path": "llm/modules/claude-poll.mld.md"
         }
       },
@@ -190,15 +190,16 @@
       ],
       "repo": "https://github.com/mlld-lang/modules",
       "bugs": "https://github.com/mlld-lang/modules/issues",
-      "publishedAt": "2026-01-30T12:24:01.877Z",
+      "publishedAt": "2026-02-19T22:50:15.390Z",
       "publishedBy": 110551,
       "availableVersions": [
+        "1.2.0",
         "1.1.0",
         "1.0.0"
       ],
       "tags": {
-        "latest": "1.1.0",
-        "stable": "1.1.0"
+        "latest": "1.2.0",
+        "stable": "1.2.0"
       },
       "owners": [
         "mlld"
