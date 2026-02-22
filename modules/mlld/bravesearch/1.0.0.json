@@ -1,0 +1,29 @@
+{
+  "version": "1.0.0",
+  "needs": [],
+  "license": "CC0",
+  "mlldVersion": "2.0.0-rc82",
+  "source": {
+    "type": "directory",
+    "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/c547e54d734d4cccf701c494a4a00789edc8cb7f/bravesearch",
+    "files": [
+      "index.mld",
+      "module.yml",
+      "README.md"
+    ],
+    "entryPoint": "index.mld",
+    "contentHash": "d0733e596e2ce41cbb087f65c6c2153d19e1ed3963e5bcc215a2ab7bd590ecac",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/mlld-lang/modules",
+      "commit": "c547e54d734d4cccf701c494a4a00789edc8cb7f",
+      "path": "bravesearch"
+    }
+  },
+  "dependencies": {},
+  "keywords": [],
+  "repo": "https://github.com/mlld-lang/modules",
+  "bugs": "https://github.com/mlld-lang/modules/issues",
+  "publishedAt": "2026-02-22T22:31:31.271Z",
+  "publishedBy": 110551
+}
