@@ -45,6 +45,7 @@ jobs:
         path: |
           modules.json
           modules.generated.json
+          .claude-plugin/marketplace.json
           
     - name: Comment PR with build result
       if: github.event_name == 'pull_request'
@@ -53,20 +54,24 @@ jobs:
         script: |
           const fs = require('fs');
           const registry = JSON.parse(fs.readFileSync('modules.generated.json', 'utf8'));
+          const marketplace = JSON.parse(fs.readFileSync('.claude-plugin/marketplace.json', 'utf8'));
           const moduleCount = Object.keys(registry.modules).length;
-          
+          const pluginCount = marketplace.plugins.length;
+
           // Check if this is a fork PR (which won't have write permissions)
           const isFork = context.payload.pull_request?.head?.repo?.full_name !== context.payload.repository.full_name;
-          
+
+          const body = `✅ Registry build successful!\n\n**Modules:** ${moduleCount} | **Marketplace plugins:** ${pluginCount}`;
+
           if (isFork) {
             console.log('PR from fork detected - skipping comment due to permission restrictions');
-            console.log(`✅ Registry build successful! Modules in registry: ${moduleCount}`);
+            console.log(body);
           } else {
             await github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `✅ Registry build successful!\n\n**Modules in registry:** ${moduleCount}`
+              body
             });
           }
           
@@ -75,7 +80,7 @@ jobs:
       run: |
         git config --local user.email "github-actions[bot]@users.noreply.github.com"
         git config --local user.name "github-actions[bot]"
-        git add modules.json modules.generated.json
+        git add modules.json modules.generated.json .claude-plugin/marketplace.json
         git diff --staged --quiet || (
           git commit -m "Build registry [skip ci]" -m "Generated from commit ${{ github.sha }}"
           git push
