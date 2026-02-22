@@ -1,0 +1,29 @@
+{
+  "version": "1.0.0",
+  "needs": [],
+  "license": "CC0",
+  "mlldVersion": "2.0.0-rc82",
+  "source": {
+    "type": "directory",
+    "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/1b59518dbd4449bd088dafbebdac7c57510c87a8/gh-issues",
+    "files": [
+      "index.mld",
+      "module.yml",
+      "README.md"
+    ],
+    "entryPoint": "index.mld",
+    "contentHash": "92f0673c93913f4ac5654e27e1e4e0c0ce18b697bf8eb28cdc7140fd99b0d899",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/mlld-lang/modules",
+      "commit": "1b59518dbd4449bd088dafbebdac7c57510c87a8",
+      "path": "gh-issues"
+    }
+  },
+  "dependencies": {},
+  "keywords": [],
+  "repo": "https://github.com/mlld-lang/modules",
+  "bugs": "https://github.com/mlld-lang/modules/issues",
+  "publishedAt": "2026-02-22T22:51:17.424Z",
+  "publishedBy": 110551
+}
