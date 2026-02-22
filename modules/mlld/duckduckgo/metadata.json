@@ -1,0 +1,12 @@
+{
+  "name": "duckduckgo",
+  "author": "mlld",
+  "about": "DuckDuckGo search results tool",
+  "owners": [
+    "mlld"
+  ],
+  "maintainers": [],
+  "created": "2026-02-22T22:47:57.693Z",
+  "createdBy": 110551,
+  "firstPublishPR": null
+}
