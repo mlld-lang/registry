@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "generated": "2026-03-01T20:22:52.667Z",
+  "generated": "2026-03-01T20:24:02.064Z",
   "modules": {
     "@mlld/ai-cli": {
       "name": "ai-cli",
@@ -386,24 +386,24 @@
       "name": "gh-issues",
       "author": "mlld",
       "about": "GitHub Issues API tools via gh CLI",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "needs": [],
       "license": "CC0",
       "mlldVersion": "2.0.0-rc82",
       "source": {
         "type": "directory",
-        "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/1b59518dbd4449bd088dafbebdac7c57510c87a8/gh-issues",
+        "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/561ed4e129993ab7025e8a8481ba5e40c24b8478/gh-issues",
         "files": [
           "index.mld",
           "module.yml",
           "README.md"
         ],
         "entryPoint": "index.mld",
-        "contentHash": "92f0673c93913f4ac5654e27e1e4e0c0ce18b697bf8eb28cdc7140fd99b0d899",
+        "contentHash": "b61550475eff12740a192feb0890e9309eb181098fa06400878ca49871b9c89c",
         "repository": {
           "type": "git",
           "url": "https://github.com/mlld-lang/modules",
-          "commit": "1b59518dbd4449bd088dafbebdac7c57510c87a8",
+          "commit": "561ed4e129993ab7025e8a8481ba5e40c24b8478",
           "path": "gh-issues"
         }
       },
@@ -411,14 +411,15 @@
       "keywords": [],
       "repo": "https://github.com/mlld-lang/modules",
       "bugs": "https://github.com/mlld-lang/modules/issues",
-      "publishedAt": "2026-02-22T22:51:17.424Z",
+      "publishedAt": "2026-03-01T20:21:54.702Z",
       "publishedBy": 110551,
       "availableVersions": [
+        "1.1.0",
         "1.0.0"
       ],
       "tags": {
-        "latest": "1.0.0",
-        "stable": "1.0.0"
+        "latest": "1.1.0",
+        "stable": "1.1.0"
       },
       "owners": [
         "mlld"
