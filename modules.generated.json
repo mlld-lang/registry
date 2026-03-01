@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "generated": "2026-01-30T12:24:29.825Z",
+  "generated": "2026-03-01T20:22:52.667Z",
   "modules": {
     "@mlld/ai-cli": {
       "name": "ai-cli",
@@ -37,6 +37,49 @@
       "bugs": "https://github.com/mlld-lang/modules/issues",
       "publishedAt": "2024-01-17T00:00:00Z",
       "publishedBy": null,
+      "availableVersions": [
+        "1.0.0"
+      ],
+      "tags": {
+        "latest": "1.0.0",
+        "stable": "1.0.0"
+      },
+      "owners": [
+        "mlld"
+      ],
+      "maintainers": []
+    },
+    "@mlld/airlock": {
+      "name": "airlock",
+      "author": "mlld",
+      "about": "Dual-LLM security pattern — tainted input never shares context with evaluation",
+      "version": "1.0.0",
+      "needs": [],
+      "license": "CC0",
+      "mlldVersion": ">=2.0.0-rc82",
+      "source": {
+        "type": "directory",
+        "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/561ed4e129993ab7025e8a8481ba5e40c24b8478/airlock",
+        "files": [
+          "index.mld",
+          "module.yml",
+          "README.md"
+        ],
+        "entryPoint": "index.mld",
+        "contentHash": "f05c91c314193ccc162731fb65b26a7dbf5b99f777198769c0de512758bea2d3",
+        "repository": {
+          "type": "git",
+          "url": "https://github.com/mlld-lang/modules",
+          "commit": "561ed4e129993ab7025e8a8481ba5e40c24b8478",
+          "path": "airlock"
+        }
+      },
+      "dependencies": {},
+      "keywords": [],
+      "repo": "https://github.com/mlld-lang/modules",
+      "bugs": "https://github.com/mlld-lang/modules/issues",
+      "publishedAt": "2026-03-01T20:22:09.184Z",
+      "publishedBy": 110551,
       "availableVersions": [
         "1.0.0"
       ],
@@ -106,24 +149,67 @@
       ],
       "maintainers": []
     },
+    "@mlld/bravesearch": {
+      "name": "bravesearch",
+      "author": "mlld",
+      "about": "Brave web search results tool",
+      "version": "1.0.0",
+      "needs": [],
+      "license": "CC0",
+      "mlldVersion": "2.0.0-rc82",
+      "source": {
+        "type": "directory",
+        "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/3439100511477bf013577ce2bb518b63bba715cf/bravesearch",
+        "files": [
+          "index.mld",
+          "module.yml",
+          "README.md"
+        ],
+        "entryPoint": "index.mld",
+        "contentHash": "3d5b384e836c81bc5066a968220907f2a9de85b0007e6197b7fd7a50a484807d",
+        "repository": {
+          "type": "git",
+          "url": "https://github.com/mlld-lang/modules",
+          "commit": "3439100511477bf013577ce2bb518b63bba715cf",
+          "path": "bravesearch"
+        }
+      },
+      "dependencies": {},
+      "keywords": [],
+      "repo": "https://github.com/mlld-lang/modules",
+      "bugs": "https://github.com/mlld-lang/modules/issues",
+      "publishedAt": "2026-02-22T22:47:07.820Z",
+      "publishedBy": 110551,
+      "availableVersions": [
+        "1.0.0"
+      ],
+      "tags": {
+        "latest": "1.0.0",
+        "stable": "1.0.0"
+      },
+      "owners": [
+        "mlld"
+      ],
+      "maintainers": []
+    },
     "@mlld/claude": {
       "name": "claude",
       "author": "mlld",
       "about": "Claude model primitives for prose execution and direct LLM invocation",
-      "version": "2.0.0",
+      "version": "2.1.0",
       "needs": [
         "sh"
       ],
       "license": "CC0",
-      "mlldVersion": ">=2.0.0-rc78",
+      "mlldVersion": ">=2.0.0-rc81",
       "source": {
         "type": "github",
-        "url": "https://raw.githubusercontent.com/mlld-lang/modules/86aefe5caf0e63bc67d624a48a5be3f421ed738f/llm/modules/claude.mld.md",
-        "contentHash": "d7799fef01e57fbef8fe36c7a4a3d3c51c79c2454522699cd53fc9be1acc4a40",
+        "url": "https://raw.githubusercontent.com/mlld-lang/modules/6486343a54310a8b910e53d10eb069a1da3c35dc/llm/modules/claude.mld.md",
+        "contentHash": "a96a9b4839d2f21eedac1f5139f28058140d00d8c731de685f6a512bee1370c3",
         "repository": {
           "type": "git",
           "url": "https://github.com/mlld-lang/modules",
-          "commit": "86aefe5caf0e63bc67d624a48a5be3f421ed738f",
+          "commit": "6486343a54310a8b910e53d10eb069a1da3c35dc",
           "path": "llm/modules/claude.mld.md"
         }
       },
@@ -139,14 +225,15 @@
       ],
       "repo": "https://github.com/mlld-lang/modules",
       "bugs": "https://github.com/mlld-lang/modules/issues",
-      "publishedAt": "2026-01-05T06:11:26.708Z",
+      "publishedAt": "2026-02-19T22:50:27.808Z",
       "publishedBy": 110551,
       "availableVersions": [
+        "2.1.0",
         "2.0.0"
       ],
       "tags": {
-        "latest": "2.0.0",
-        "stable": "2.0.0"
+        "latest": "2.1.0",
+        "stable": "2.1.0"
       },
       "owners": [
         "mlld"
@@ -157,20 +244,20 @@
       "name": "claude-poll",
       "author": "mlld",
       "about": "Claude invocation with file-polling completion detection. Works around claude -p process hang by running in background and polling for a marker file.",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "needs": [
         "sh"
       ],
       "license": "CC0",
-      "mlldVersion": ">=2.0.0-rc78",
+      "mlldVersion": ">=2.0.0-rc81",
       "source": {
         "type": "github",
-        "url": "https://raw.githubusercontent.com/mlld-lang/modules/ab27254c0888169ddcce64b9ad2f26a20fe4c9af/llm/modules/claude-poll.mld.md",
-        "contentHash": "555f34fbc1eed832d05738e381338c8155729c9d0c1a474f0ad0e24c59c21788",
+        "url": "https://raw.githubusercontent.com/mlld-lang/modules/6486343a54310a8b910e53d10eb069a1da3c35dc/llm/modules/claude-poll.mld.md",
+        "contentHash": "94993af5a536b69f106d1e91161f0dc000232d3f2850966ba1e5082cfa00643e",
         "repository": {
           "type": "git",
           "url": "https://github.com/mlld-lang/modules",
-          "commit": "ab27254c0888169ddcce64b9ad2f26a20fe4c9af",
+          "commit": "6486343a54310a8b910e53d10eb069a1da3c35dc",
           "path": "llm/modules/claude-poll.mld.md"
         }
       },
@@ -189,15 +276,59 @@
       ],
       "repo": "https://github.com/mlld-lang/modules",
       "bugs": "https://github.com/mlld-lang/modules/issues",
-      "publishedAt": "2026-01-30T12:24:01.877Z",
+      "publishedAt": "2026-02-19T22:50:15.390Z",
       "publishedBy": 110551,
       "availableVersions": [
+        "1.2.0",
         "1.1.0",
         "1.0.0"
       ],
       "tags": {
-        "latest": "1.1.0",
-        "stable": "1.1.0"
+        "latest": "1.2.0",
+        "stable": "1.2.0"
+      },
+      "owners": [
+        "mlld"
+      ],
+      "maintainers": []
+    },
+    "@mlld/duckduckgo": {
+      "name": "duckduckgo",
+      "author": "mlld",
+      "about": "DuckDuckGo search results tool",
+      "version": "1.0.0",
+      "needs": [],
+      "license": "CC0",
+      "mlldVersion": "2.0.0-rc82",
+      "source": {
+        "type": "directory",
+        "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/41cd3b318e266e8f0eb09b4e80965b412cdd3c47/duckduckgo",
+        "files": [
+          "index.mld",
+          "module.yml",
+          "README.md"
+        ],
+        "entryPoint": "index.mld",
+        "contentHash": "9b6beeb47e698615d3bc36078e233349c0e18061eade6c4e4e3e470870f890bb",
+        "repository": {
+          "type": "git",
+          "url": "https://github.com/mlld-lang/modules",
+          "commit": "41cd3b318e266e8f0eb09b4e80965b412cdd3c47",
+          "path": "duckduckgo"
+        }
+      },
+      "dependencies": {},
+      "keywords": [],
+      "repo": "https://github.com/mlld-lang/modules",
+      "bugs": "https://github.com/mlld-lang/modules/issues",
+      "publishedAt": "2026-02-22T22:47:57.693Z",
+      "publishedBy": 110551,
+      "availableVersions": [
+        "1.0.0"
+      ],
+      "tags": {
+        "latest": "1.0.0",
+        "stable": "1.0.0"
       },
       "owners": [
         "mlld"
@@ -251,6 +382,49 @@
       ],
       "maintainers": []
     },
+    "@mlld/gh-issues": {
+      "name": "gh-issues",
+      "author": "mlld",
+      "about": "GitHub Issues API tools via gh CLI",
+      "version": "1.0.0",
+      "needs": [],
+      "license": "CC0",
+      "mlldVersion": "2.0.0-rc82",
+      "source": {
+        "type": "directory",
+        "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/1b59518dbd4449bd088dafbebdac7c57510c87a8/gh-issues",
+        "files": [
+          "index.mld",
+          "module.yml",
+          "README.md"
+        ],
+        "entryPoint": "index.mld",
+        "contentHash": "92f0673c93913f4ac5654e27e1e4e0c0ce18b697bf8eb28cdc7140fd99b0d899",
+        "repository": {
+          "type": "git",
+          "url": "https://github.com/mlld-lang/modules",
+          "commit": "1b59518dbd4449bd088dafbebdac7c57510c87a8",
+          "path": "gh-issues"
+        }
+      },
+      "dependencies": {},
+      "keywords": [],
+      "repo": "https://github.com/mlld-lang/modules",
+      "bugs": "https://github.com/mlld-lang/modules/issues",
+      "publishedAt": "2026-02-22T22:51:17.424Z",
+      "publishedBy": 110551,
+      "availableVersions": [
+        "1.0.0"
+      ],
+      "tags": {
+        "latest": "1.0.0",
+        "stable": "1.0.0"
+      },
+      "owners": [
+        "mlld"
+      ],
+      "maintainers": []
+    },
     "@mlld/github": {
       "name": "github",
       "author": "mlld",
@@ -286,6 +460,49 @@
       "repo": "https://github.com/mlld-lang/modules",
       "bugs": "https://github.com/mlld-lang/modules/issues",
       "publishedAt": "2025-07-20T02:00:00.000Z",
+      "publishedBy": 110551,
+      "availableVersions": [
+        "1.0.0"
+      ],
+      "tags": {
+        "latest": "1.0.0",
+        "stable": "1.0.0"
+      },
+      "owners": [
+        "mlld"
+      ],
+      "maintainers": []
+    },
+    "@mlld/md-fetch": {
+      "name": "md-fetch",
+      "author": "mlld",
+      "about": "Guardable alternative to built-in WebFetch tool. Fetches markdownified content of websites.",
+      "version": "1.0.0",
+      "needs": [],
+      "license": "CC0",
+      "mlldVersion": "2.0.0-rc82",
+      "source": {
+        "type": "directory",
+        "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/3439100511477bf013577ce2bb518b63bba715cf/md-fetch",
+        "files": [
+          "index.mld",
+          "module.yml",
+          "README.md"
+        ],
+        "entryPoint": "index.mld",
+        "contentHash": "d2d8ca3019aa8cacb24e063bf0ceb43452aad8f3803c6933af6cd79d80887277",
+        "repository": {
+          "type": "git",
+          "url": "https://github.com/mlld-lang/modules",
+          "commit": "3439100511477bf013577ce2bb518b63bba715cf",
+          "path": "md-fetch"
+        }
+      },
+      "dependencies": {},
+      "keywords": [],
+      "repo": "https://github.com/mlld-lang/modules",
+      "bugs": "https://github.com/mlld-lang/modules/issues",
+      "publishedAt": "2026-02-22T22:46:24.517Z",
       "publishedBy": 110551,
       "availableVersions": [
         "1.0.0"

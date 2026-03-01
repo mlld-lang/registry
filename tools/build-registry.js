@@ -61,6 +61,64 @@ async function getLatestVersion(modulePath, tags) {
   return versions[0]; // Already sorted descending
 }
 
+/**
+ * Module types eligible for Claude Code marketplace
+ */
+const PLUGIN_TYPES = new Set(['skill', 'command']);
+
+/**
+ * Build Claude Code marketplace.json from skill/command modules.
+ * Only modules at the root of their source repo are included —
+ * Claude Code marketplace GitHub sources don't support subdirectory paths.
+ */
+function buildMarketplace(registry) {
+  const plugins = [];
+
+  for (const [moduleKey, mod] of Object.entries(registry.modules)) {
+    if (!PLUGIN_TYPES.has(mod.type)) continue;
+
+    const repo = mod.source?.repository;
+    if (!repo?.url) continue;
+
+    // Extract owner/repo from GitHub URL
+    const match = repo.url.match(/github\.com\/([^/]+\/[^/]+)/);
+    if (!match) continue;
+
+    const repoRef = match[1].replace(/\.git$/, '');
+
+    // Only include root-level plugins (no subdirectory support in marketplace)
+    const repoPath = repo.path || '';
+    if (repoPath && repoPath !== '.' && repoPath !== './') {
+      console.log(`  ℹ️  ${moduleKey}: published from subdirectory, skipped for marketplace`);
+      continue;
+    }
+
+    const entry = {
+      name: `${mod.author}--${mod.name}`,
+      source: { source: 'github', repo: repoRef },
+      description: mod.about,
+      version: mod.version || '1.0.0',
+    };
+
+    // Pin to commit SHA for reproducibility
+    if (repo.commit) {
+      entry.source.sha = repo.commit;
+    }
+
+    plugins.push(entry);
+  }
+
+  return {
+    name: 'mlld-registry',
+    owner: { name: 'mlld-lang' },
+    metadata: {
+      description: 'mlld skills and commands for Claude Code',
+      generated: new Date().toISOString(),
+    },
+    plugins,
+  };
+}
+
 async function buildRegistry() {
   const rootDir = path.join(__dirname, '..');
   const modulesDir = path.join(rootDir, 'modules');
@@ -153,6 +211,9 @@ async function buildRegistry() {
             author: metadata.author,
             about: metadata.about,
             
+            // Module type (for directory modules: skill, command, app, etc.)
+            ...(versionData.type ? { type: versionData.type } : {}),
+
             // Version-specific fields from latest version
             version: latestVersion,
             needs: versionData.needs || [],
@@ -220,7 +281,18 @@ async function buildRegistry() {
   console.log(`\n✅ Built registry with ${Object.keys(registry.modules).length} modules`);
   console.log(`📁 Output: ${outputPath} (minified)`);
   console.log(`📁 Output: ${generatedPath} (formatted)`);
-  
+
+  // Generate Claude Code marketplace from skill/command modules
+  const marketplace = buildMarketplace(registry);
+  const marketplaceDir = path.join(rootDir, '.claude-plugin');
+  await fs.mkdir(marketplaceDir, { recursive: true });
+  const marketplacePath = path.join(marketplaceDir, 'marketplace.json');
+  await fs.writeFile(
+    marketplacePath,
+    JSON.stringify(marketplace, null, 2) + '\n'
+  );
+  console.log(`📁 Output: ${marketplacePath} (${marketplace.plugins.length} plugins)`);
+
   if (errors.length === 0) {
     console.log('\n🎉 Build completed successfully!');
   }

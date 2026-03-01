@@ -137,6 +137,40 @@ Each module is stored in `modules/{author}/{module}.json`:
 - **publishedAt**: ISO 8601 timestamp (set automatically)
 - **publishedBy**: GitHub user ID (set automatically)
 
+## Claude Code Marketplace
+
+The registry also serves as a Claude Code plugin marketplace. Skill and command modules
+automatically appear in `.claude-plugin/marketplace.json` when the build script runs.
+
+### Install plugins from the registry
+
+```bash
+claude plugin marketplace add mlld-lang/registry
+claude plugin install author--skill-name@mlld-registry
+```
+
+### Publish a skill to the marketplace
+
+Structure your skill module as a Claude Code plugin (`mlld module skill my-helper` does this automatically):
+
+```
+my-helper/
+  .claude-plugin/plugin.json      Plugin manifest
+  skills/my-helper/SKILL.md       Skill content
+  module.yml                      mlld module manifest
+  README.md
+```
+
+Then publish normally:
+
+```bash
+mlld publish my-helper/
+```
+
+The build script generates marketplace entries for modules with `type: skill` or `type: command`.
+Skills must be at the root of their source repo to appear in the marketplace (GitHub source refs
+don't support subdirectory paths).
+
 ## Tools
 
 ### Build Script
@@ -152,7 +186,7 @@ This script:
 - Finds all module JSON files
 - Validates structure and metadata
 - Ensures path matches module content
-- Generates `modules.json` and `modules.generated.json`
+- Generates `modules.json`, `modules.generated.json`, and `.claude-plugin/marketplace.json`
 
 ### Validation Script
 

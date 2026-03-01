@@ -1,0 +1,12 @@
+{
+  "name": "md-fetch",
+  "author": "mlld",
+  "about": "Guardable alternative to built-in WebFetch tool. Fetches markdownified content of websites.",
+  "owners": [
+    "mlld"
+  ],
+  "maintainers": [],
+  "created": "2026-02-22T22:46:24.517Z",
+  "createdBy": 110551,
+  "firstPublishPR": null
+}
