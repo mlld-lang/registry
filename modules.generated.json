@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "generated": "2026-03-01T20:24:02.064Z",
+  "generated": "2026-03-11T23:19:59.149Z",
   "modules": {
     "@mlld/ai-cli": {
       "name": "ai-cli",
@@ -196,44 +196,41 @@
       "name": "claude",
       "author": "mlld",
       "about": "Claude model primitives for prose execution and direct LLM invocation",
-      "version": "2.1.0",
-      "needs": [
-        "sh"
-      ],
+      "version": "3.0.0",
+      "needs": [],
       "license": "CC0",
-      "mlldVersion": ">=2.0.0-rc81",
+      "mlldVersion": ">=2.1.0",
       "source": {
-        "type": "github",
-        "url": "https://raw.githubusercontent.com/mlld-lang/modules/6486343a54310a8b910e53d10eb069a1da3c35dc/llm/modules/claude.mld.md",
-        "contentHash": "a96a9b4839d2f21eedac1f5139f28058140d00d8c731de685f6a512bee1370c3",
+        "type": "directory",
+        "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/1173d72ccc030c9baf9592329ffe7f5c44501698/claude",
+        "files": [
+          "index.mld",
+          "module.yml",
+          "README.md"
+        ],
+        "entryPoint": "index.mld",
+        "contentHash": "b523cfb7f53f86edb70d5b233e8df198cb83eab52f8bc43d24533e8cfe0d7ecc",
         "repository": {
           "type": "git",
           "url": "https://github.com/mlld-lang/modules",
-          "commit": "6486343a54310a8b910e53d10eb069a1da3c35dc",
-          "path": "llm/modules/claude.mld.md"
+          "commit": "1173d72ccc030c9baf9592329ffe7f5c44501698",
+          "path": "claude"
         }
       },
-      "dependencies": {
-        "sh": {}
-      },
-      "keywords": [
-        "llm",
-        "ai",
-        "anthropic",
-        "claude",
-        "prose"
-      ],
+      "dependencies": {},
+      "keywords": [],
       "repo": "https://github.com/mlld-lang/modules",
       "bugs": "https://github.com/mlld-lang/modules/issues",
-      "publishedAt": "2026-02-19T22:50:27.808Z",
+      "publishedAt": "2026-03-11T23:18:59.207Z",
       "publishedBy": 110551,
       "availableVersions": [
+        "3.0.0",
         "2.1.0",
         "2.0.0"
       ],
       "tags": {
-        "latest": "2.1.0",
-        "stable": "2.1.0"
+        "latest": "3.0.0",
+        "stable": "3.0.0"
       },
       "owners": [
         "mlld"
@@ -517,6 +514,49 @@
       ],
       "maintainers": []
     },
+    "@mlld/pg": {
+      "name": "pg",
+      "author": "mlld",
+      "about": "Postgres-backed artifact storage",
+      "version": "0.1.0",
+      "needs": [],
+      "license": "CC0",
+      "mlldVersion": ">=2.0.0",
+      "source": {
+        "type": "directory",
+        "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/1173d72ccc030c9baf9592329ffe7f5c44501698/pg",
+        "files": [
+          "index.mld",
+          "module.yml",
+          "README.md"
+        ],
+        "entryPoint": "index.mld",
+        "contentHash": "4f217b918c52851eb6fae037c136c0aaba1407643a4bc5cec3663c2ce6f030e9",
+        "repository": {
+          "type": "git",
+          "url": "https://github.com/mlld-lang/modules",
+          "commit": "1173d72ccc030c9baf9592329ffe7f5c44501698",
+          "path": "pg"
+        }
+      },
+      "dependencies": {},
+      "keywords": [],
+      "repo": "https://github.com/mlld-lang/modules",
+      "bugs": "https://github.com/mlld-lang/modules/issues",
+      "publishedAt": "2026-03-11T23:18:29.569Z",
+      "publishedBy": 110551,
+      "availableVersions": [
+        "0.1.0"
+      ],
+      "tags": {
+        "latest": "0.1.0",
+        "stable": "0.1.0"
+      },
+      "owners": [
+        "mlld"
+      ],
+      "maintainers": []
+    },
     "@mlld/prose": {
       "name": "prose",
       "author": "mlld",
@@ -556,6 +596,49 @@
       "tags": {
         "latest": "2.2.0",
         "stable": "2.2.0"
+      },
+      "owners": [
+        "mlld"
+      ],
+      "maintainers": []
+    },
+    "@mlld/sqlite": {
+      "name": "sqlite",
+      "author": "mlld",
+      "about": "SQLite-backed artifact storage",
+      "version": "0.1.0",
+      "needs": [],
+      "license": "CC0",
+      "mlldVersion": ">=2.0.0",
+      "source": {
+        "type": "directory",
+        "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/1173d72ccc030c9baf9592329ffe7f5c44501698/sqlite",
+        "files": [
+          "index.mld",
+          "module.yml",
+          "README.md"
+        ],
+        "entryPoint": "index.mld",
+        "contentHash": "44dad779015bb04664c4fe1efd1df769d03fd0610b8265e6d5779cb56a082d38",
+        "repository": {
+          "type": "git",
+          "url": "https://github.com/mlld-lang/modules",
+          "commit": "1173d72ccc030c9baf9592329ffe7f5c44501698",
+          "path": "sqlite"
+        }
+      },
+      "dependencies": {},
+      "keywords": [],
+      "repo": "https://github.com/mlld-lang/modules",
+      "bugs": "https://github.com/mlld-lang/modules/issues",
+      "publishedAt": "2026-03-11T23:18:45.708Z",
+      "publishedBy": 110551,
+      "availableVersions": [
+        "0.1.0"
+      ],
+      "tags": {
+        "latest": "0.1.0",
+        "stable": "0.1.0"
       },
       "owners": [
         "mlld"
