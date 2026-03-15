@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "generated": "2026-03-14T20:46:56.471Z",
+  "generated": "2026-03-15T00:34:23.112Z",
   "modules": {
     "@mlld/ai-cli": {
       "name": "ai-cli",
@@ -518,24 +518,24 @@
       "name": "openai",
       "author": "mlld",
       "about": "OpenAI chat completions with streaming and auth sealing",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "needs": [],
       "license": "CC0",
       "mlldVersion": ">=2.1.0",
       "source": {
         "type": "directory",
-        "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/bf3f2a28c1ac697b751dd2655f97a3215175d91a/openai",
+        "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/d0b5d79040c09e7d259803024afc4036e1c62639/openai",
         "files": [
           "index.mld",
           "module.yml",
           "README.md"
         ],
         "entryPoint": "index.mld",
-        "contentHash": "2bacd6b8ceacde9a62208287ee3669a874520f1437f95a5b326c14872ddb4c81",
+        "contentHash": "ec4ca1da9aaab5943a42aa0fe80a3bfdc73d7b5ee601cfe62f185e85024b3347",
         "repository": {
           "type": "git",
           "url": "https://github.com/mlld-lang/modules",
-          "commit": "bf3f2a28c1ac697b751dd2655f97a3215175d91a",
+          "commit": "d0b5d79040c09e7d259803024afc4036e1c62639",
           "path": "openai"
         }
       },
@@ -543,14 +543,15 @@
       "keywords": [],
       "repo": "https://github.com/mlld-lang/modules",
       "bugs": "https://github.com/mlld-lang/modules/issues",
-      "publishedAt": "2026-03-14T20:45:43.531Z",
+      "publishedAt": "2026-03-15T00:33:44.014Z",
       "publishedBy": 110551,
       "availableVersions": [
+        "1.1.0",
         "1.0.0"
       ],
       "tags": {
-        "latest": "1.0.0",
-        "stable": "1.0.0"
+        "latest": "1.1.0",
+        "stable": "1.1.0"
       },
       "owners": [
         "mlld"
