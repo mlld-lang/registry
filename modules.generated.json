@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "generated": "2026-06-02T04:58:50.182Z",
+  "generated": "2026-08-19T16:40:55.454Z",
   "modules": {
     "@mlld/ai-cli": {
       "name": "ai-cli",
@@ -525,6 +525,49 @@
       ],
       "maintainers": []
     },
+    "@mlld/lms": {
+      "name": "lms",
+      "author": "mlld",
+      "about": "LM Studio REST API (OpenAI-compatible) for local LLM calls with structured output",
+      "version": "1.0.0",
+      "needs": [],
+      "license": "CC0",
+      "mlldVersion": ">=2.0.5",
+      "source": {
+        "type": "directory",
+        "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/b4d6e6e90e02a8b9574bb77747c69045f2744f74/lms",
+        "files": [
+          "index.mld",
+          "module.yml",
+          "README.md"
+        ],
+        "entryPoint": "index.mld",
+        "contentHash": "fbcdb54e5d758cf3fa150680d29a14ab855c8703ef119aef16d4e93702d1e4ab",
+        "repository": {
+          "type": "git",
+          "url": "https://github.com/mlld-lang/modules",
+          "commit": "b4d6e6e90e02a8b9574bb77747c69045f2744f74",
+          "path": "lms"
+        }
+      },
+      "dependencies": {},
+      "keywords": [],
+      "repo": "https://github.com/mlld-lang/modules",
+      "bugs": "https://github.com/mlld-lang/modules/issues",
+      "publishedAt": "2026-08-19T16:30:21.551Z",
+      "publishedBy": 110551,
+      "availableVersions": [
+        "1.0.0"
+      ],
+      "tags": {
+        "latest": "1.0.0",
+        "stable": "1.0.0"
+      },
+      "owners": [
+        "mlld"
+      ],
+      "maintainers": []
+    },
     "@mlld/md-fetch": {
       "name": "md-fetch",
       "author": "mlld",
@@ -703,6 +746,44 @@
       "tags": {
         "latest": "0.1.0",
         "stable": "0.1.0"
+      },
+      "owners": [
+        "mlld"
+      ],
+      "maintainers": []
+    },
+    "@mlld/pi": {
+      "name": "pi",
+      "author": "mlld",
+      "about": "Pi adapter for mlld",
+      "version": "1.1.0",
+      "needs": [],
+      "license": "CC0",
+      "mlldVersion": "2.0.6",
+      "source": {
+        "type": "github",
+        "url": "https://raw.githubusercontent.com/mlld-lang/modules/e1efa15f4b199850c18790a4f3d643b950b8784a/pi/index.mld",
+        "contentHash": "4d3daa95f987cc6b1d4f9af20402ac74762a8296e069e78e961199412edb4b11",
+        "repository": {
+          "type": "git",
+          "url": "https://github.com/mlld-lang/modules",
+          "commit": "e1efa15f4b199850c18790a4f3d643b950b8784a",
+          "path": "pi/index.mld"
+        }
+      },
+      "dependencies": {},
+      "keywords": [],
+      "repo": "https://github.com/mlld-lang/modules",
+      "bugs": "https://github.com/mlld-lang/modules/issues",
+      "homepage": "https://github.com/mlld-lang/modules",
+      "publishedAt": "2026-08-19T16:33:31.862Z",
+      "publishedBy": 110551,
+      "availableVersions": [
+        "1.1.0"
+      ],
+      "tags": {
+        "latest": "1.1.0",
+        "stable": "1.1.0"
       },
       "owners": [
         "mlld"
