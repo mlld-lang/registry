@@ -1,0 +1,12 @@
+{
+  "name": "pi",
+  "author": "mlld",
+  "about": "Pi adapter for mlld",
+  "owners": [
+    "mlld"
+  ],
+  "maintainers": [],
+  "created": "2026-08-19T16:33:31.862Z",
+  "createdBy": 110551,
+  "firstPublishPR": null
+}
