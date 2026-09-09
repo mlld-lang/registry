@@ -8,9 +8,9 @@
 > substrate. It re-derives exactly the seams the v2 plan marked "Changes under
 > OCI" (§11), and leaves everything else untouched, by reference.
 >
-> The OCI-specific decisions here are numbered **OC-1..14** (not Dec-52+): they
+> The OCI-specific decisions here are numbered **OC-1..17** (not Dec-52+): they
 > are *proposals this branch requires*, not NLF rulings. If NLF rules this branch
-> in, OC-1..14 are adopted as-is or amended, and the substrate rulings they
+> in, OC-1..17 are adopted as-is or amended, and the substrate rulings they
 > replace (review #1 HIGH-2, Dec-4/35/38) are superseded. Nothing else in the 51
 > decisions changes.
 >
@@ -142,7 +142,7 @@ implement the one new table (§7). OC-14 pins this.
 
 ---
 
-## 4. The OCI decision register (OC-1..14)
+## 4. The OCI decision register (OC-1..17)
 
 One line each; the operative text is the section that follows.
 
@@ -162,6 +162,9 @@ One line each; the operative text is the section that follows.
 | OC-12 | **Dec-38 (exactly-1-machine) relaxed.** The single-writer invariant becomes "one registry-writer service account"; zot+DDB-less S3 and Postgres are multi-writer-safe, so opgate may scale to N. |
 | OC-13 | **Install ceremony unchanged.** `GET /{author}/{pkg}/v/{version}.json` assembles the v2 §6.5 `VersionManifest` from ledger+registry; lock (§6.2) / ref (§6.7) / Dec-50 untouched. OCI pull is additive only. |
 | OC-14 | **Ledger implemented by reuse, not invention**: publish-burn = `PutArtifact` write-once law; revoke = `tape.AppendServer` (server-lane event). One new table, two existing primitives. |
+| OC-15 | **Server-side package validation.** Publish adds a post-normalize validation pass **before any byte is written**: opgate parses the source and statically enforces valid UTF-8, static-imports-only (Dec-45), every import edge = a published opgate version or a github SHA, no import cycles (Dec-44), well-formed `access`/`needs`, and the size/import caps (Dec-23). Invalid → 400, and **nothing is written** (no blob, no ledger row). |
+| OC-16 | **Publish = an approved publisher.** On top of `membership(actor, principal)` (Dec-48/39), opgate keeps an operator-managed **approved-publisher** allowlist per principal; publish requires membership **and** approval, granted/revoked by opgate (a server-lane event) — never self-served. Unapproved → 403. |
+| OC-17 | **The ledger is the business event source.** `module_events` rows carry REQUIRED `actor` + `principal` + `at`, and opgate exposes the stream as a first-class, transactional change-feed (outbox → a queryable `/events` endpoint + SSE tail) so "who published what, when" is machine-answerable. Resolves v2 §6.3's "unspecified" audit flag (O3′). |
 
 ---
 
@@ -188,6 +191,12 @@ authoritative): Dec-1, 2, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 16, 18, 19, 20,
 21, 22, 23, 24, 25, 27, 28, 29, 30, 31, 33, 36, 37, 39, 41, 42, 43, 44, 45, 46,
 48, 49, 50, 51 — the entire client, lockfile, ref, `VersionManifest`, transport,
 ownership/auth, normalization, and legacy-catalog surface.
+
+**Net-new in this branch (not re-baselines):** OC-15 (server-side package
+validation), OC-16 (approved-publisher gate), OC-17 (the business event source)
+add capabilities the v2 substrate never described. They *extend* Dec-23/44/45
+(validation), *amend* Dec-48/39's gate (approval on top of membership), and
+*resolve* v2 §6.3's "unspecified" audit fields.
 
 ---
 
@@ -270,25 +279,36 @@ Postgres ledger: author/module                     (opgate, existing DB)
 ```
 1. client → opgate:  { metadata, mlld source, version, hashN? }      (hashN advisory, Dec-18)
 2. opgate:           canonical-lowercase (Dec-9) + slug/version validation (OC-4/5)
-                     + membership(actor, principal) (Dec-48/39) + size caps (Dec-23)
-3. opgate:           normalize source ONCE (Dec-7/41) → N bytes → integrity = sha256:<SOURCE>
-4. opgate → registry: HEAD /v2/{repo}/blobs/{integrity}
+                     + size caps (Dec-23) + **approved-publisher** gate (OC-16):
+                     membership(actor, principal) (Dec-48/39) AND the actor is approved
+3. opgate:           **validate the package (OC-15)** — parse + static checks, BEFORE any write:
+                     valid UTF-8 · static-imports-only (Dec-45) · every import edge is a published
+                     opgate version or a github SHA · no import cycles (Dec-44) · access/needs
+                     well-formed · size/import caps. invalid → 400, nothing written.
+4. opgate:           normalize source ONCE (Dec-7/41) → N bytes → integrity = sha256:<SOURCE>
+5. opgate → registry: HEAD /v2/{repo}/blobs/{integrity}
                      absent → POST /v2/{repo}/blobs/uploads/?digest=sha256:<SOURCE>  (monolithic)
                      registry verifies digest == <SOURCE>   (mismatch → upload refused)
-5. opgate:           config blob {version, hash:<SOURCE>, access, author, source, needs, imports}
+6. opgate:           config blob {version, hash:<SOURCE>, access, author, source, needs, imports}
                      → upload → digest <CONFIG>  (mediaType vnd.mlld.version.v1+json)
-6. opgate:           build manifest {config, layers:[<SOURCE>]}
+7. opgate:           build manifest {config, layers:[<SOURCE>]}
                      → PUT /v2/{repo}/manifests/{<DM>}  → header Docker-Content-Digest: <DM>
-7. opgate → ledger:  **THE BURN** — write (repo, version, <DM>) write-once (PutArtifact law):
+8. opgate → ledger:  **THE BURN** — write (repo, version, <DM>, actor, principal, at) write-once
+                     (PutArtifact law):
                        absent            → row lands                    → 200 (first-publish)
                        present, same <DM>→ no-op                        → 200 (idempotent)
                        present, diff <DM>→ ErrArtifactConflict          → 409 (BURNED)
-8. opgate → registry: PUT /v2/{repo}/manifests/v{version}  (point tag at <DM>)  — derived, idempotent
-9. opgate → client:   200 / 200 / 409 / 400 / 403                        (Dec-26/23/48 contract)
+9. opgate → registry: PUT /v2/{repo}/manifests/v{version}  (point tag at <DM>)  — derived, idempotent
+10. opgate:          the same tx emits the row to the **`/events` stream** (outbox → SSE tail)
+                     so "who published what, when" is replayable by business (OC-17)
+11. opgate → client: 200 / 200 / 409 / 400 / 403                        (Dec-26/23/48 + OC-15/16 contract)
 ```
 
 The status contract (`200 first` / `200 no-op` / `409 burned` / `400` / `403` /
-`410` on read) is byte-for-byte the v2 §7 table.
+`410` on read) is the v2 §7 table, with `400` widened by package validation
+(OC-15) and `403` hardened by the approved-publisher gate (OC-16): the codes and
+meanings are unchanged, only the predicates are stricter (and the publish row now
+carries `actor`/`principal`/`at`, OC-17).
 
 ### 7.2 Crash windows — every v2 §8 row preserves its answer
 
@@ -345,7 +365,7 @@ change to the lock format, refs, or `mlld install`.
 
 ## 9. Invariants (re-mechanized)
 
-v2 §5 holds with three rows re-mechanized and one added. Rows not listed are
+v2 §5 holds with three rows re-mechanized and three added. Rows not listed are
 unchanged as written.
 
 | # | Invariant (must NEVER be true) | Enforcing mechanism | Decision(s) |
@@ -355,6 +375,8 @@ unchanged as written.
 | I8 | Two writers corrupting the ledger | **Single registry-writer** (opgate's service account) + Postgres transactional uniqueness; the old single-**machine** invariant is retired | Dec-38→**OC-12** |
 | I13 | (new) A registry GC/delete reaping a **claimed** version | Never `DELETE`; never untag; `deleteReferrers:false`; a claimed version keeps its tag forever → not "untagged" → GC leaves it; the ledger still records the digest as the audit backstop | **OC-10** |
 | I14 | (new) Blob digest ≠ integrity (raw bytes stored) | Normalize **before** upload; store only normalized bytes; registry `PUT ?digest=` refuses a mismatch; a test asserts `integrity == the registry-reported digest` | **OC-7**, Dec-7/41 |
+| I15 | (new) An unapproved actor publishes (membership without approval) | Publish gate = membership (Dec-48/39) **AND** the operator-managed approved-publisher record; unapproved → 403 **before** any write | **OC-16** |
+| I16 | (new) A malformed/unvalidated module becomes a burnable version | Server-side validation parse + static checks run **before** normalize/upload/burn; invalid → 400 naming the rule, and nothing is written | **OC-15**, Dec-44/45/23 |
 
 ---
 
@@ -370,13 +392,24 @@ One row per event; the `PutArtifact` write-once law supplies the burn semantics.
 | `seq` | bigint | → | per-repo monotonic event counter (staleness anchor) |
 | `type` | text | → | `publish` \| `revoke` |
 | `version` | text | → | the version label (OC-5 charset) |
-| `digest` | text | → | manifest digest `<DM>` (`sha256:<64-hex>`); '' for `revoke`? no — revoke names the version, digest mirrors its publish row |
+| `digest` | text | → | manifest digest `<DM>` (`sha256:<64-hex>`); a `revoke` row mirrors the digest of the publish row it revokes |
 | `reason` | text | →* | `legal` \| `dmca` \| `abuse`, present iff `type=revoke` (Dec-47) |
-| `actor`, `at` | text | →* | audit (same status as v2 §6.3's "unspecified, not a decision" flag) |
+| `actor` | text | → | the authenticated identity who performed the publish/revoke (OC-17) |
+| `principal` | text | → | the owning principal the actor acted for, `{type}/{ref}` (OC-17, Dec-48) |
+| `at` | timestamptz | → | server timestamp of the append (OC-17) |
 
 Write-once law on `(repo, version, type=publish)`: identical `digest` → no-op;
 different `digest` → conflict. `PUT /v2` never writes this table; only opgate's
 publish path does.
+
+**The event source (OC-17).** These three audit columns are now **decided** —
+they resolve v2 §6.3's "unspecified" flag and this branch's O3′: because every
+row carries `actor` + `principal` + `at`, the ledger **is** the "who published
+what, when" answer. opgate publishes the stream as a first-class event source —
+a transactional change-feed (an outbox replayed into a queryable `/events`
+endpoint and an SSE/realtime tail) for downstream business/analytics consumers.
+Read-only, derived, internal: no publisher-facing path or mlld client-code
+changes.
 
 ### 10.2 The read model (replaces §6.4 rollup `index.json`)
 
@@ -410,17 +443,19 @@ mentions OCI.
 ## 11. API surface
 
 The v2 §7 routes and status semantics are **unchanged** — opgate fronts the same
-JSON contract; the registry is behind it. The only addition is the registry's
+JSON contract; the registry is behind it. The additions are (a) the registry's
 own `/v2/` pull surface, which is *private* by default (OC-9): opgate (internal)
 and, if ever exposed, ecosystem tooling speak the standard OCI Distribution API
-(`blobs`, `manifests`, `tags/list`, `referrers`). No client code changes because
-no client speaks `/v2/` in the default posture.
+(`blobs`, `manifests`, `tags/list`, `referrers`); and (b) the internal **`/events`
+publish stream** (OC-17) for business consumers. No mlld client-code changes — no
+mlld client speaks `/v2/` or `/events` in the default posture.
 
 | Route | Posture | Status |
 |-------|---------|--------|
 | `GET /@{author}/{pkg}/v/{version}.json` | `public, max-age=31536000, immutable` | 200 · 404 · **410 + reason** (Dec-47) |
 | `GET /@{author}/{pkg}.json` | revalidate | 200 · 404 |
-| `POST` publish (authed) | n/a | 200 first / 200 no-op / 409 / 400 / 403 (Dec-26/23/48) |
+| `POST` publish (authed) | n/a | 200 first / 200 no-op / 409 / **400 (validation incl. package check)** / **403 (membership or approval)** (Dec-26/23/48 + OC-15/16) |
+| `GET /events` (opgate-internal) | opgate-auth'd, read-only | 200 (SSE tail + `?since=seq` replay) · 401/403 (OC-17) |
 | `GET /v2/…` (registry) | private by default | standard OCI Distribution responses |
 
 ---
@@ -447,20 +482,26 @@ Dependency-correct order `0d → 0 → 0a → 0b → 0c → 1 → 2 → 3` is un
 
 ### Phase 0a — server write path (re-baselined)
 
-- **Goal:** normalize → upload → manifest PUT → ledger burn → tag, honoring the
-  §7 status/idempotency contract.
+- **Goal:** validate → normalize → upload → manifest PUT → ledger burn → tag,
+  honoring the §7 status/idempotency contract and emitting the `/events` stream.
 - **Outputs:** the `module_events` table (reusing `PutArtifact`-law + `tape`
-  ordering); the publish endpoint; `VersionManifest` assembly with immutable
-  header; operator `revoke` → 410-with-reason, registry object untouched.
+  ordering) with the REQUIRED `actor`/`principal`/`at` audit columns (OC-17);
+  the publish endpoint with the **server-side package validator** (OC-15) and
+  the **approved-publisher gate** (OC-16); `VersionManifest` assembly with
+  immutable header; operator `revoke` → 410-with-reason, registry object
+  untouched; the **`/events` business stream** (outbox + SSE, OC-17).
 - **Acceptance/DoD:** the v2 §8 crash-window tests pass against the registry+ledger;
-  retry-after-lost-ACK is a no-op; I2/I5/I8/I13/I14 hold.
+  retry-after-lost-ACK is a no-op; a validation failure and an unapproved publish
+  both write **nothing**; the `/events` stream replays who-published-what;
+  I2/I5/I8/I13/I14/I15/I16 hold.
 - **Depends on / unblocks:** unblocks **0b**'s opgate integration and **1**.
 
 ### Phase 0 — spec
 
 Same as v2 Phase 0, plus: the OCI layout appendix (§6), the OC-5 version-regex
-pin, and the OC-4 slug tightening are written into `spec-opgate-api.yaml` too
-(they are the only decisions touching the spec's validation table).
+pin, the OC-4 slug tightening, the OC-15 package-validation rules + OC-16
+approved-publisher gate (the publish edge), and the OC-17 `/events` stream are
+written into `spec-opgate-api.yaml` too.
 
 ### Phases 0b, 0c, 1, 2, 3 — unchanged
 
@@ -483,6 +524,8 @@ Same discipline as v2 §10: mitigation + owning decision + residual.
 | Tag re-pointing by a stray registry-writer | registry write-closed to opgate; tag is *never* the authority, so even a re-point can't change a resolved pin | OC-8, OC-9 | a compromised opgate writer could rewrite tags and break *discovery*, but never a digested pin |
 | OCI repo path collision | mapping is injective (drop leading `@`, lowercase); slug tightened so the mapping is total | OC-4 | none |
 | The v2 audit-trail concern ("reconstruct from GC history") | the ledger (Postgres) IS the audit trail — we never reconstruct from registry history | OC-8, OC-14 | none (the concern is in the *other* direction: we don't need registry history at all) |
+| Server validation wrongly rejects a valid module | validation reuses the *same* parser/grammar the interpreter runs (shared and test-pinned, the Dec-41 pattern); a rejection is a 400 naming the specific rule, never silent | OC-15 | a validation bug blocks a legitimate publish until fixed — accepted; the alternative (publish-then-discover) writes unservable bytes into an append-only ledger |
+| The `/events` stream exposes actor identity to business | the stream is internal-only (opgate-auth'd consumer, not public); `actor`/`principal` is the *point* (Dec-47 auditability) | OC-17 | making "who published what" legible is the feature; who may *read* it is an ops decision, not a correctness one |
 
 ---
 
@@ -492,7 +535,9 @@ Same discipline as v2 §10: mitigation + owning decision + residual.
 |---|----------|----------|-------|-----------|
 | O1′ | `zot` public-read vs fully-private (the OC-9 Option A/B) | private = least surface, no `/v2/` ceremony; public-read = free `oras`/`docker` pulls + third-party mirrors | NLF | Phase 0d (it decides whether zot binds a public listener) |
 | O2′ | Whether mirrors (Dec-51) may *also* be OCI pull refs | mirrors today are URL-typed but the lock field is the same either way; adding OCI mirrors is additive | NLF / mlld | post-Phase-1, if ever wanted |
-| O3′ | The `actor`/`at` audit fields on `module_events` (same flag as v2 §6.3 "unspecified") | not a decision | opgate | Phase 0 |
+
+> **Resolved (was open):** O3′ (the `actor`/`at` audit fields on
+> `module_events`) is **resolved by OC-17** — see §10.1; it is no longer open.
 
 Everything else that was open in v2 §11 (O2 dry-run, O3 collaborators, O4 cap
 values, O5 freeze-set, O6 max-depth) is **unchanged** and still open.
@@ -514,6 +559,13 @@ values, O5 freeze-set, O6 max-depth) is **unchanged** and still open.
 - **burn** (re-mechanized) — the write-once `(repo, version) → <DM>` row; same
   as v2's definition, now in Postgres, not a JSONL line.
 - **write-closed** — only opgate's service identity can mutate the registry.
+- **package validation (OC-15)** — opgate's server-side parse + static checks,
+  run before any byte is written; a failed check is a 400 and writes nothing.
+- **approved publisher (OC-16)** — an operator-granted allowlist entry permitting
+  an actor to publish to a principal, on top of `membership(actor, principal)`.
+- **publish stream / event source (OC-17)** — the read-only, transactionally
+  correct change-feed of `module_events` (with `actor`+`principal`+`at`) exposed
+  as a queryable `/events` endpoint + SSE tail for business/analytics.
 
 Everything else (transport, resolved, integrity, mirror, rollup, revoke, etc.)
 has the same meaning as v2 §12.

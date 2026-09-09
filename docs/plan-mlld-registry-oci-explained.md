@@ -4,12 +4,12 @@
 > The OCI plan is **PROPOSED** — it answers the open substrate question `O1`
 > and is **awaiting NLF's ruling**. This file renders that proposal for an
 > engineering reader — no narrative, just mechanism and consequences. It is
-> **not authority**: the OCI plan is authority for this branch's OC-1..14, and
+> **not authority**: the OCI plan is authority for this branch's OC-1..17, and
 > `plan-mlld-registry-v2.md` is authority for every substrate-agnostic fact
 > (the 51 locked decisions, the lock/ref schemas, the transports, ownership,
 > the legacy freeze). Where unsure, the source's exact wording wins.
 >
-> The OCI-specific decisions are numbered **OC-1..14**, exactly as the source
+> The OCI-specific decisions are numbered **OC-1..17**, exactly as the source
 > plan does — they are *proposals this branch requires*, not NLF rulings
 > (which is exactly why they are not Dec-52+).
 
@@ -39,6 +39,8 @@ components introduced by the OCI substrate:
 | **mirrors** | untrusted fetch hints, verified after the fetch |
 | **the legacy catalog** | frozen metadata (`modules.json` + `legacy-pins.json`) |
 | **`@mlld/std/*`** | reserved embedded-stdlib prefix |
+| **the approved-publisher allowlist (OC-16)** | an operator-managed, per-principal set of actors permitted to publish |
+| **the publish stream / event source (OC-17)** | the read-only change-feed of `module_events` (`actor`+`principal`+`at`) for business consumers |
 
 **The one-line spine (unchanged from v2):** source names a module; the lock
 maps *name → typed transport + real URL + integrity*; install is *fetch +
@@ -214,7 +216,7 @@ independent verifier** (OC-7).
 
 ---
 
-## 5. The 14 OCI decisions
+## 5. The 17 OCI decisions
 
 The register lives in §4 of the source. Semantics are the source's, not
 re-worded.
@@ -235,6 +237,9 @@ re-worded.
 | **OC-12** | **Dec-38 (exactly-1-machine) relaxed.** The single-writer invariant becomes "one registry-writer service account"; zot+DDB-less S3 and Postgres are multi-writer-safe, so opgate may scale to N. |
 | **OC-13** | **Install ceremony unchanged.** `GET /{author}/{pkg}/v/{version}.json` assembles the v2 §6.5 `VersionManifest` from ledger+registry; lock / ref / Dec-50 untouched. OCI pull is additive only. |
 | **OC-14** | **Ledger implemented by reuse, not invention**: publish-binding = `PutArtifact` write-once law; revoke = `tape.AppendServer` (server-lane event). One new table, two existing primitives. |
+| **OC-15** | **Server-side package validation.** Publish runs a parse + static-check pass **before any byte is written**: valid UTF-8, static-imports-only (Dec-45), every import edge = a published opgate version or a github SHA, no import cycles (Dec-44), well-formed `access`/`needs`, size/import caps. Invalid → 400, nothing written. |
+| **OC-16** | **Publish = an approved publisher.** On top of `membership(actor, principal)` (Dec-48/39), opgate keeps an operator-managed **approved-publisher** allowlist per principal; publish requires membership **and** approval — never self-served. Unapproved → 403. |
+| **OC-17** | **The ledger is the business event source.** `module_events` rows carry REQUIRED `actor`+`principal`+`at`; opgate exposes the stream as a transactional change-feed (outbox → queryable `/events` + SSE tail). Resolves v2 §6.3's "unspecified" audit flag (O3′). |
 
 ---
 
@@ -278,25 +283,37 @@ The client's contract is byte-for-byte the v2 §7 table (200 first / 200 no-op /
 409 burned / 400 / 403 / 410 on read). Only the *server's* steps change:
 
 ```
- 1  client → opgate :  { metadata, source, version, hashN? }   (hashN advisory)
- 2  opgate            :  lowercase + slug/version check + membership + size caps
- 3  opgate            :  normalize source ONCE → N bytes → integrity = sha256:<SOURCE>
- 4  opgate → registry :  HEAD blob/{integrity}; absent →
-                         POST blobs/uploads/?digest=sha256:<SOURCE>
-                         ── registry RE-checks the digest (refuse on mismatch)
- 5  opgate            :  upload config blob → digest <CONFIG>
- 6  opgate            :  build manifest → PUT manifests/<DM>
- 7  opgate → ledger   :  ★ THE BINDING ★  write (repo, version, <DM>) write-once:
-                         absent              → row lands   → 200 (first publish)
-                         present, same <DM>  → no-op       → 200 (idempotent)
-                         present, diff <DM>  → conflict    → 409 (BURNED)
- 8  opgate → registry :  PUT manifests/v{version}  (point the tag at <DM>)
-                         ── derived, idempotent
- 9  opgate → client   :  200 / 200 / 409 / 400 / 403     (Dec-26/23/48 contract)
+1  client → opgate :  { metadata, source, version, hashN? }   (hashN advisory)
+ 2  opgate            :  lowercase + slug/version check + size caps
+                          + APPROVAL GATE: membership(actor, principal) (Dec-48/39)
+                          AND the actor is an approved publisher (OC-16)
+ 3  opgate            :  ★ VALIDATE the package (OC-15) ★  parse + static checks,
+                          BEFORE any write: valid UTF-8 · static-imports-only (Dec-45)
+                          · every import edge = a published opgate version or a github
+                          SHA · no import cycles (Dec-44) · access/needs well-formed
+                          · size/import caps.  invalid → 400, NOTHING written.
+ 4  opgate            :  normalize source ONCE → N bytes → integrity = sha256:<SOURCE>
+ 5  opgate → registry :  HEAD blob/{integrity}; absent →
+                          POST blobs/uploads/?digest=sha256:<SOURCE>
+                          ── registry RE-checks the digest (refuse on mismatch)
+ 6  opgate            :  upload config blob → digest <CONFIG>
+ 7  opgate            :  build manifest → PUT manifests/<DM>
+ 8  opgate → ledger   :  ★ THE BINDING ★  write (repo, version, <DM>, actor, principal, at)
+                          write-once:
+                          absent              → row lands   → 200 (first publish)
+                          present, same <DM>  → no-op       → 200 (idempotent)
+                          present, diff <DM>  → conflict    → 409 (BURNED)
+ 9  opgate → registry :  PUT manifests/v{version}  (point the tag at <DM>)
+                          ── derived, idempotent
+10  opgate            :  same tx emits the row to the /events stream (outbox → SSE)
+                          so "who published what, when" is replayable (OC-17)
+11  opgate → client   :  200 / 200 / 409 / 400 / 403     (Dec-26/23/48 + OC-15/16)
 ```
 
-Note the ordering: bytes go to the registry **first**, the binding is written
-to the ledger **second**, and the tag is placed **last**.
+Note the ordering: **validation happens before any byte is written** (a failure
+leaves nothing behind); then bytes go to the registry **first**, the binding is
+written to the ledger **second** (emitting the `/events` row in the same
+transaction), and the tag is placed **last**.
 
 ---
 
@@ -307,17 +324,17 @@ Every v2 §8 answer survives, re-told for the new machinery:
 ```
   step of §7            what's left if interrupted        why retry is safe
   ──────────────────    ──────────────────────────────    ─────────────────────────
-  (4) blob uploaded,    an UNCLAIMED blob                 re-upload is idempotent
+  (5) blob uploaded,    an UNCLAIMED blob                 re-upload is idempotent
       manifest not      (digest-addressed)                (digest already exists);
       written                                             unclaimed blobs are GC-able
-  (6) manifest PUT      manifest filed, no binding        still UNCLAIMED → a retry
+  (7) manifest PUT      manifest filed, no binding        still UNCLAIMED → a retry
       done, binding not written                           (even with DIFFERENT bytes)
       written                                             is a first-publish, not a burn
-  (7) binding written,  the ledger has the binding; the   the tag is DERIVED → opgate
+  (8) binding written,  the ledger has the binding; the   the tag is DERIVED → opgate
       tag not set       tag missing                       re-derives it from the ledger;
                                                           pins resolve by digest,
                                                           never the tag
-  (9) ack lost after    the binding is durable; client    re-publish → same <DM> →
+  (11) ack lost after    the binding is durable; client    re-publish → same <DM> →
       binding           saw nothing                       no-op 200 (no false 409)
 ```
 
@@ -337,7 +354,7 @@ exact by construction, independent of listing freshness.
 
 ## 9. Invariants — the re-mechanized must-never rules
 
-v2 §5 holds, with three rows re-mechanized and one added:
+v2 §5 holds, with three rows re-mechanized and three added:
 
 ```
   I2  ─ silent version-label overwrite
@@ -356,6 +373,12 @@ v2 §5 holds, with three rows re-mechanized and one added:
   I14 ─ (NEW) blob digest ≠ integrity (raw bytes stored)
        normalize BEFORE upload; store only normalized bytes; registry
        PUT ?digest= refuses a mismatch; a test asserts the equality (OC-7)
+  I15 ─ (NEW) an unapproved actor publishes
+       publish gate = membership (Dec-48/39) AND the operator-managed
+       approved-publisher record; unapproved → 403 BEFORE any write   (OC-16)
+  I16 ─ (NEW) a malformed/unvalidated module becomes bound
+       server-side parse + static checks run BEFORE normalize/upload/bind;
+       invalid → 400 naming the rule, NOTHING written                (OC-15)
 ```
 
 ---
@@ -405,14 +428,18 @@ The dependency-correct order `0d → 0 → 0a → 0b → 0c → 1 → 2 → 3` i
                           publish lands a blob whose registry-reported digest
                           equals integrity (I14); blobs survive a zot restart
                           (state lives in Tigris); Postgres carries the binding row.
-  Phase 0a  (write path)  normalize → upload → manifest → BIND → tag, honoring
-                          the §7 status/idempotency contract. DoD: v2 §8
-                          crash-window tests pass against registry+ledger;
-                          lost-ACK retry is a no-op; I2/I5/I8/I13/I14 hold.
+  Phase 0a  (write path)  validate → normalize → upload → manifest → BIND → tag,
+                          honoring the §7 status/idempotency contract, plus the
+                          approval gate (OC-16) and the /events stream (OC-17).
+                          DoD: v2 §8 crash-window tests pass against
+                          registry+ledger; lost-ACK retry is a no-op; a validation
+                          failure and an unapproved publish both write NOTHING;
+                          the /events stream replays who-published-what;
+                          I2/I5/I8/I13/I14/I15/I16 hold.
   Phase 0   (spec)        as v2, plus the OCI layout (§6), the OC-5 version-regex
-                          pin, and the OC-4 slug tightening written into
-                          spec-opgate-api.yaml (the only decisions touching the
-                          spec's validation table).
+                          pin, the OC-4 slug tightening, the OC-15 validation
+                          rules + OC-16 approval gate (publish edge), and the
+                          OC-17 /events stream written into spec-opgate-api.yaml.
   0b / 0c / 1 / 2 / 3     UNCHANGED — 0b (typed URL-only client) and 0c
                           (legacy-pins freeze) don't know the substrate exists;
                           1 (re-publish) and 2 (github) are additive, and github
@@ -455,7 +482,9 @@ The dependency-correct order `0d → 0 → 0a → 0b → 0c → 1 → 2 → 3` i
 |---|----------|----------|------------|
 | **O1′** | `zot` public-read vs fully-private (the OC-9 Option A/B) | private = least surface; public-read = free `oras`/`docker` pulls + third-party mirrors | Phase 0d |
 | **O2′** | may mirrors (Dec-51) *also* be OCI pull refs? | mirrors are URL-typed and the lock field is the same either way; adding OCI mirrors is additive | post-Phase-1 |
-| **O3′** | the `actor`/`at` audit fields on `module_events` | same "unspecified, not a decision" flag as v2 §6.3 | Phase 0 |
+
+> **Resolved (was open):** O3′ — the `actor`/`at` audit fields on
+> `module_events` are **now REQUIRED** (OC-17, see §10.1 of the source).
 
 Everything else open in v2 §11 (O2 dry-run, O3 collaborators, O4 cap values,
 O5 freeze-set, O6 max-depth) is **unchanged and still open**.
@@ -473,7 +502,11 @@ O5 freeze-set, O6 max-depth) is **unchanged and still open**.
   Binding             the ledger publish ROW (write-once), not the tag
   Tag                 a derived alias — never trusted
   Install             UNCHANGED — GET /v/{version}.json assembles the VersionManifest
+  Publish gate        membership (Dec-48/39) AND an approved-publisher record (OC-16)
+  Validation          server parses + statically checks BEFORE any write (OC-15)
+  Audit stream        /events: transactional change-feed of actor/principal/at (OC-17)
   Removed             flock, atomic-rename rollup, min=max=1 machine pin
-  New invariants      I13 (GC never reaps claimed), I14 (digest == integrity, tested)
-  Status              PROPOSED — answers O1, awaiting NLF's ruling (OC-1..14)
+  New invariants      I13 (GC never reaps claimed), I14 (digest == integrity, tested),
+                      I15 (no unapproved publish), I16 (no malformed module binds)
+  Status              PROPOSED — answers O1, awaiting NLF's ruling (OC-1..17)
 ```
