@@ -1,0 +1,50 @@
+{
+  "version": "1.2.0",
+  "needs": [
+    "sh"
+  ],
+  "license": "CC0",
+  "mlldVersion": ">=2.2.0",
+  "source": {
+    "type": "directory",
+    "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/029f1dffa7ea807927b4038e57ce8f2731f11f16/pi",
+    "files": [
+      "index.mld",
+      "module.yml",
+      "README.md",
+      "tests/conversation.test.mld",
+      "tests/fixtures/bin/pi",
+      "tests/fixtures/conversation/home/sessions/--tmp-proj--/2026-09-10T00-22-39-649Z_7e5e5e5e-1234-4321-8abc-def012345678.jsonl",
+      "tests/fixtures/conversation/pi-basic.fray.jsonl",
+      "tests/fixtures/conversation/pi-basic.jsonl",
+      "tests/fixtures/conversation/pi-branched.fray.jsonl",
+      "tests/fixtures/conversation/pi-branched.jsonl",
+      "tests/fixtures/conversation/pi-compacted.fray.jsonl",
+      "tests/fixtures/conversation/pi-compacted.jsonl",
+      "tests/fixtures/conversation/pi-openrouter.fray.jsonl",
+      "tests/fixtures/conversation/pi-openrouter.jsonl",
+      "tests/fixtures/conversation/README.md",
+      "tests/fixtures/run/.gitignore",
+      "tests/fixtures/run/pi-append-stub.sh",
+      "tests/fixtures/run/pi-stub.sh",
+      "tests/fixtures/run/workdir/.gitkeep",
+      "tests/format.test.mld",
+      "tests/run.test.mld",
+      "tests/session.test.mld"
+    ],
+    "entryPoint": "index.mld",
+    "contentHash": "0a6bcb7609b55c6929c6b033a62f219ca382ba2a338caa92a5d05bdb518d2332",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/mlld-lang/modules",
+      "commit": "029f1dffa7ea807927b4038e57ce8f2731f11f16",
+      "path": "pi"
+    }
+  },
+  "dependencies": {},
+  "keywords": [],
+  "repo": "https://github.com/mlld-lang/modules",
+  "bugs": "https://github.com/mlld-lang/modules/issues",
+  "publishedAt": "2026-09-30T22:24:05.612Z",
+  "publishedBy": 110551
+}
