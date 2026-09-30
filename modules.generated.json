@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "generated": "2026-09-30T23:34:37.258Z",
+  "generated": "2026-09-30T23:35:35.991Z",
   "modules": {
     "@mlld/ai-cli": {
       "name": "ai-cli",
@@ -1207,24 +1207,28 @@
       "name": "sqlite",
       "author": "mlld",
       "about": "SQLite-backed artifact storage",
-      "version": "0.1.0",
-      "needs": [],
+      "version": "0.2.0",
+      "needs": [
+        "node"
+      ],
       "license": "CC0",
-      "mlldVersion": ">=2.0.0",
+      "mlldVersion": ">=2.2.0",
       "source": {
         "type": "directory",
-        "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/1173d72ccc030c9baf9592329ffe7f5c44501698/sqlite",
+        "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/0612b5e540ed45396855a3820312c7d52f8ba77e/sqlite",
         "files": [
           "index.mld",
           "module.yml",
-          "README.md"
+          "README.md",
+          "record.mld",
+          "tests/record.test.mld"
         ],
         "entryPoint": "index.mld",
-        "contentHash": "44dad779015bb04664c4fe1efd1df769d03fd0610b8265e6d5779cb56a082d38",
+        "contentHash": "dc554f5f7c386ba3b63b7fa0887b2a4eae41bd8809ba68d0c966400ad3ff381f",
         "repository": {
           "type": "git",
           "url": "https://github.com/mlld-lang/modules",
-          "commit": "1173d72ccc030c9baf9592329ffe7f5c44501698",
+          "commit": "0612b5e540ed45396855a3820312c7d52f8ba77e",
           "path": "sqlite"
         }
       },
@@ -1232,14 +1236,15 @@
       "keywords": [],
       "repo": "https://github.com/mlld-lang/modules",
       "bugs": "https://github.com/mlld-lang/modules/issues",
-      "publishedAt": "2026-03-11T23:18:45.708Z",
+      "publishedAt": "2026-09-30T23:34:48.426Z",
       "publishedBy": 110551,
       "availableVersions": [
+        "0.2.0",
         "0.1.0"
       ],
       "tags": {
-        "latest": "0.1.0",
-        "stable": "0.1.0"
+        "latest": "0.2.0",
+        "stable": "0.2.0"
       },
       "owners": [
         "mlld"
