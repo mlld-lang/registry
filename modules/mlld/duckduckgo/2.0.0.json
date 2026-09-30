@@ -1,0 +1,32 @@
+{
+  "version": "2.0.0",
+  "needs": [
+    "py"
+  ],
+  "license": "CC0",
+  "mlldVersion": ">=2.2.0",
+  "source": {
+    "type": "directory",
+    "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/029f1dffa7ea807927b4038e57ce8f2731f11f16/duckduckgo",
+    "files": [
+      "index.mld",
+      "module.yml",
+      "README.md",
+      "tests/tools.test.mld"
+    ],
+    "entryPoint": "index.mld",
+    "contentHash": "64342b41d824428c081ad5654ed5153c148a3ada11575153a8c7687016fa47f2",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/mlld-lang/modules",
+      "commit": "029f1dffa7ea807927b4038e57ce8f2731f11f16",
+      "path": "duckduckgo"
+    }
+  },
+  "dependencies": {},
+  "keywords": [],
+  "repo": "https://github.com/mlld-lang/modules",
+  "bugs": "https://github.com/mlld-lang/modules/issues",
+  "publishedAt": "2026-09-30T22:22:29.020Z",
+  "publishedBy": 110551
+}
