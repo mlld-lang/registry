@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "generated": "2026-09-30T22:31:58.129Z",
+  "generated": "2026-09-30T22:36:50.498Z",
   "modules": {
     "@mlld/ai-cli": {
       "name": "ai-cli",
@@ -328,24 +328,39 @@
       "name": "codex",
       "author": "mlld",
       "about": "Codex CLI invocation with sandboxing, streaming, and web search",
-      "version": "1.0.0",
-      "needs": [],
+      "version": "1.1.0",
+      "needs": [
+        "sh"
+      ],
       "license": "CC0",
-      "mlldVersion": ">=2.0.5",
+      "mlldVersion": ">=2.2.0",
       "source": {
         "type": "directory",
-        "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/4f0df450a9559f7b74716eef0da5f057fe0c0ae0/codex",
+        "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/029f1dffa7ea807927b4038e57ce8f2731f11f16/codex",
         "files": [
           "index.mld",
           "module.yml",
-          "README.md"
+          "README.md",
+          "tests/conversation.test.mld",
+          "tests/fixtures/bin/codex",
+          "tests/fixtures/conversation/codex-basic-truncated.jsonl",
+          "tests/fixtures/conversation/codex-basic.fray.jsonl",
+          "tests/fixtures/conversation/codex-basic.jsonl",
+          "tests/fixtures/conversation/codex-compacted.fray.jsonl",
+          "tests/fixtures/conversation/codex-compacted.jsonl",
+          "tests/fixtures/conversation/codex-custom-tools.fray.jsonl",
+          "tests/fixtures/conversation/codex-custom-tools.jsonl",
+          "tests/fixtures/conversation/home/sessions/2025/01/02/5e55a1d0-aaaa-4bbb-8ccc-0123456789ab.jsonl",
+          "tests/fixtures/conversation/home/sessions/2026/09/13/rollout-2026-09-13T19-14-00-0c0ffee0-1234-4321-8abc-def012345678.jsonl",
+          "tests/fixtures/conversation/README.md",
+          "tests/parse.test.mld"
         ],
         "entryPoint": "index.mld",
-        "contentHash": "d13f87eb25bf4bac6c40e170c93d1ed1b728a63fc4506c65c47a6eef87cccb71",
+        "contentHash": "f975c100bfd39bf54b0eff8fdd16164aec900c1924c4dba00cc8198ee9e2feec",
         "repository": {
           "type": "git",
           "url": "https://github.com/mlld-lang/modules",
-          "commit": "4f0df450a9559f7b74716eef0da5f057fe0c0ae0",
+          "commit": "029f1dffa7ea807927b4038e57ce8f2731f11f16",
           "path": "codex"
         }
       },
@@ -353,14 +368,15 @@
       "keywords": [],
       "repo": "https://github.com/mlld-lang/modules",
       "bugs": "https://github.com/mlld-lang/modules/issues",
-      "publishedAt": "2026-04-11T04:06:02.249Z",
+      "publishedAt": "2026-09-30T22:22:16.969Z",
       "publishedBy": 110551,
       "availableVersions": [
+        "1.1.0",
         "1.0.0"
       ],
       "tags": {
-        "latest": "1.0.0",
-        "stable": "1.0.0"
+        "latest": "1.1.0",
+        "stable": "1.1.0"
       },
       "owners": [
         "mlld"
@@ -371,24 +387,27 @@
       "name": "duckduckgo",
       "author": "mlld",
       "about": "DuckDuckGo search results tool",
-      "version": "1.0.0",
-      "needs": [],
+      "version": "2.0.0",
+      "needs": [
+        "py"
+      ],
       "license": "CC0",
-      "mlldVersion": "2.0.0-rc82",
+      "mlldVersion": ">=2.2.0",
       "source": {
         "type": "directory",
-        "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/41cd3b318e266e8f0eb09b4e80965b412cdd3c47/duckduckgo",
+        "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/029f1dffa7ea807927b4038e57ce8f2731f11f16/duckduckgo",
         "files": [
           "index.mld",
           "module.yml",
-          "README.md"
+          "README.md",
+          "tests/tools.test.mld"
         ],
         "entryPoint": "index.mld",
-        "contentHash": "9b6beeb47e698615d3bc36078e233349c0e18061eade6c4e4e3e470870f890bb",
+        "contentHash": "64342b41d824428c081ad5654ed5153c148a3ada11575153a8c7687016fa47f2",
         "repository": {
           "type": "git",
           "url": "https://github.com/mlld-lang/modules",
-          "commit": "41cd3b318e266e8f0eb09b4e80965b412cdd3c47",
+          "commit": "029f1dffa7ea807927b4038e57ce8f2731f11f16",
           "path": "duckduckgo"
         }
       },
@@ -396,14 +415,15 @@
       "keywords": [],
       "repo": "https://github.com/mlld-lang/modules",
       "bugs": "https://github.com/mlld-lang/modules/issues",
-      "publishedAt": "2026-02-22T22:47:57.693Z",
+      "publishedAt": "2026-09-30T22:22:29.020Z",
       "publishedBy": 110551,
       "availableVersions": [
+        "2.0.0",
         "1.0.0"
       ],
       "tags": {
-        "latest": "1.0.0",
-        "stable": "1.0.0"
+        "latest": "2.0.0",
+        "stable": "2.0.0"
       },
       "owners": [
         "mlld"
@@ -457,28 +477,87 @@
       ],
       "maintainers": []
     },
+    "@mlld/fix-relative-links": {
+      "name": "fix-relative-links",
+      "author": "mlld",
+      "about": "Fix relative markdown links based on context",
+      "version": "3.0.0",
+      "needs": [
+        "node"
+      ],
+      "license": "CC0",
+      "mlldVersion": ">=2.2.0",
+      "source": {
+        "type": "directory",
+        "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/029f1dffa7ea807927b4038e57ce8f2731f11f16/fix-relative-links",
+        "files": [
+          "index.mld",
+          "module.yml",
+          "README.md",
+          "tests/links.test.mld"
+        ],
+        "entryPoint": "index.mld",
+        "contentHash": "5913a11cace06cbab3d850aeaf98b0560a6a8da793e7b1466f2a9a4ef8da4b3c",
+        "repository": {
+          "type": "git",
+          "url": "https://github.com/mlld-lang/modules",
+          "commit": "029f1dffa7ea807927b4038e57ce8f2731f11f16",
+          "path": "fix-relative-links"
+        }
+      },
+      "dependencies": {},
+      "keywords": [
+        "markdown",
+        "relative",
+        "links",
+        "paths",
+        "pipeline"
+      ],
+      "repo": "https://github.com/mlld-lang/modules",
+      "bugs": "https://github.com/mlld-lang/modules/issues",
+      "publishedAt": "2026-09-30T22:22:37.797Z",
+      "publishedBy": 110551,
+      "availableVersions": [
+        "3.0.0"
+      ],
+      "tags": {
+        "latest": "3.0.0",
+        "stable": "3.0.0"
+      },
+      "owners": [
+        "mlld"
+      ],
+      "maintainers": []
+    },
     "@mlld/gh-issues": {
       "name": "gh-issues",
       "author": "mlld",
       "about": "GitHub Issues API tools via gh CLI",
-      "version": "1.1.0",
-      "needs": [],
+      "version": "1.2.0",
+      "needs": [
+        "node"
+      ],
       "license": "CC0",
-      "mlldVersion": "2.0.0-rc82",
+      "mlldVersion": ">=2.2.0",
       "source": {
         "type": "directory",
-        "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/561ed4e129993ab7025e8a8481ba5e40c24b8478/gh-issues",
+        "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/029f1dffa7ea807927b4038e57ce8f2731f11f16/gh-issues",
         "files": [
           "index.mld",
+          "args.mld",
+          "mlld-lock.json",
           "module.yml",
-          "README.md"
+          "README.md",
+          "repo.mld",
+          "tests/args.test.mld",
+          "tests/repo.test.mld"
         ],
         "entryPoint": "index.mld",
-        "contentHash": "b61550475eff12740a192feb0890e9309eb181098fa06400878ca49871b9c89c",
+        "contentHash": "8b0a5c31de28bba91e521ad48335490a6bab60a0d3b851c90a4b3ac389abf986",
         "repository": {
           "type": "git",
           "url": "https://github.com/mlld-lang/modules",
-          "commit": "561ed4e129993ab7025e8a8481ba5e40c24b8478",
+          "commit": "029f1dffa7ea807927b4038e57ce8f2731f11f16",
           "path": "gh-issues"
         }
       },
@@ -486,15 +565,16 @@
       "keywords": [],
       "repo": "https://github.com/mlld-lang/modules",
       "bugs": "https://github.com/mlld-lang/modules/issues",
-      "publishedAt": "2026-03-01T20:21:54.702Z",
+      "publishedAt": "2026-09-30T22:22:47.010Z",
       "publishedBy": 110551,
       "availableVersions": [
+        "1.2.0",
         "1.1.0",
         "1.0.0"
       ],
       "tags": {
-        "latest": "1.1.0",
-        "stable": "1.1.0"
+        "latest": "1.2.0",
+        "stable": "1.2.0"
       },
       "owners": [
         "mlld"
@@ -599,24 +679,25 @@
       "name": "lms",
       "author": "mlld",
       "about": "LM Studio REST API (OpenAI-compatible) for local LLM calls with structured output",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "needs": [],
       "license": "CC0",
-      "mlldVersion": ">=2.0.5",
+      "mlldVersion": ">=2.2.0",
       "source": {
         "type": "directory",
-        "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/b4d6e6e90e02a8b9574bb77747c69045f2744f74/lms",
+        "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/029f1dffa7ea807927b4038e57ce8f2731f11f16/lms",
         "files": [
           "index.mld",
           "module.yml",
-          "README.md"
+          "README.md",
+          "tests/request.test.mld"
         ],
         "entryPoint": "index.mld",
-        "contentHash": "fbcdb54e5d758cf3fa150680d29a14ab855c8703ef119aef16d4e93702d1e4ab",
+        "contentHash": "9ebdbe170c5ee539d160db0e70abfdc29f9e646e44d23a2720e34199ce9f37b4",
         "repository": {
           "type": "git",
           "url": "https://github.com/mlld-lang/modules",
-          "commit": "b4d6e6e90e02a8b9574bb77747c69045f2744f74",
+          "commit": "029f1dffa7ea807927b4038e57ce8f2731f11f16",
           "path": "lms"
         }
       },
@@ -624,14 +705,15 @@
       "keywords": [],
       "repo": "https://github.com/mlld-lang/modules",
       "bugs": "https://github.com/mlld-lang/modules/issues",
-      "publishedAt": "2026-08-19T16:30:21.551Z",
+      "publishedAt": "2026-09-30T22:23:07.301Z",
       "publishedBy": 110551,
       "availableVersions": [
+        "2.0.0",
         "1.0.0"
       ],
       "tags": {
-        "latest": "1.0.0",
-        "stable": "1.0.0"
+        "latest": "2.0.0",
+        "stable": "2.0.0"
       },
       "owners": [
         "mlld"
@@ -642,24 +724,28 @@
       "name": "md-fetch",
       "author": "mlld",
       "about": "Guardable alternative to built-in WebFetch tool. Fetches markdownified content of websites.",
-      "version": "1.0.0",
-      "needs": [],
+      "version": "2.0.0",
+      "needs": [
+        "node"
+      ],
       "license": "CC0",
-      "mlldVersion": "2.0.0-rc82",
+      "mlldVersion": ">=2.2.0",
       "source": {
         "type": "directory",
-        "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/3439100511477bf013577ce2bb518b63bba715cf/md-fetch",
+        "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/029f1dffa7ea807927b4038e57ce8f2731f11f16/md-fetch",
         "files": [
           "index.mld",
+          "check.mld",
           "module.yml",
-          "README.md"
+          "README.md",
+          "tests/check.test.mld"
         ],
         "entryPoint": "index.mld",
-        "contentHash": "d2d8ca3019aa8cacb24e063bf0ceb43452aad8f3803c6933af6cd79d80887277",
+        "contentHash": "52c969d2cb590046e8ff816e0422965e09f789d3be36823e1ac7626b7b204787",
         "repository": {
           "type": "git",
           "url": "https://github.com/mlld-lang/modules",
-          "commit": "3439100511477bf013577ce2bb518b63bba715cf",
+          "commit": "029f1dffa7ea807927b4038e57ce8f2731f11f16",
           "path": "md-fetch"
         }
       },
@@ -667,14 +753,61 @@
       "keywords": [],
       "repo": "https://github.com/mlld-lang/modules",
       "bugs": "https://github.com/mlld-lang/modules/issues",
-      "publishedAt": "2026-02-22T22:46:24.517Z",
+      "publishedAt": "2026-09-30T22:23:16.090Z",
       "publishedBy": 110551,
       "availableVersions": [
+        "2.0.0",
         "1.0.0"
       ],
       "tags": {
-        "latest": "1.0.0",
-        "stable": "1.0.0"
+        "latest": "2.0.0",
+        "stable": "2.0.0"
+      },
+      "owners": [
+        "mlld"
+      ],
+      "maintainers": []
+    },
+    "@mlld/multi-harness": {
+      "name": "multi-harness",
+      "author": "mlld",
+      "about": "One @agent that runs claude, codex, pi or opencode, picked by config.harness",
+      "version": "0.1.0",
+      "needs": [
+        "js"
+      ],
+      "license": "CC0",
+      "mlldVersion": ">=2.2.0",
+      "source": {
+        "type": "directory",
+        "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/029f1dffa7ea807927b4038e57ce8f2731f11f16/multi-harness",
+        "files": [
+          "index.mld",
+          "module.yml",
+          "README.md",
+          "tests/agent.test.mld"
+        ],
+        "entryPoint": "index.mld",
+        "contentHash": "e50c41d979103385f6e17b600b0bc0f0cb20023c8618857cacf97ee6fc8773e0",
+        "repository": {
+          "type": "git",
+          "url": "https://github.com/mlld-lang/modules",
+          "commit": "029f1dffa7ea807927b4038e57ce8f2731f11f16",
+          "path": "multi-harness"
+        }
+      },
+      "dependencies": {},
+      "keywords": [],
+      "repo": "https://github.com/mlld-lang/modules",
+      "bugs": "https://github.com/mlld-lang/modules/issues",
+      "publishedAt": "2026-09-30T22:23:25.510Z",
+      "publishedBy": 110551,
+      "availableVersions": [
+        "0.1.0"
+      ],
+      "tags": {
+        "latest": "0.1.0",
+        "stable": "0.1.0"
       },
       "owners": [
         "mlld"
@@ -685,24 +818,25 @@
       "name": "openai",
       "author": "mlld",
       "about": "OpenAI chat completions with streaming and auth sealing",
-      "version": "1.1.0",
+      "version": "2.0.0",
       "needs": [],
       "license": "CC0",
-      "mlldVersion": ">=2.1.0",
+      "mlldVersion": ">=2.2.0",
       "source": {
         "type": "directory",
-        "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/d0b5d79040c09e7d259803024afc4036e1c62639/openai",
+        "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/029f1dffa7ea807927b4038e57ce8f2731f11f16/openai",
         "files": [
           "index.mld",
           "module.yml",
-          "README.md"
+          "README.md",
+          "tests/request.test.mld"
         ],
         "entryPoint": "index.mld",
-        "contentHash": "ec4ca1da9aaab5943a42aa0fe80a3bfdc73d7b5ee601cfe62f185e85024b3347",
+        "contentHash": "5bab7e273a36d3c25fc27dfaa14cb82b150a6a5574b7bb80a7834a2442b72c91",
         "repository": {
           "type": "git",
           "url": "https://github.com/mlld-lang/modules",
-          "commit": "d0b5d79040c09e7d259803024afc4036e1c62639",
+          "commit": "029f1dffa7ea807927b4038e57ce8f2731f11f16",
           "path": "openai"
         }
       },
@@ -710,15 +844,16 @@
       "keywords": [],
       "repo": "https://github.com/mlld-lang/modules",
       "bugs": "https://github.com/mlld-lang/modules/issues",
-      "publishedAt": "2026-03-15T00:33:44.014Z",
+      "publishedAt": "2026-09-30T22:23:35.077Z",
       "publishedBy": 110551,
       "availableVersions": [
+        "2.0.0",
         "1.1.0",
         "1.0.0"
       ],
       "tags": {
-        "latest": "1.1.0",
-        "stable": "1.1.0"
+        "latest": "2.0.0",
+        "stable": "2.0.0"
       },
       "owners": [
         "mlld"
@@ -729,24 +864,38 @@
       "name": "opencode",
       "author": "mlld",
       "about": "Opencode CLI invocation with session resume, streaming, and MCP tool bridging",
-      "version": "1.5.2",
-      "needs": [],
+      "version": "1.6.1",
+      "needs": [
+        "sh"
+      ],
       "license": "CC0",
-      "mlldVersion": ">=2.0.5",
+      "mlldVersion": ">=2.2.0",
       "source": {
         "type": "directory",
-        "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/0854135d885a66fb2bf8f265239023b15ab5539c/opencode",
+        "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/029f1dffa7ea807927b4038e57ce8f2731f11f16/opencode",
         "files": [
           "index.mld",
           "module.yml",
-          "README.md"
+          "README.md",
+          "tests/conversation.test.mld",
+          "tests/fixtures/bin/opencode",
+          "tests/fixtures/conversation/basic-resumed.export.json",
+          "tests/fixtures/conversation/basic-resumed.opencode.jsonl",
+          "tests/fixtures/conversation/compacted-overflow.export.json",
+          "tests/fixtures/conversation/compacted-overflow.opencode.jsonl",
+          "tests/fixtures/conversation/failed-tool.export.json",
+          "tests/fixtures/conversation/failed-tool.opencode.jsonl",
+          "tests/fixtures/conversation/opencode-stub.sh",
+          "tests/fixtures/conversation/README.md",
+          "tests/fixtures/conversation/reasoning-after-tool.export.json",
+          "tests/parse.test.mld"
         ],
         "entryPoint": "index.mld",
-        "contentHash": "5452634e6a9f2e3c844096d5707c5042f1a0c426dd37caa4f8891800ad68653a",
+        "contentHash": "f6fd5127d4797fd287169120a5440393cda9fe4e9d4787ee494d202915d875a6",
         "repository": {
           "type": "git",
           "url": "https://github.com/mlld-lang/modules",
-          "commit": "0854135d885a66fb2bf8f265239023b15ab5539c",
+          "commit": "029f1dffa7ea807927b4038e57ce8f2731f11f16",
           "path": "opencode"
         }
       },
@@ -754,9 +903,10 @@
       "keywords": [],
       "repo": "https://github.com/mlld-lang/modules",
       "bugs": "https://github.com/mlld-lang/modules/issues",
-      "publishedAt": "2026-06-02T04:58:04.298Z",
+      "publishedAt": "2026-09-30T22:23:43.625Z",
       "publishedBy": 110551,
       "availableVersions": [
+        "1.6.1",
         "1.5.2",
         "1.5.1",
         "1.5.0",
@@ -771,8 +921,61 @@
         "1.0.0"
       ],
       "tags": {
-        "latest": "1.5.2",
-        "stable": "1.5.2"
+        "latest": "1.6.1",
+        "stable": "1.6.1"
+      },
+      "owners": [
+        "mlld"
+      ],
+      "maintainers": []
+    },
+    "@mlld/opencode-sse": {
+      "name": "opencode-sse",
+      "author": "mlld",
+      "about": "Opencode via opencode serve + SSE — real-time tool events, claude-shaped stream",
+      "version": "1.0.0",
+      "needs": [
+        "sh"
+      ],
+      "license": "CC0",
+      "mlldVersion": ">=2.2.0",
+      "source": {
+        "type": "directory",
+        "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/029f1dffa7ea807927b4038e57ce8f2731f11f16/opencode-sse",
+        "files": [
+          "index.mld",
+          "module.yml",
+          "README.md",
+          "tests/fixtures/turn.ndjson",
+          "tests/helpers.test.mld",
+          "TODO.md"
+        ],
+        "entryPoint": "index.mld",
+        "contentHash": "c81423a8f094ffb9032c57f3aa1588528d871b0780dd3c198ef6dd5737ce542e",
+        "repository": {
+          "type": "git",
+          "url": "https://github.com/mlld-lang/modules",
+          "commit": "029f1dffa7ea807927b4038e57ce8f2731f11f16",
+          "path": "opencode-sse"
+        }
+      },
+      "dependencies": {},
+      "keywords": [
+        "llm",
+        "opencode",
+        "sse",
+        "streaming"
+      ],
+      "repo": "https://github.com/mlld-lang/modules",
+      "bugs": "https://github.com/mlld-lang/modules/issues",
+      "publishedAt": "2026-09-30T22:23:54.522Z",
+      "publishedBy": 110551,
+      "availableVersions": [
+        "1.0.0"
+      ],
+      "tags": {
+        "latest": "1.0.0",
+        "stable": "1.0.0"
       },
       "owners": [
         "mlld"
