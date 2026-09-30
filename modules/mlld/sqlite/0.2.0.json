@@ -1,0 +1,33 @@
+{
+  "version": "0.2.0",
+  "needs": [
+    "node"
+  ],
+  "license": "CC0",
+  "mlldVersion": ">=2.2.0",
+  "source": {
+    "type": "directory",
+    "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/0612b5e540ed45396855a3820312c7d52f8ba77e/sqlite",
+    "files": [
+      "index.mld",
+      "module.yml",
+      "README.md",
+      "record.mld",
+      "tests/record.test.mld"
+    ],
+    "entryPoint": "index.mld",
+    "contentHash": "dc554f5f7c386ba3b63b7fa0887b2a4eae41bd8809ba68d0c966400ad3ff381f",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/mlld-lang/modules",
+      "commit": "0612b5e540ed45396855a3820312c7d52f8ba77e",
+      "path": "sqlite"
+    }
+  },
+  "dependencies": {},
+  "keywords": [],
+  "repo": "https://github.com/mlld-lang/modules",
+  "bugs": "https://github.com/mlld-lang/modules/issues",
+  "publishedAt": "2026-09-30T23:34:48.426Z",
+  "publishedBy": 110551
+}
