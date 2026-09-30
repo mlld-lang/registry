@@ -1,0 +1,40 @@
+{
+  "version": "2.0.0",
+  "needs": [
+    "js",
+    "node"
+  ],
+  "license": "CC0",
+  "mlldVersion": ">=2.2.0",
+  "source": {
+    "type": "directory",
+    "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/d66ee5c54f0540270d16b7c1d617df7b3b6e418d/time",
+    "files": [
+      "index.mld",
+      "module.yml",
+      "README.md",
+      "tests/time.test.mld"
+    ],
+    "entryPoint": "index.mld",
+    "contentHash": "ced303a8a2db89795e2d44cfd79b462ddaa57cc7851c0fc521502cca223ec93d",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/mlld-lang/modules",
+      "commit": "d66ee5c54f0540270d16b7c1d617df7b3b6e418d",
+      "path": "time"
+    }
+  },
+  "dependencies": {},
+  "keywords": [
+    "time",
+    "date",
+    "format",
+    "parse",
+    "timezone",
+    "duration"
+  ],
+  "repo": "https://github.com/mlld-lang/modules",
+  "bugs": "https://github.com/mlld-lang/modules/issues",
+  "publishedAt": "2026-09-30T23:29:03.149Z",
+  "publishedBy": 110551
+}
