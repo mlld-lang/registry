@@ -1,0 +1,47 @@
+{
+  "version": "3.4.0",
+  "needs": [
+    "sh"
+  ],
+  "license": "CC0",
+  "mlldVersion": ">=2.2.0",
+  "source": {
+    "type": "directory",
+    "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/029f1dffa7ea807927b4038e57ce8f2731f11f16/claude",
+    "files": [
+      "index.mld",
+      "module.yml",
+      "README.md",
+      "tests/conversation.test.mld",
+      "tests/fixtures/conversation/claude-attachments.fray.jsonl",
+      "tests/fixtures/conversation/claude-attachments.jsonl",
+      "tests/fixtures/conversation/claude-basic.fray.jsonl",
+      "tests/fixtures/conversation/claude-basic.jsonl",
+      "tests/fixtures/conversation/claude-branched.fray.jsonl",
+      "tests/fixtures/conversation/claude-branched.jsonl",
+      "tests/fixtures/conversation/claude-compacted.fray.jsonl",
+      "tests/fixtures/conversation/claude-compacted.jsonl",
+      "tests/fixtures/conversation/claude-headless-thinking.fray.jsonl",
+      "tests/fixtures/conversation/claude-headless-thinking.jsonl",
+      "tests/fixtures/conversation/home/projects/-work-fixture-proj/3f2a1b4c-0000-4000-8000-abcdef000001.jsonl",
+      "tests/fixtures/conversation/README.md",
+      "tests/fixtures/run/claude-stub.sh",
+      "tests/fixtures/run/workdir/.gitkeep",
+      "tests/run.test.mld"
+    ],
+    "entryPoint": "index.mld",
+    "contentHash": "cb37adc48f30e192143a9f2fe2a79da4bafce754025d58032e0df28b7a513e0a",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/mlld-lang/modules",
+      "commit": "029f1dffa7ea807927b4038e57ce8f2731f11f16",
+      "path": "claude"
+    }
+  },
+  "dependencies": {},
+  "keywords": [],
+  "repo": "https://github.com/mlld-lang/modules",
+  "bugs": "https://github.com/mlld-lang/modules/issues",
+  "publishedAt": "2026-09-30T22:22:04.071Z",
+  "publishedBy": 110551
+}
