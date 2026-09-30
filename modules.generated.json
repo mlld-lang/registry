@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "generated": "2026-09-30T23:30:19.264Z",
+  "generated": "2026-09-30T23:33:40.573Z",
   "modules": {
     "@mlld/ai-cli": {
       "name": "ai-cli",
@@ -53,24 +53,28 @@
       "name": "airlock",
       "author": "mlld",
       "about": "Dual-LLM security pattern — tainted input never shares context with evaluation",
-      "version": "1.0.0",
-      "needs": [],
+      "version": "2.0.0",
+      "needs": [
+        "sh"
+      ],
       "license": "CC0",
-      "mlldVersion": ">=2.0.0-rc82",
+      "mlldVersion": ">=2.2.0",
       "source": {
         "type": "directory",
-        "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/561ed4e129993ab7025e8a8481ba5e40c24b8478/airlock",
+        "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/0612b5e540ed45396855a3820312c7d52f8ba77e/airlock",
         "files": [
           "index.mld",
           "module.yml",
-          "README.md"
+          "prompts.mld",
+          "README.md",
+          "tests/prompts.test.mld"
         ],
         "entryPoint": "index.mld",
-        "contentHash": "f05c91c314193ccc162731fb65b26a7dbf5b99f777198769c0de512758bea2d3",
+        "contentHash": "352e5dce982918ed9d7276df0e6cdfe26c28843f61369c787e0677b0fc59d286",
         "repository": {
           "type": "git",
           "url": "https://github.com/mlld-lang/modules",
-          "commit": "561ed4e129993ab7025e8a8481ba5e40c24b8478",
+          "commit": "0612b5e540ed45396855a3820312c7d52f8ba77e",
           "path": "airlock"
         }
       },
@@ -78,14 +82,15 @@
       "keywords": [],
       "repo": "https://github.com/mlld-lang/modules",
       "bugs": "https://github.com/mlld-lang/modules/issues",
-      "publishedAt": "2026-03-01T20:22:09.184Z",
+      "publishedAt": "2026-09-30T23:32:53.447Z",
       "publishedBy": 110551,
       "availableVersions": [
+        "2.0.0",
         "1.0.0"
       ],
       "tags": {
-        "latest": "1.0.0",
-        "stable": "1.0.0"
+        "latest": "2.0.0",
+        "stable": "2.0.0"
       },
       "owners": [
         "mlld"
