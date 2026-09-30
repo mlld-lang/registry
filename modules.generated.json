@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "generated": "2026-09-30T23:33:40.573Z",
+  "generated": "2026-09-30T23:34:37.258Z",
   "modules": {
     "@mlld/ai-cli": {
       "name": "ai-cli",
@@ -1049,24 +1049,28 @@
       "name": "pg",
       "author": "mlld",
       "about": "Postgres-backed artifact storage",
-      "version": "0.1.0",
-      "needs": [],
+      "version": "0.2.0",
+      "needs": [
+        "node"
+      ],
       "license": "CC0",
-      "mlldVersion": ">=2.0.0",
+      "mlldVersion": ">=2.2.0",
       "source": {
         "type": "directory",
-        "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/1173d72ccc030c9baf9592329ffe7f5c44501698/pg",
+        "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/0612b5e540ed45396855a3820312c7d52f8ba77e/pg",
         "files": [
           "index.mld",
           "module.yml",
-          "README.md"
+          "README.md",
+          "record.mld",
+          "tests/record.test.mld"
         ],
         "entryPoint": "index.mld",
-        "contentHash": "4f217b918c52851eb6fae037c136c0aaba1407643a4bc5cec3663c2ce6f030e9",
+        "contentHash": "2611f418e31e9f76621bcf76321304d2a1c05764d1152e422b08cc74fbd7e6ca",
         "repository": {
           "type": "git",
           "url": "https://github.com/mlld-lang/modules",
-          "commit": "1173d72ccc030c9baf9592329ffe7f5c44501698",
+          "commit": "0612b5e540ed45396855a3820312c7d52f8ba77e",
           "path": "pg"
         }
       },
@@ -1074,14 +1078,15 @@
       "keywords": [],
       "repo": "https://github.com/mlld-lang/modules",
       "bugs": "https://github.com/mlld-lang/modules/issues",
-      "publishedAt": "2026-03-11T23:18:29.569Z",
+      "publishedAt": "2026-09-30T23:33:51.557Z",
       "publishedBy": 110551,
       "availableVersions": [
+        "0.2.0",
         "0.1.0"
       ],
       "tags": {
-        "latest": "0.1.0",
-        "stable": "0.1.0"
+        "latest": "0.2.0",
+        "stable": "0.2.0"
       },
       "owners": [
         "mlld"
