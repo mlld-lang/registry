@@ -1,0 +1,41 @@
+{
+  "version": "0.2.0",
+  "needs": [
+    "js"
+  ],
+  "license": "CC0",
+  "mlldVersion": ">=2.2.0",
+  "source": {
+    "type": "directory",
+    "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/d66ee5c54f0540270d16b7c1d617df7b3b6e418d/multi-harness",
+    "files": [
+      "index.mld",
+      "module.yml",
+      "README.md",
+      "tests/agent.test.mld",
+      "tests/auto.test.mld",
+      "tests/fixtures/auto/claude-ready",
+      "tests/fixtures/auto/claude-signed-out",
+      "tests/fixtures/auto/codex-ready",
+      "tests/fixtures/auto/codex-signed-out",
+      "tests/fixtures/auto/opencode",
+      "tests/fixtures/auto/opencode-data/opencode/auth.json",
+      "tests/fixtures/auto/pi-ready",
+      "tests/fixtures/auto/pi-signed-out"
+    ],
+    "entryPoint": "index.mld",
+    "contentHash": "984411cfe80c9e408fb8fc3089ab8bff7805457f84b763f9bd0410926b2a0ebf",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/mlld-lang/modules",
+      "commit": "d66ee5c54f0540270d16b7c1d617df7b3b6e418d",
+      "path": "multi-harness"
+    }
+  },
+  "dependencies": {},
+  "keywords": [],
+  "repo": "https://github.com/mlld-lang/modules",
+  "bugs": "https://github.com/mlld-lang/modules/issues",
+  "publishedAt": "2026-09-30T23:01:28.611Z",
+  "publishedBy": 110551
+}
