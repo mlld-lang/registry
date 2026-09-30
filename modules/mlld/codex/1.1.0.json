@@ -1,0 +1,44 @@
+{
+  "version": "1.1.0",
+  "needs": [
+    "sh"
+  ],
+  "license": "CC0",
+  "mlldVersion": ">=2.2.0",
+  "source": {
+    "type": "directory",
+    "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/029f1dffa7ea807927b4038e57ce8f2731f11f16/codex",
+    "files": [
+      "index.mld",
+      "module.yml",
+      "README.md",
+      "tests/conversation.test.mld",
+      "tests/fixtures/bin/codex",
+      "tests/fixtures/conversation/codex-basic-truncated.jsonl",
+      "tests/fixtures/conversation/codex-basic.fray.jsonl",
+      "tests/fixtures/conversation/codex-basic.jsonl",
+      "tests/fixtures/conversation/codex-compacted.fray.jsonl",
+      "tests/fixtures/conversation/codex-compacted.jsonl",
+      "tests/fixtures/conversation/codex-custom-tools.fray.jsonl",
+      "tests/fixtures/conversation/codex-custom-tools.jsonl",
+      "tests/fixtures/conversation/home/sessions/2025/01/02/5e55a1d0-aaaa-4bbb-8ccc-0123456789ab.jsonl",
+      "tests/fixtures/conversation/home/sessions/2026/09/13/rollout-2026-09-13T19-14-00-0c0ffee0-1234-4321-8abc-def012345678.jsonl",
+      "tests/fixtures/conversation/README.md",
+      "tests/parse.test.mld"
+    ],
+    "entryPoint": "index.mld",
+    "contentHash": "f975c100bfd39bf54b0eff8fdd16164aec900c1924c4dba00cc8198ee9e2feec",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/mlld-lang/modules",
+      "commit": "029f1dffa7ea807927b4038e57ce8f2731f11f16",
+      "path": "codex"
+    }
+  },
+  "dependencies": {},
+  "keywords": [],
+  "repo": "https://github.com/mlld-lang/modules",
+  "bugs": "https://github.com/mlld-lang/modules/issues",
+  "publishedAt": "2026-09-30T22:22:16.969Z",
+  "publishedBy": 110551
+}
