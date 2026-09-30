@@ -1,0 +1,38 @@
+{
+  "version": "3.0.0",
+  "needs": [
+    "node"
+  ],
+  "license": "CC0",
+  "mlldVersion": ">=2.2.0",
+  "source": {
+    "type": "directory",
+    "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/029f1dffa7ea807927b4038e57ce8f2731f11f16/fix-relative-links",
+    "files": [
+      "index.mld",
+      "module.yml",
+      "README.md",
+      "tests/links.test.mld"
+    ],
+    "entryPoint": "index.mld",
+    "contentHash": "5913a11cace06cbab3d850aeaf98b0560a6a8da793e7b1466f2a9a4ef8da4b3c",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/mlld-lang/modules",
+      "commit": "029f1dffa7ea807927b4038e57ce8f2731f11f16",
+      "path": "fix-relative-links"
+    }
+  },
+  "dependencies": {},
+  "keywords": [
+    "markdown",
+    "relative",
+    "links",
+    "paths",
+    "pipeline"
+  ],
+  "repo": "https://github.com/mlld-lang/modules",
+  "bugs": "https://github.com/mlld-lang/modules/issues",
+  "publishedAt": "2026-09-30T22:22:37.797Z",
+  "publishedBy": 110551
+}
