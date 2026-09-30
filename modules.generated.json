@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "generated": "2026-08-19T16:40:55.454Z",
+  "generated": "2026-09-30T22:25:04.213Z",
   "modules": {
     "@mlld/ai-cli": {
       "name": "ai-cli",
@@ -96,53 +96,54 @@
       "name": "array",
       "author": "mlld",
       "about": "Array operations with native return values",
-      "version": "2.1.0",
+      "version": "3.0.0",
       "needs": [
-        "node"
+        "js"
       ],
       "license": "CC0",
-      "mlldVersion": ">=2.0.0-rc78",
+      "mlldVersion": ">=2.2.0",
       "source": {
-        "type": "github",
-        "url": "https://raw.githubusercontent.com/mlld-lang/modules/ba28284be46dbf50999539bdb275ef077f65bbb1/llm/modules/array.mld.md",
-        "contentHash": "87afe1bcd8fe7bf426253ae7edfa71476819b1d8b90e95a86544c711f5ce5c57",
+        "type": "directory",
+        "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/029f1dffa7ea807927b4038e57ce8f2731f11f16/array",
+        "files": [
+          "index.mld",
+          "module.yml",
+          "README.md",
+          "tests/array.test.mld"
+        ],
+        "entryPoint": "index.mld",
+        "contentHash": "bb54b1974a599b82f87097feda9d839535043279312cc4629cb002eb6597e691",
         "repository": {
           "type": "git",
           "url": "https://github.com/mlld-lang/modules",
-          "commit": "ba28284be46dbf50999539bdb275ef077f65bbb1",
-          "path": "llm/modules/array.mld.md"
+          "commit": "029f1dffa7ea807927b4038e57ce8f2731f11f16",
+          "path": "array"
         }
       },
-      "dependencies": {
-        "node": {}
-      },
+      "dependencies": {},
       "keywords": [
         "arrays",
-        "lodash",
-        "filter",
-        "map",
-        "find",
-        "includes",
-        "math",
+        "unique",
+        "groupBy",
+        "sortBy",
+        "sum",
+        "avg",
         "range",
-        "zip",
         "chunk",
-        "flat",
-        "compact",
-        "join",
-        "concat"
+        "zip"
       ],
       "repo": "https://github.com/mlld-lang/modules",
       "bugs": "https://github.com/mlld-lang/modules/issues",
-      "publishedAt": "2026-01-27T05:22:01.874Z",
+      "publishedAt": "2026-09-30T22:21:40.235Z",
       "publishedBy": 110551,
       "availableVersions": [
+        "3.0.0",
         "2.1.0",
         "2.0.0"
       ],
       "tags": {
-        "latest": "2.1.0",
-        "stable": "2.1.0"
+        "latest": "3.0.0",
+        "stable": "3.0.0"
       },
       "owners": [
         "mlld"
@@ -153,24 +154,27 @@
       "name": "bravesearch",
       "author": "mlld",
       "about": "Brave web search results tool",
-      "version": "1.0.0",
-      "needs": [],
+      "version": "2.0.0",
+      "needs": [
+        "js"
+      ],
       "license": "CC0",
-      "mlldVersion": "2.0.0-rc82",
+      "mlldVersion": ">=2.2.0",
       "source": {
         "type": "directory",
-        "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/3439100511477bf013577ce2bb518b63bba715cf/bravesearch",
+        "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/029f1dffa7ea807927b4038e57ce8f2731f11f16/bravesearch",
         "files": [
           "index.mld",
           "module.yml",
-          "README.md"
+          "README.md",
+          "tests/shape.test.mld"
         ],
         "entryPoint": "index.mld",
-        "contentHash": "3d5b384e836c81bc5066a968220907f2a9de85b0007e6197b7fd7a50a484807d",
+        "contentHash": "7181d257b063022c30f0028c56632fc4e83bfd88f619f87070df75c9486cc114",
         "repository": {
           "type": "git",
           "url": "https://github.com/mlld-lang/modules",
-          "commit": "3439100511477bf013577ce2bb518b63bba715cf",
+          "commit": "029f1dffa7ea807927b4038e57ce8f2731f11f16",
           "path": "bravesearch"
         }
       },
@@ -178,14 +182,15 @@
       "keywords": [],
       "repo": "https://github.com/mlld-lang/modules",
       "bugs": "https://github.com/mlld-lang/modules/issues",
-      "publishedAt": "2026-02-22T22:47:07.820Z",
+      "publishedAt": "2026-09-30T22:21:55.267Z",
       "publishedBy": 110551,
       "availableVersions": [
+        "2.0.0",
         "1.0.0"
       ],
       "tags": {
-        "latest": "1.0.0",
-        "stable": "1.0.0"
+        "latest": "2.0.0",
+        "stable": "2.0.0"
       },
       "owners": [
         "mlld"
