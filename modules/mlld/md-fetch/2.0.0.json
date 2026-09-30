@@ -1,0 +1,33 @@
+{
+  "version": "2.0.0",
+  "needs": [
+    "node"
+  ],
+  "license": "CC0",
+  "mlldVersion": ">=2.2.0",
+  "source": {
+    "type": "directory",
+    "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/029f1dffa7ea807927b4038e57ce8f2731f11f16/md-fetch",
+    "files": [
+      "index.mld",
+      "check.mld",
+      "module.yml",
+      "README.md",
+      "tests/check.test.mld"
+    ],
+    "entryPoint": "index.mld",
+    "contentHash": "52c969d2cb590046e8ff816e0422965e09f789d3be36823e1ac7626b7b204787",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/mlld-lang/modules",
+      "commit": "029f1dffa7ea807927b4038e57ce8f2731f11f16",
+      "path": "md-fetch"
+    }
+  },
+  "dependencies": {},
+  "keywords": [],
+  "repo": "https://github.com/mlld-lang/modules",
+  "bugs": "https://github.com/mlld-lang/modules/issues",
+  "publishedAt": "2026-09-30T22:23:16.090Z",
+  "publishedBy": 110551
+}
