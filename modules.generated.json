@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "generated": "2026-09-30T22:36:50.498Z",
+  "generated": "2026-09-30T23:01:59.341Z",
   "modules": {
     "@mlld/ai-cli": {
       "name": "ai-cli",
@@ -772,7 +772,7 @@
       "name": "multi-harness",
       "author": "mlld",
       "about": "One @agent that runs claude, codex, pi or opencode, picked by config.harness",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "needs": [
         "js"
       ],
@@ -780,19 +780,28 @@
       "mlldVersion": ">=2.2.0",
       "source": {
         "type": "directory",
-        "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/029f1dffa7ea807927b4038e57ce8f2731f11f16/multi-harness",
+        "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/d66ee5c54f0540270d16b7c1d617df7b3b6e418d/multi-harness",
         "files": [
           "index.mld",
           "module.yml",
           "README.md",
-          "tests/agent.test.mld"
+          "tests/agent.test.mld",
+          "tests/auto.test.mld",
+          "tests/fixtures/auto/claude-ready",
+          "tests/fixtures/auto/claude-signed-out",
+          "tests/fixtures/auto/codex-ready",
+          "tests/fixtures/auto/codex-signed-out",
+          "tests/fixtures/auto/opencode",
+          "tests/fixtures/auto/opencode-data/opencode/auth.json",
+          "tests/fixtures/auto/pi-ready",
+          "tests/fixtures/auto/pi-signed-out"
         ],
         "entryPoint": "index.mld",
-        "contentHash": "e50c41d979103385f6e17b600b0bc0f0cb20023c8618857cacf97ee6fc8773e0",
+        "contentHash": "984411cfe80c9e408fb8fc3089ab8bff7805457f84b763f9bd0410926b2a0ebf",
         "repository": {
           "type": "git",
           "url": "https://github.com/mlld-lang/modules",
-          "commit": "029f1dffa7ea807927b4038e57ce8f2731f11f16",
+          "commit": "d66ee5c54f0540270d16b7c1d617df7b3b6e418d",
           "path": "multi-harness"
         }
       },
@@ -800,14 +809,15 @@
       "keywords": [],
       "repo": "https://github.com/mlld-lang/modules",
       "bugs": "https://github.com/mlld-lang/modules/issues",
-      "publishedAt": "2026-09-30T22:23:25.510Z",
+      "publishedAt": "2026-09-30T23:01:28.611Z",
       "publishedBy": 110551,
       "availableVersions": [
+        "0.2.0",
         "0.1.0"
       ],
       "tags": {
-        "latest": "0.1.0",
-        "stable": "0.1.0"
+        "latest": "0.2.0",
+        "stable": "0.2.0"
       },
       "owners": [
         "mlld"
