@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "generated": "2026-09-30T23:35:35.991Z",
+  "generated": "2026-10-01T03:43:45.243Z",
   "modules": {
     "@mlld/ai-cli": {
       "name": "ai-cli",
@@ -206,7 +206,7 @@
       "name": "claude",
       "author": "mlld",
       "about": "Claude model primitives for prose execution and direct LLM invocation",
-      "version": "3.4.0",
+      "version": "4.0.0",
       "needs": [
         "sh"
       ],
@@ -214,7 +214,7 @@
       "mlldVersion": ">=2.2.0",
       "source": {
         "type": "directory",
-        "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/029f1dffa7ea807927b4038e57ce8f2731f11f16/claude",
+        "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/662efd893f886b5c1a559c512695e37750d9a690/claude",
         "files": [
           "index.mld",
           "module.yml",
@@ -237,11 +237,11 @@
           "tests/run.test.mld"
         ],
         "entryPoint": "index.mld",
-        "contentHash": "cb37adc48f30e192143a9f2fe2a79da4bafce754025d58032e0df28b7a513e0a",
+        "contentHash": "802420a8c3f5806687139079613e046175233a99e7b8369b5a7242570aa10d56",
         "repository": {
           "type": "git",
           "url": "https://github.com/mlld-lang/modules",
-          "commit": "029f1dffa7ea807927b4038e57ce8f2731f11f16",
+          "commit": "662efd893f886b5c1a559c512695e37750d9a690",
           "path": "claude"
         }
       },
@@ -249,9 +249,10 @@
       "keywords": [],
       "repo": "https://github.com/mlld-lang/modules",
       "bugs": "https://github.com/mlld-lang/modules/issues",
-      "publishedAt": "2026-09-30T22:22:04.071Z",
+      "publishedAt": "2026-10-01T03:42:21.094Z",
       "publishedBy": 110551,
       "availableVersions": [
+        "4.0.0",
         "3.4.0",
         "3.3.3",
         "3.3.2",
@@ -269,8 +270,8 @@
         "2.0.0"
       ],
       "tags": {
-        "latest": "3.4.0",
-        "stable": "3.4.0"
+        "latest": "4.0.0",
+        "stable": "4.0.0"
       },
       "owners": [
         "mlld"
