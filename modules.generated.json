@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "generated": "2026-10-01T03:43:45.243Z",
+  "generated": "2026-10-09T23:09:18.467Z",
   "modules": {
     "@mlld/ai-cli": {
       "name": "ai-cli",
@@ -159,7 +159,7 @@
       "name": "bravesearch",
       "author": "mlld",
       "about": "Brave web search results tool",
-      "version": "2.0.0",
+      "version": "2.1.0",
       "needs": [
         "js"
       ],
@@ -167,7 +167,7 @@
       "mlldVersion": ">=2.2.0",
       "source": {
         "type": "directory",
-        "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/029f1dffa7ea807927b4038e57ce8f2731f11f16/bravesearch",
+        "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/c0a0bce2c2ac121df3167ed65bee936ec0507782/bravesearch",
         "files": [
           "index.mld",
           "module.yml",
@@ -175,11 +175,11 @@
           "tests/shape.test.mld"
         ],
         "entryPoint": "index.mld",
-        "contentHash": "7181d257b063022c30f0028c56632fc4e83bfd88f619f87070df75c9486cc114",
+        "contentHash": "211efe3dfd623fe81ff6f2483c07818dae3c9dc6f09e40a2df29153eb09c74e9",
         "repository": {
           "type": "git",
           "url": "https://github.com/mlld-lang/modules",
-          "commit": "029f1dffa7ea807927b4038e57ce8f2731f11f16",
+          "commit": "c0a0bce2c2ac121df3167ed65bee936ec0507782",
           "path": "bravesearch"
         }
       },
@@ -187,15 +187,16 @@
       "keywords": [],
       "repo": "https://github.com/mlld-lang/modules",
       "bugs": "https://github.com/mlld-lang/modules/issues",
-      "publishedAt": "2026-09-30T22:21:55.267Z",
+      "publishedAt": "2026-10-09T23:07:26.588Z",
       "publishedBy": 110551,
       "availableVersions": [
+        "2.1.0",
         "2.0.0",
         "1.0.0"
       ],
       "tags": {
-        "latest": "2.0.0",
-        "stable": "2.0.0"
+        "latest": "2.1.0",
+        "stable": "2.1.0"
       },
       "owners": [
         "mlld"
@@ -393,7 +394,7 @@
       "name": "decision-harness",
       "author": "mlld",
       "about": "Typed decisions — choice, score, noul and classify — with the model chosen in config (jev for now)",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "needs": [
         "js"
       ],
@@ -401,7 +402,7 @@
       "mlldVersion": ">=2.2.0",
       "source": {
         "type": "directory",
-        "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/d66ee5c54f0540270d16b7c1d617df7b3b6e418d/decision-harness",
+        "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/c0a0bce2c2ac121df3167ed65bee936ec0507782/decision-harness",
         "files": [
           "index.mld",
           "helpers.mld",
@@ -411,11 +412,11 @@
           "tests/index.test.mld"
         ],
         "entryPoint": "index.mld",
-        "contentHash": "8943f2e4387f41f78a5c29b8dc6d1ac0efb7ad0430d2b7e7e082f8f70a9730f2",
+        "contentHash": "19cf2b873ea854c1d1ab83f0cbeca7b5ca7182be93f744991c6635b9676ef3ee",
         "repository": {
           "type": "git",
           "url": "https://github.com/mlld-lang/modules",
-          "commit": "d66ee5c54f0540270d16b7c1d617df7b3b6e418d",
+          "commit": "c0a0bce2c2ac121df3167ed65bee936ec0507782",
           "path": "decision-harness"
         }
       },
@@ -423,14 +424,15 @@
       "keywords": [],
       "repo": "https://github.com/mlld-lang/modules",
       "bugs": "https://github.com/mlld-lang/modules/issues",
-      "publishedAt": "2026-09-30T23:29:12.045Z",
+      "publishedAt": "2026-10-09T23:07:38.319Z",
       "publishedBy": 110551,
       "availableVersions": [
+        "0.2.0",
         "0.1.0"
       ],
       "tags": {
-        "latest": "0.1.0",
-        "stable": "0.1.0"
+        "latest": "0.2.0",
+        "stable": "0.2.0"
       },
       "owners": [
         "mlld"
@@ -587,7 +589,7 @@
       "name": "gh-issues",
       "author": "mlld",
       "about": "GitHub Issues API tools via gh CLI",
-      "version": "1.2.0",
+      "version": "1.3.0",
       "needs": [
         "node"
       ],
@@ -595,7 +597,7 @@
       "mlldVersion": ">=2.2.0",
       "source": {
         "type": "directory",
-        "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/029f1dffa7ea807927b4038e57ce8f2731f11f16/gh-issues",
+        "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/c0a0bce2c2ac121df3167ed65bee936ec0507782/gh-issues",
         "files": [
           "index.mld",
           "args.mld",
@@ -607,11 +609,11 @@
           "tests/repo.test.mld"
         ],
         "entryPoint": "index.mld",
-        "contentHash": "8b0a5c31de28bba91e521ad48335490a6bab60a0d3b851c90a4b3ac389abf986",
+        "contentHash": "a3aac719372ccb9ccca437bb24eb8198d88ee9c725a6a707b3d4a988425c165f",
         "repository": {
           "type": "git",
           "url": "https://github.com/mlld-lang/modules",
-          "commit": "029f1dffa7ea807927b4038e57ce8f2731f11f16",
+          "commit": "c0a0bce2c2ac121df3167ed65bee936ec0507782",
           "path": "gh-issues"
         }
       },
@@ -619,16 +621,17 @@
       "keywords": [],
       "repo": "https://github.com/mlld-lang/modules",
       "bugs": "https://github.com/mlld-lang/modules/issues",
-      "publishedAt": "2026-09-30T22:22:47.010Z",
+      "publishedAt": "2026-10-09T23:07:47.690Z",
       "publishedBy": 110551,
       "availableVersions": [
+        "1.3.0",
         "1.2.0",
         "1.1.0",
         "1.0.0"
       ],
       "tags": {
-        "latest": "1.2.0",
-        "stable": "1.2.0"
+        "latest": "1.3.0",
+        "stable": "1.3.0"
       },
       "owners": [
         "mlld"
@@ -687,7 +690,7 @@
       "name": "jev",
       "author": "mlld",
       "about": "Typed, calibrated answers from TypeSafe's jev model — choice, score, and noul questions over unstructured state",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "needs": [
         "js"
       ],
@@ -695,7 +698,7 @@
       "mlldVersion": ">=2.2.0",
       "source": {
         "type": "directory",
-        "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/029f1dffa7ea807927b4038e57ce8f2731f11f16/jev",
+        "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/c0a0bce2c2ac121df3167ed65bee936ec0507782/jev",
         "files": [
           "index.mld",
           "module.yml",
@@ -703,11 +706,11 @@
           "tests/builders.test.mld"
         ],
         "entryPoint": "index.mld",
-        "contentHash": "caa18ea316584a665ff97b161d74fd20195871e9a861d950aec61a293a3fa9eb",
+        "contentHash": "6ad98fd99fb93271b2591e9e361730cd9bfb286f69c6e6855a1dbda8cd75b980",
         "repository": {
           "type": "git",
           "url": "https://github.com/mlld-lang/modules",
-          "commit": "029f1dffa7ea807927b4038e57ce8f2731f11f16",
+          "commit": "c0a0bce2c2ac121df3167ed65bee936ec0507782",
           "path": "jev"
         }
       },
@@ -715,14 +718,15 @@
       "keywords": [],
       "repo": "https://github.com/mlld-lang/modules",
       "bugs": "https://github.com/mlld-lang/modules/issues",
-      "publishedAt": "2026-09-30T22:22:57.257Z",
+      "publishedAt": "2026-10-09T23:07:57.144Z",
       "publishedBy": 110551,
       "availableVersions": [
+        "0.2.0",
         "0.1.0"
       ],
       "tags": {
-        "latest": "0.1.0",
-        "stable": "0.1.0"
+        "latest": "0.2.0",
+        "stable": "0.2.0"
       },
       "owners": [
         "mlld"
@@ -882,13 +886,13 @@
       "name": "openai",
       "author": "mlld",
       "about": "OpenAI chat completions with streaming and auth sealing",
-      "version": "2.0.0",
+      "version": "2.1.0",
       "needs": [],
       "license": "CC0",
       "mlldVersion": ">=2.2.0",
       "source": {
         "type": "directory",
-        "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/029f1dffa7ea807927b4038e57ce8f2731f11f16/openai",
+        "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/c0a0bce2c2ac121df3167ed65bee936ec0507782/openai",
         "files": [
           "index.mld",
           "module.yml",
@@ -896,11 +900,11 @@
           "tests/request.test.mld"
         ],
         "entryPoint": "index.mld",
-        "contentHash": "5bab7e273a36d3c25fc27dfaa14cb82b150a6a5574b7bb80a7834a2442b72c91",
+        "contentHash": "d204815709ebd57e30d447fb7be5df6dfbc77b41177a98b8ae897549d47bc785",
         "repository": {
           "type": "git",
           "url": "https://github.com/mlld-lang/modules",
-          "commit": "029f1dffa7ea807927b4038e57ce8f2731f11f16",
+          "commit": "c0a0bce2c2ac121df3167ed65bee936ec0507782",
           "path": "openai"
         }
       },
@@ -908,16 +912,17 @@
       "keywords": [],
       "repo": "https://github.com/mlld-lang/modules",
       "bugs": "https://github.com/mlld-lang/modules/issues",
-      "publishedAt": "2026-09-30T22:23:35.077Z",
+      "publishedAt": "2026-10-09T23:08:07.104Z",
       "publishedBy": 110551,
       "availableVersions": [
+        "2.1.0",
         "2.0.0",
         "1.1.0",
         "1.0.0"
       ],
       "tags": {
-        "latest": "2.0.0",
-        "stable": "2.0.0"
+        "latest": "2.1.0",
+        "stable": "2.1.0"
       },
       "owners": [
         "mlld"
