@@ -1,0 +1,30 @@
+{
+  "version": "2.1.0",
+  "needs": [],
+  "license": "CC0",
+  "mlldVersion": ">=2.2.0",
+  "source": {
+    "type": "directory",
+    "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/c0a0bce2c2ac121df3167ed65bee936ec0507782/openai",
+    "files": [
+      "index.mld",
+      "module.yml",
+      "README.md",
+      "tests/request.test.mld"
+    ],
+    "entryPoint": "index.mld",
+    "contentHash": "d204815709ebd57e30d447fb7be5df6dfbc77b41177a98b8ae897549d47bc785",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/mlld-lang/modules",
+      "commit": "c0a0bce2c2ac121df3167ed65bee936ec0507782",
+      "path": "openai"
+    }
+  },
+  "dependencies": {},
+  "keywords": [],
+  "repo": "https://github.com/mlld-lang/modules",
+  "bugs": "https://github.com/mlld-lang/modules/issues",
+  "publishedAt": "2026-10-09T23:08:07.104Z",
+  "publishedBy": 110551
+}
