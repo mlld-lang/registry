@@ -1,0 +1,34 @@
+{
+  "version": "0.2.0",
+  "needs": [
+    "js"
+  ],
+  "license": "CC0",
+  "mlldVersion": ">=2.2.0",
+  "source": {
+    "type": "directory",
+    "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/c0a0bce2c2ac121df3167ed65bee936ec0507782/decision-harness",
+    "files": [
+      "index.mld",
+      "helpers.mld",
+      "module.yml",
+      "README.md",
+      "tests/helpers.test.mld",
+      "tests/index.test.mld"
+    ],
+    "entryPoint": "index.mld",
+    "contentHash": "19cf2b873ea854c1d1ab83f0cbeca7b5ca7182be93f744991c6635b9676ef3ee",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/mlld-lang/modules",
+      "commit": "c0a0bce2c2ac121df3167ed65bee936ec0507782",
+      "path": "decision-harness"
+    }
+  },
+  "dependencies": {},
+  "keywords": [],
+  "repo": "https://github.com/mlld-lang/modules",
+  "bugs": "https://github.com/mlld-lang/modules/issues",
+  "publishedAt": "2026-10-09T23:07:38.319Z",
+  "publishedBy": 110551
+}
