@@ -1,0 +1,39 @@
+{
+  "version": "1.0.1",
+  "needs": [
+    "node"
+  ],
+  "license": "CC0",
+  "mlldVersion": ">=2.2.0",
+  "source": {
+    "type": "directory",
+    "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/ef763b200586d6a4961b84356c250c43c749f098/opencode-sse",
+    "files": [
+      "index.mld",
+      "module.yml",
+      "README.md",
+      "tests/fixtures/turn.ndjson",
+      "tests/helpers.test.mld",
+      "TODO.md"
+    ],
+    "entryPoint": "index.mld",
+    "contentHash": "3e9cf69766237b9647223d3c54487b64c07c7c460a98564b98a1ed7a3d30ca84",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/mlld-lang/modules",
+      "commit": "ef763b200586d6a4961b84356c250c43c749f098",
+      "path": "opencode-sse"
+    }
+  },
+  "dependencies": {},
+  "keywords": [
+    "llm",
+    "opencode",
+    "sse",
+    "streaming"
+  ],
+  "repo": "https://github.com/mlld-lang/modules",
+  "bugs": "https://github.com/mlld-lang/modules/issues",
+  "publishedAt": "2026-10-10T11:04:46.448Z",
+  "publishedBy": 110551
+}
