@@ -1,0 +1,31 @@
+{
+  "version": "2.0.1",
+  "needs": [],
+  "license": "CC0",
+  "mlldVersion": ">=2.2.0",
+  "source": {
+    "type": "directory",
+    "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/ef763b200586d6a4961b84356c250c43c749f098/airlock",
+    "files": [
+      "index.mld",
+      "module.yml",
+      "prompts.mld",
+      "README.md",
+      "tests/prompts.test.mld"
+    ],
+    "entryPoint": "index.mld",
+    "contentHash": "4e442be35aab4232e0525114d23307c65c7a53d72d722f97288dc1dc608df756",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/mlld-lang/modules",
+      "commit": "ef763b200586d6a4961b84356c250c43c749f098",
+      "path": "airlock"
+    }
+  },
+  "dependencies": {},
+  "keywords": [],
+  "repo": "https://github.com/mlld-lang/modules",
+  "bugs": "https://github.com/mlld-lang/modules/issues",
+  "publishedAt": "2026-10-10T11:04:36.263Z",
+  "publishedBy": 110551
+}
