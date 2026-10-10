@@ -1,0 +1,52 @@
+{
+  "version": "1.7.0",
+  "needs": [
+    "js",
+    "node"
+  ],
+  "license": "CC0",
+  "mlldVersion": ">=2.2.0",
+  "source": {
+    "type": "directory",
+    "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/5fef4f3287585fa521682d0646e081bd1e492158/opencode",
+    "files": [
+      "index.mld",
+      "module.yml",
+      "README.md",
+      "tests/conversation.test.mld",
+      "tests/fixtures/bin/opencode",
+      "tests/fixtures/conversation/basic-resumed.export.json",
+      "tests/fixtures/conversation/basic-resumed.opencode.jsonl",
+      "tests/fixtures/conversation/compacted-overflow.export.json",
+      "tests/fixtures/conversation/compacted-overflow.opencode.jsonl",
+      "tests/fixtures/conversation/failed-tool.export.json",
+      "tests/fixtures/conversation/failed-tool.opencode.jsonl",
+      "tests/fixtures/conversation/opencode-stub.sh",
+      "tests/fixtures/conversation/README.md",
+      "tests/fixtures/conversation/reasoning-after-tool.export.json",
+      "tests/fixtures/folder/opencode/.gitkeep",
+      "tests/fixtures/run/bin/opencode",
+      "tests/fixtures/run/expected/every-flag.txt",
+      "tests/fixtures/run/expected/fork.txt",
+      "tests/fixtures/run/expected/plain.txt",
+      "tests/fixtures/run/expected/resume-unfolded.txt",
+      "tests/parse.test.mld",
+      "tests/policy.test.mld",
+      "tests/run.test.mld"
+    ],
+    "entryPoint": "index.mld",
+    "contentHash": "4f390fdede29a76c211141ae93c5fd1dad4d64a131dc1deee1818b4de2cbc169",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/mlld-lang/modules",
+      "commit": "5fef4f3287585fa521682d0646e081bd1e492158",
+      "path": "opencode"
+    }
+  },
+  "dependencies": {},
+  "keywords": [],
+  "repo": "https://github.com/mlld-lang/modules",
+  "bugs": "https://github.com/mlld-lang/modules/issues",
+  "publishedAt": "2026-10-10T10:50:48.953Z",
+  "publishedBy": 110551
+}
