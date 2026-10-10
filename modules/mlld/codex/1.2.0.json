@@ -1,0 +1,52 @@
+{
+  "version": "1.2.0",
+  "needs": [
+    "js",
+    "node"
+  ],
+  "license": "CC0",
+  "mlldVersion": ">=2.2.0",
+  "source": {
+    "type": "directory",
+    "baseUrl": "https://raw.githubusercontent.com/mlld-lang/modules/5fef4f3287585fa521682d0646e081bd1e492158/codex",
+    "files": [
+      "index.mld",
+      "module.yml",
+      "README.md",
+      "tests/conversation.test.mld",
+      "tests/fixtures/bin/codex",
+      "tests/fixtures/conversation/codex-basic-truncated.jsonl",
+      "tests/fixtures/conversation/codex-basic.fray.jsonl",
+      "tests/fixtures/conversation/codex-basic.jsonl",
+      "tests/fixtures/conversation/codex-compacted.fray.jsonl",
+      "tests/fixtures/conversation/codex-compacted.jsonl",
+      "tests/fixtures/conversation/codex-custom-tools.fray.jsonl",
+      "tests/fixtures/conversation/codex-custom-tools.jsonl",
+      "tests/fixtures/conversation/home/sessions/2025/01/02/5e55a1d0-aaaa-4bbb-8ccc-0123456789ab.jsonl",
+      "tests/fixtures/conversation/home/sessions/2026/09/13/rollout-2026-09-13T19-14-00-0c0ffee0-1234-4321-8abc-def012345678.jsonl",
+      "tests/fixtures/conversation/README.md",
+      "tests/fixtures/folder/codex/.gitkeep",
+      "tests/fixtures/run/bin/codex",
+      "tests/fixtures/run/mcp-two.expected",
+      "tests/fixtures/run/mcp-two.json",
+      "tests/fixtures/run/workdir/.gitkeep",
+      "tests/parse.test.mld",
+      "tests/policy.test.mld",
+      "tests/run.test.mld"
+    ],
+    "entryPoint": "index.mld",
+    "contentHash": "b09266f4f6e2e01e2626d4f568d26bae032cf54535d56dd3c88db4a681f85b88",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/mlld-lang/modules",
+      "commit": "5fef4f3287585fa521682d0646e081bd1e492158",
+      "path": "codex"
+    }
+  },
+  "dependencies": {},
+  "keywords": [],
+  "repo": "https://github.com/mlld-lang/modules",
+  "bugs": "https://github.com/mlld-lang/modules/issues",
+  "publishedAt": "2026-10-10T10:50:37.060Z",
+  "publishedBy": 110551
+}
